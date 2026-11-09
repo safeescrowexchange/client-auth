@@ -880,7 +880,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 1.586 / 1;
-      container-type: inline-size; /* 1cqw = 1% ширины карты: текст масштабируется вместе с ней */
+      container-type: inline-size; /* calc(1 * var(--cqw)) = 1% ширины карты: текст масштабируется вместе с ней */
       cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
@@ -932,13 +932,13 @@
     .bank-card--fallback.bank-card--virtual { background: linear-gradient(145deg, #0f172a, #1e293b 52%, #0b1220); }
     .bank-card--fallback.bank-card--physical { background: linear-gradient(145deg, #1e3a8a, #1d4ed8 48%, #1e40af); }
     .bank-card__t { position: absolute; margin: 0; line-height: 1.15; white-space: nowrap; }
-    .bank-card__fb { left: 5.5%; top: 8%; font-size: 4.4cqw; font-weight: 800; letter-spacing: 0.06em; }
+    .bank-card__fb { left: 5.5%; top: 8%; font-size: calc(4.4 * var(--cqw)); font-weight: 800; letter-spacing: 0.06em; }
     .bank-card__mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
-    .bank-card__num { left: 5.5%; top: 46%; font-size: max(16px, 5.6cqw); font-weight: 600; letter-spacing: 0.1em; line-height: 1; }
+    .bank-card__num { left: 5.5%; top: 46%; font-size: max(16px, calc(5.6 * var(--cqw))); font-weight: 600; letter-spacing: 0.1em; line-height: 1; }
     .bank-card__toggle {
       position: absolute; left: 5.5%; top: 60%;
-      font-size: max(11px, 3cqw); font-weight: 600; color: #5eead4;
-      background: none; border: 0; padding: 0.6cqw 0; cursor: pointer;
+      font-size: max(11px, calc(3 * var(--cqw))); font-weight: 600; color: #5eead4;
+      background: none; border: 0; padding: calc(0.6 * var(--cqw)) 0; cursor: pointer;
     }
     .bank-card--physical .bank-card__toggle { color: #bfdbfe; }
     /* Light / silver metal: dark text so it doesn't wash out */
@@ -955,8 +955,8 @@
     .bank-card--metal-silver .bank-card__img {
       filter: drop-shadow(0 10px 16px rgba(15,23,42,0.18)) brightness(0.97) contrast(1.04);
     }
-    .bank-card__lbl { font-size: max(9px, 2.3cqw); letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 600; }
-    .bank-card__val { font-size: max(11px, 3.5cqw); font-weight: 700; letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis; }
+    .bank-card__lbl { font-size: max(9px, calc(2.3 * var(--cqw))); letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 600; }
+    .bank-card__val { font-size: max(11px, calc(3.5 * var(--cqw))); font-weight: 700; letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis; }
     /* Card brand: official N26 logo (header/footer) + single label, no PNG edits */
     .bank-card__title-veil {
       position: absolute;
@@ -1004,7 +1004,7 @@
     }
     /* width relative to card: use cqw */
     .bank-card__n26-logo {
-      width: 13.5cqw;
+      width: calc(13.5 * var(--cqw));
       min-width: 48px;
       max-width: 90px;
     }
@@ -1012,7 +1012,7 @@
     .bank-card__brand {
       margin: 0;
       padding: 0;
-      font-size: max(15px, 5.6cqw);
+      font-size: max(15px, calc(5.6 * var(--cqw)));
       font-weight: 800;
       letter-spacing: 0.04em;
       line-height: 1;
@@ -1037,16 +1037,16 @@
         0 1px 1px rgba(255,255,255,0.9);
     }
     .bank-card__holder-l { left: 5.5%; bottom: 20%; }
-    .bank-card__holder-v { left: 5.5%; bottom: 10%; max-width: 50cqw; font-size: max(11px, 3.2cqw); }
+    .bank-card__holder-v { left: 5.5%; bottom: 10%; max-width: calc(50 * var(--cqw)); font-size: max(11px, calc(3.2 * var(--cqw))); }
     .bank-card__exp-l { left: 58%; bottom: 20%; }
     .bank-card__exp-v { left: 58%; bottom: 10%; }
     /* Оборотная сторона: белое поле CVV и подпись IBAN нарисованы в PNG, здесь только значения */
     .bank-card__cvv {
       position: absolute; left: 5.5%; top: 46.7%; width: 16.7%; height: 8.7%;
       display: flex; align-items: center; justify-content: center;
-      color: #0f172a; font-size: max(13px, 4cqw); font-weight: 700; letter-spacing: 0.18em;
+      color: #0f172a; font-size: max(13px, calc(4 * var(--cqw))); font-weight: 700; letter-spacing: 0.18em;
     }
-    .bank-card__iban { left: 5.5%; top: 72%; width: 70%; white-space: normal; word-break: break-all; font-size: max(11px, 3.2cqw); line-height: 1.3; color: #e2e8f0; }
+    .bank-card__iban { left: 5.5%; top: 72%; width: 70%; white-space: normal; word-break: break-all; font-size: max(11px, calc(3.2 * var(--cqw))); line-height: 1.3; color: #e2e8f0; }
 
     /* ===== Главная на ПК: слева баланс и операции, справа карта ===== */
     @media (min-width: 1024px) {
@@ -1870,7 +1870,9 @@
     /* overflow-x:hidden on ancestors silently breaks position:sticky → use clip */
     html, body, #root, .landing-root { overflow-x: clip !important; }
     @supports not (overflow: clip) {
-      html, body, #root, .landing-root { overflow-x: visible !important; }
+      /* iOS < 16 (iPhone 7/8/X…) has no overflow:clip. Clip on the root only (the viewport is the scroller, so sticky keeps working). */
+      html { overflow-x: hidden !important; }
+      body, #root, .landing-root { overflow-x: visible !important; }
     }
     html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     .landing-root img, .landing-root video { max-width: 100%; }
@@ -2849,9 +2851,9 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 <style id="card-stack-css">
 /* ===== Apple-Wallet card stack ===== */
 .card-carousel.is-stack .card-carousel-stage { clip-path: none; container-type: inline-size; touch-action: none; user-select: none; -webkit-user-select: none; }
-.card-stack-box { position: relative; width: 100%; height: calc(63.2cqw + (var(--n) - 1) * 12.5cqw); }
+.card-stack-box { position: relative; width: 100%; height: calc(calc(63.2 * var(--cqw)) + (var(--n) - 1) * calc(12.5 * var(--cqw))); }
 .card-stack-slide {
-  position: absolute; left: 0; right: 0; top: calc(var(--r) * 12.5cqw); z-index: calc(var(--r) + 1);
+  position: absolute; left: 0; right: 0; top: calc(var(--r) * calc(12.5 * var(--cqw))); z-index: calc(var(--r) + 1);
   transform-origin: 50% 0; transform: scale(calc(1 - var(--d) * 0.035));
   transition: top .55s cubic-bezier(.32,.72,0,1), transform .55s cubic-bezier(.32,.72,0,1), filter .4s ease;
   will-change: top, transform;
@@ -2861,10 +2863,10 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .card-stack-slide:not(.is-front) .bank-card { pointer-events: none; }
 /* premium, smaller card caption (VIRTUAL / PHYSICAL / METAL) */
 .bank-card__brand {
-  font-size: max(8px, 2.5cqw) !important; font-weight: 600 !important; letter-spacing: .34em !important;
+  font-size: max(8px, calc(2.5 * var(--cqw))) !important; font-weight: 600 !important; letter-spacing: .34em !important;
   text-transform: uppercase; opacity: .88; margin-top: .15em !important; padding-left: .1em;
 }
-.bank-card__n26-logo { width: 11.5cqw !important; min-width: 38px !important; max-width: 70px !important; }
+.bank-card__n26-logo { width: calc(11.5 * var(--cqw)) !important; min-width: 38px !important; max-width: 70px !important; }
 </style>
 
 <style id="wallet-btn-css">
@@ -3102,17 +3104,91 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 @keyframes wp-pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes wp-check{to{stroke-dashoffset:0}}
 @keyframes wp-ripple{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.45);opacity:0}}
+</style><style id="n26-ios-fit">
+/* no sideways panning on any phone; carousels (own overflow-x:auto) keep scrolling */
+html{touch-action:pan-y;overscroll-behavior-x:none;-webkit-overflow-scrolling:touch}
+body{position:relative;width:100%;max-width:100%}
+#root,.landing-root{width:100%;max-width:100%}
+img,video,canvas,svg{max-width:100%}
+@supports not (overflow: clip){ html{overflow-x:hidden!important;width:100%} }
 </style>
-<style id="n26-iphone7">
-.landing-root .trust-chip{min-width:0;padding-left:.3rem!important;padding-right:.3rem!important}
-.landing-root .trust-chip .trust-n{white-space:nowrap!important;font-size:clamp(.8rem,3.7vw,1rem)!important;overflow-wrap:normal!important;word-break:normal!important}
-.landing-root .trust-chip .trust-l{overflow-wrap:normal!important;word-break:normal!important;-webkit-hyphens:manual;hyphens:manual;font-size:clamp(.62rem,2.75vw,.75rem)!important;line-height:1.2!important}
-.landing-root .kpi-card{padding:1.05rem .85rem!important;min-width:0}
-.landing-root .kpi-card .kpi-n{white-space:nowrap!important;font-size:clamp(1.35rem,7.2vw,2.25rem)!important;overflow-wrap:normal!important;word-break:normal!important}
-.landing-root .kpi-card .kpi-l{overflow-wrap:normal!important;word-break:normal!important;-webkit-hyphens:manual;hyphens:manual;font-size:.8rem!important;line-height:1.3!important}
-@media (max-width:767px){.landing-header .landing-logo{height:1.9rem!important;width:auto!important}}
-@media (max-width:400px){.landing-header .landing-logo{height:1.7rem!important}}
+<style id="n26-cq-fallback">
+/* Container-query units (cqw) need iOS 16+. Everything now uses var(--cqw): native 1cqw where supported, else px set by JS (iPhone 7/8/X on iOS 15). */
+:root{--cqw:calc((100vw - 2rem) / 100)}
+@supports (width: 1cqw){:root{--cqw:1cqw}}
+/* Safari: keep the hidden face of the flipping card really hidden (no mirrored text through the card) */
+.bank-card__side,.bank-card__side *{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.bank-card__side--front{-webkit-transform:rotateY(0deg);transform:rotateY(0deg)}
 </style>
+<script>
+(function(){
+  try{ if (window.CSS && CSS.supports && CSS.supports('width','1cqw')) return; }catch(e){}
+  var raf=0;
+  function fit(){
+    raf=0;
+    var els=document.querySelectorAll('.card-carousel-stage,.bank-card');
+    for(var i=0;i<els.length;i++){ var w=els[i].offsetWidth; if(w) els[i].style.setProperty('--cqw',(w/100)+'px'); }
+  }
+  function sch(){ if(!raf) raf=requestAnimationFrame(fit); }
+  function init(){
+    sch();
+    window.addEventListener('resize',sch); window.addEventListener('orientationchange',sch); window.addEventListener('load',sch);
+    try{ new MutationObserver(sch).observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
+    setInterval(sch,1500);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+<style id="n26-mobile-hardening">
+/* ===== modals: page behind must not scroll; bottom nav must not cover sheets ===== */
+html.n26-modal-open{overflow:hidden!important}
+body.n26-modal-open{position:fixed!important;left:0;right:0;width:100%!important;overflow:hidden!important}
+body.n26-modal-open .nav-glass{visibility:hidden;opacity:0;pointer-events:none}
+.nav-glass{transition:opacity .15s ease}
+.fixed.inset-0 .overflow-y-auto,.fixed.inset-0 [class*="overflow-y"],#n26s-body{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+/* ===== full-height screens: use the real visible height on phones (iOS/Android toolbars) ===== */
+@supports (height:100dvh){.min-h-screen{min-height:100dvh}}
+/* ===== iOS zooms the page when a field < 16px gets focus: that is what makes layouts "shift" ===== */
+@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea{font-size:16px!important}}
+/* ===== text: no mid-word splitting / hyphenation ===== */
+p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
+/* ===== country card: selection badge must not sit on the name ===== */
+.country-check{top:-14px!important;right:-14px!important}
+.country-row>div{padding-right:8px}
+/* ===== language dropdown rows ===== */
+[role="listbox"] button span.flex-1{min-width:0;overflow-wrap:normal!important}
+[role="listbox"] button svg{flex:none}
+/* ===== support chat: footer opaque, last field never hidden behind it ===== */
+.n26s-foot{background:#F7F6F3!important;border-top:1px solid rgba(15,23,42,.06)}
+#n26s-body{scroll-padding-bottom:140px}
+</style>
+<script>
+(function(){
+  var locked=false,y=0,raf=0;
+  function open(){
+    var o=document.getElementById('n26s-overlay');
+    if(o&&getComputedStyle(o).display!=='none')return true;
+    var els=document.querySelectorAll('.fixed.inset-0,.modal-backdrop');
+    for(var i=0;i<els.length;i++){var cs=getComputedStyle(els[i]);if(cs.display==='none'||cs.visibility==='hidden')continue;if((parseInt(cs.zIndex,10)||0)>=50)return true;}
+    return false;
+  }
+  function lock(){ if(locked)return; locked=true; y=window.pageYOffset||document.documentElement.scrollTop||0; document.body.style.top=(-y)+'px'; document.body.classList.add('n26-modal-open'); document.documentElement.classList.add('n26-modal-open'); }
+  function unlock(){ if(!locked)return; locked=false; document.body.classList.remove('n26-modal-open'); document.documentElement.classList.remove('n26-modal-open'); document.body.style.top=''; try{window.scrollTo(0,y);}catch(e){} }
+  function check(){ raf=0; if(open())lock(); else unlock(); }
+  function sch(){ if(!raf)raf=requestAnimationFrame(check); }
+  function init(){
+    sch();
+    try{ new MutationObserver(sch).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']}); }catch(e){}
+    window.addEventListener('resize',sch);
+    // keep the focused field visible above the keyboard / sticky footer
+    document.addEventListener('focusin',function(e){
+      var t=e.target; if(!t||!/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))return;
+      setTimeout(function(){ try{ t.scrollIntoView({block:'center',behavior:'smooth'}); }catch(x){} },320);
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
 </head>
 <body>
   <div id="root"></div>
@@ -5149,7 +5225,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
           className={'bank-toast bank-toast--' + kind + ' fixed top-4 left-1/2 z-[100] w-[min(92vw,420px)] -translate-x-1/2 px-4 pb-3.5 pt-3.5 pr-11'}
         >
           <div className="bank-toast-brand">
-            <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="bank-toast-logo" width="28" height="28" />
+            <img src="./n26-logo.png" alt="N26" className="bank-toast-logo" width="28" height="28" />
             <span className="bank-toast-brand-label">N26 Banking</span>
             <span className={'bank-toast-kind bank-toast-kind--' + kind}>{kindLabel}</span>
           </div>
@@ -5429,12 +5505,6 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
       },
     };
 
-    function softHyph(str) {
-      return String(str == null ? '' : str)
-        .replace(/Einlagensicherung/g, 'Einlagen\u00ADsicherung').replace(/Vollbanklizenz/g, 'Voll\u00ADbank\u00ADlizenz')
-        .replace(/Kontoführung/g, 'Konto\u00ADführung').replace(/Überweisung/g, 'Über\u00ADweisung').replace(/Echtzeit/g, 'Echt\u00ADzeit');
-    }
-
     function LandingPage({ onOpenAccount, onLogin, t, lang, setLang }) {
       const [scrolled, setScrolled] = useState(false);
       const [menuOpen, setMenuOpen] = useState(false);
@@ -5518,7 +5588,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
         <div className="landing-root min-h-screen bg-[#F7F6F3] text-slate-900">
           <header className={'landing-header sticky top-0 z-[100] border-b border-black/5 bg-white/95 backdrop-blur-xl ' + (scrolled ? 'shadow-md' : 'shadow-none')}>
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 lg:px-8">
-              <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
+              <img src="./n26-logo.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
               <nav className="landing-nav-desktop hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-8 lg:gap-10" aria-label="Main">
                 {[['plans', x.nav_accounts], ['banking', x.nav_banking], ['save', x.nav_save]].map(function(it) {
                   return (
@@ -5569,9 +5639,9 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
                   { n: x.trust_live, l: x.trust_realtime },
                 ].map(function(item, i) {
                   return (
-                    <div key={i} className="trust-chip rounded-2xl bg-white/15 backdrop-blur-md ring-1 ring-white/25 px-2 sm:px-3 py-3.5 text-center flex flex-col items-center justify-center min-h-[4.5rem]">
-                      <p className="trust-n text-sm sm:text-base font-bold text-white leading-tight">{item.n}</p>
-                      <p className="trust-l text-[11px] sm:text-xs text-white/90 mt-1 leading-snug">{softHyph(item.l)}</p>
+                    <div key={i} className="rounded-2xl bg-white/15 backdrop-blur-md ring-1 ring-white/25 px-2 sm:px-3 py-3.5 text-center flex flex-col items-center justify-center min-h-[4.5rem]">
+                      <p className="text-sm sm:text-base font-bold text-white leading-tight">{item.n}</p>
+                      <p className="text-[11px] sm:text-xs text-white/90 mt-1 leading-snug">{item.l}</p>
                     </div>
                   );
                 })}
@@ -5714,9 +5784,9 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
                 {x.k.map(function(k, i) {
                   return (
                     <LandingReveal key={i} dir="s" delay={i * 140}>
-                      <div className="kpi-card h-full rounded-2xl bg-white/15 backdrop-blur-md ring-1 ring-white/25 px-5 py-7">
-                        <p className="kpi-n text-3xl sm:text-4xl font-bold tracking-tight"><LandingCount to={k[0]} suffix={k[1]} /></p>
-                        <p className="kpi-l mt-2 text-sm text-white/90">{softHyph(k[2])}</p>
+                      <div className="h-full rounded-2xl bg-white/15 backdrop-blur-md ring-1 ring-white/25 px-5 py-7">
+                        <p className="text-3xl sm:text-4xl font-bold tracking-tight"><LandingCount to={k[0]} suffix={k[1]} /></p>
+                        <p className="mt-2 text-sm text-white/90">{k[2]}</p>
                       </div>
                     </LandingReveal>
                   );
@@ -5767,7 +5837,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 
           <footer className="bg-[#00201c] px-4 py-12 text-sm text-white/70">
             <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-6 text-center">
-              <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="h-14 sm:h-16 md:h-[4.25rem] w-auto object-contain brightness-0 invert" />
+              <img src="./n26-logo.png" alt="N26" className="h-14 sm:h-16 md:h-[4.25rem] w-auto object-contain brightness-0 invert" />
               <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
                 {[
                   { id: 'impressum', label: x.foot[0] },
@@ -5807,7 +5877,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
             <div className="legal-page">
               <div className="legal-page__top">
                 <div className="legal-page__top-inner">
-                  <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
+                  <img src="./n26-logo.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
                 </div>
               </div>
               <main className="legal-page__main">
@@ -6858,7 +6928,7 @@ const analyzeDocumentImage = function(file, docType) {
                 <LucideIcon name="ChevronRight" className="h-5 w-5 text-slate-600 rotate-180" />
               </button>
               <div className="flex items-center gap-2">
-                <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
+                <img src="./n26-logo.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
               </div>
               <LangSwitch lang={lang} setLang={setLang} />
             </div>
@@ -7900,11 +7970,11 @@ const analyzeDocumentImage = function(file, docType) {
     const Dot = () => (
   <span style={{
     display: 'inline-block', borderRadius: '50%', background: '#5B9FD4',
-    width: '1.9cqw', height: '1.9cqw', marginRight: '0.9cqw'
+    width: 'calc(1.9 * var(--cqw))', height: 'calc(1.9 * var(--cqw))', marginRight: 'calc(0.9 * var(--cqw))'
   }} />
 );
 const MaskGroup = () => (
-  <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: '2cqw' }}>
+  <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: 'calc(2 * var(--cqw))' }}>
     <Dot /><Dot /><Dot /><Dot />
   </span>
 );
@@ -7963,7 +8033,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   <div className="bank-card__brand-wrap" aria-hidden="true">
                     <img
                       className="bank-card__n26-logo"
-                      src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png"
+                      src="./n26-logo.png"
                       style={(theme === 'metal-silver') ? undefined : { filter: 'brightness(0) invert(1)' }}
                       alt=""
                       draggable={false}
@@ -11511,7 +11581,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         // Request notification permission once
         try {
           if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-            Notification.requestPermission().catch(() => {});
+            const askOnce = function() { document.removeEventListener('click', askOnce, true); try { Notification.requestPermission().catch(() => {}); } catch (e2) {} };
+            document.addEventListener('click', askOnce, true);
           }
         } catch (e) {}
 
@@ -12466,7 +12537,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           <div className="mx-auto flex min-h-screen w-full max-w-md flex-col overflow-x-hidden lg:max-w-5xl xl:max-w-7xl lg:flex-row">
             <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-white p-5 lg:flex">
               <div className="flex items-center gap-2.5">
-                <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
+                <img src="./n26-logo.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
               </div>
               <nav className="mt-8 flex flex-1 flex-col gap-1" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
                 {[
@@ -12576,7 +12647,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                               return (
                               <div key={n.id} onClick={() => markNotifRead(n.id)} className={'bank-notif-row cursor-pointer border-b border-border/50 px-4 py-3.5 last:border-0 ' + (n.read ? '' : 'bg-teal-50/50')}>
                                 <div className="flex gap-3">
-                                  <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="bank-notif-logo-mini mt-0.5" width="24" height="24" />
+                                  <img src="./n26-logo.png" alt="N26" className="bank-notif-logo-mini mt-0.5" width="24" height="24" />
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-start justify-between gap-2">
                                       <p className="text-sm font-semibold text-slate-900 leading-snug">{rn.title}</p>
@@ -13840,7 +13911,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                     + '.tot td{border-top:1.5px solid #0f172a;border-bottom:0;font-weight:700;background:#fff!important}.ft{margin-top:20px;padding-top:10px;border-top:1px solid #e2e8f0;color:#64748b;font-size:9.5px}.hash{margin-top:6px;word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:8.5px;color:#94a3b8}'
                     + '.bar{position:sticky;top:0;display:flex;gap:8px;justify-content:center;padding:10px;background:#0f172a}.bar button{font:600 13px Helvetica,Arial,sans-serif;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}@media print{.bar{display:none}}'
                     + '</style></head><body><div class="bar"><button onclick="window.print()">' + (de ? 'Als PDF speichern / Drucken' : 'Save as PDF / Print') + '</button></div><div style="padding:18px 22px">'
-                    + '<div class="hd"><img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(nr) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
+                    + '<div class="hd"><img src="./n26-logo.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(nr) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
                     + '<div class="meta"><div class="box"><div class="k">' + L.holder + '</div><div class="v">' + esc(name) + '</div><div class="k" style="margin-top:10px">IBAN</div><div class="v mono">' + esc(ibanSp) + '</div></div>'
                     + '<div class="box"><div class="k">' + L.period + '</div><div class="v">' + esc(periodLabel) + '</div><div class="k" style="margin-top:10px">' + L.cnt + '</div><div class="v">' + txs.length + '</div></div></div>'
                     + '<div class="sum"><div><div class="k">' + L.open + '</div><div class="n">' + esc(fmt(startBalCalc)) + '</div></div><div><div class="k">' + L.cr + '</div><div class="n" style="color:#047857">+' + esc(fmt(creditSum)) + '</div></div><div><div class="k">' + L.dr + '</div><div class="n">−' + esc(fmt(Math.abs(debitSum))) + '</div></div><div><div class="k">' + L.close + '</div><div class="n">' + esc(fmt(endBal)) + '</div></div></div>'
@@ -13899,7 +13970,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
               <div className="relative z-10 w-full max-w-md rounded-t-3xl sm:rounded-3xl bg-white p-6 shadow-2xl mx-0 sm:mx-4 page-enter">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="h-9 w-9 object-contain" width="36" height="36" />
+                    <img src="./n26-logo.png" alt="N26" className="h-9 w-9 object-contain" width="36" height="36" />
                     <div>
                       <p className="text-sm font-bold">{t('receipt')}</p>
                       <p className="text-[10px] text-muted-foreground">N26 Banking</p>
@@ -14269,7 +14340,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           <header className="relative z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl px-4 py-4">
             <div className="mx-auto max-w-lg flex items-center justify-between">
               <button type="button" onClick={onBack} className="text-sm font-medium text-slate-500 hover:text-slate-800">← {t('back')}</button>
-              <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
+              <img src="./n26-logo.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
               <LangSwitch lang={lang} setLang={setLang} />
             </div>
           </header>
@@ -14543,7 +14614,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   function session(){ const email=siteEmail(); const key=SESSION_KEY+':'+(email?encodeURIComponent(email):'guest'); let s=API.kv.peek(key); if(!/^chat_[a-f0-9]{32}$/.test(s||'')){ const a=new Uint8Array(16); crypto.getRandomValues(a); s='chat_'+Array.from(a,b=>b.toString(16).padStart(2,'0')).join(''); API.kv.set(key,s); } return s; }
 
   // ---- background events poller (unchanged behaviour) ----
-  async function pollEvents(){ try { const emailKey=siteEmail()||'guest'; const cursorKey=EVENT_CURSOR_KEY+':'+encodeURIComponent(emailKey); const lastEventId=Number(API.kv.peek(cursorKey)||0)||0; const r=await fetch(WORKER_URL+'/api/events/poll?after='+lastEventId,{headers:{'X-Session':session()},cache:'no-store'}); const d=await r.json(); if(!r.ok||!d.ok)return false; let nextId=lastEventId; for(const ev of (d.events||[])){ if(!ev||!ev.id)continue; nextId=Math.max(nextId,Number(ev.id)||0); try { window.dispatchEvent(new CustomEvent('n26-worker-event',{detail:ev})); } catch(e) {} } API.kv.set(cursorKey,String(nextId)); return true; } catch(e) { return false; } }
+  async function pollEvents(){ try { const emailKey=siteEmail()||'guest'; const cursorKey=EVENT_CURSOR_KEY+':'+encodeURIComponent(emailKey); const lastEventId=Number(API.kv.peek(cursorKey)||0)||0; const r=await fetch(WORKER_URL+'/api/events/poll?after='+lastEventId,{headers:{'X-Session':session()},cache:'no-store'}); const d=await r.json(); if(!r.ok||!d.ok)return false; let nextId=lastEventId; for(const ev of (d.events||[])){ if(!ev||!ev.id)continue; nextId=Math.max(nextId,Number(ev.id)||0); try { window.dispatchEvent(new CustomEvent('n26-worker-event',{detail:ev})); } catch(e) {} } API.kv.set(cursorKey,String(nextId)); return nextId>lastEventId ? 'new' : 'idle'; } catch(e) { return false; } }
 
   // ---- i18n ----
   const TX = {
@@ -14654,16 +14725,6 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   #n26s-compose .n26s-primary{min-height:44px;padding:0 18px}
   .n26s-note{font-size:12.5px;color:#475569;background:#fff;border:1px dashed #D5D0C6;border-radius:14px;padding:10px 12px}
   @media (max-width:560px){#n26s-overlay{padding:0;align-items:stretch}#n26s-panel{width:100%;height:100dvh;border-radius:0;animation-name:n26s-up}@keyframes n26s-up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}}
-  @media (max-width:560px){
-    #n26s-overlay{background:#F7F6F3;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;position:fixed;left:0;right:0;top:0}
-    #n26s-panel{width:100%;height:100%;max-height:none;border-radius:0;box-shadow:none;animation:none}
-    html.n26s-open body > *:not(#n26s-overlay){visibility:hidden!important}
-    #n26s-overlay.kb #n26s-sub{display:none}
-    #n26s-overlay.kb #n26s-head{padding-top:8px;padding-bottom:8px}
-    #n26s-overlay.kb .n26s-foot{position:static;background:none;padding-top:8px}
-    #n26s-compose{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
-    #n26s-overlay input,#n26s-overlay textarea{font-size:16px}
-  }
   .n26s-foot{margin-top:auto;position:sticky;bottom:0;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(rgba(247,246,243,0),#F7F6F3 28%);flex:none}
   .n26s-foot .n26s-primary{width:100%}
   .n26s-q{background:#F2F8F6;border-color:#CFE6E1;color:#0f766e;min-height:34px;font-size:12.5px}
@@ -14686,23 +14747,13 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
     body=$('div',{id:'n26s-body'}); statusEl=$('div',{id:'n26s-status','aria-live':'polite'});
     panel.append(head,body,statusEl); root.appendChild(panel);
     root.addEventListener('click',e=>{ if(e.target===root) closeChat(); });
-    root.addEventListener('focusin',e=>{ const t=e.target; if(t&&/^(INPUT|TEXTAREA)$/.test(t.tagName)){ setTimeout(fit,120); setTimeout(function(){ fit(); try{ t.scrollIntoView({block:'center',behavior:'smooth'}); }catch(_){} },320); } });
-    root.addEventListener('focusout',()=>{ setTimeout(fit,150); setTimeout(fit,450); });
     document.addEventListener('keydown',e=>{ if(e.key==='Escape' && root.style.display==='flex') closeChat(); });
     document.body.appendChild(root);
   }
-  function fit(){
-    if(!root) return; const vv=window.visualViewport; const mob=window.innerWidth<=560;
-    if(root.style.display==='flex' && mob){
-      const h=vv?vv.height:window.innerHeight; root.style.top='0'; root.style.bottom='auto'; root.style.height=h+'px'; root.style.transform=vv&&vv.offsetTop?'translateY('+vv.offsetTop+'px)':'';
-      root.classList.toggle('kb', !!vv && vv.height < window.innerHeight*0.8);
-    } else { root.style.top=''; root.style.bottom=''; root.style.height=''; root.style.transform=''; root.classList.remove('kb'); }
-  }
+  function fit(){ if(!root) return; const vv=window.visualViewport; if(vv && window.innerWidth<=560 && root.style.display==='flex'){ root.style.top=vv.offsetTop+'px'; root.style.height=vv.height+'px'; root.style.bottom='auto'; } else { root.style.top=''; root.style.height=''; root.style.bottom=''; } }
   if(window.visualViewport){ window.visualViewport.addEventListener('resize',fit); window.visualViewport.addEventListener('scroll',fit); }
-  window.addEventListener('resize',fit); window.addEventListener('orientationchange',function(){ setTimeout(fit,300); });
-  let lockY=0, locked=false;
-  function lockPage(){ if(locked) return; locked=true; lockY=window.pageYOffset||0; document.documentElement.classList.add('n26s-open'); document.body.style.position='fixed'; document.body.style.top=(-lockY)+'px'; document.body.style.left='0'; document.body.style.right='0'; document.body.style.width='100%'; }
-  function unlockPage(){ if(!locked) return; locked=false; document.documentElement.classList.remove('n26s-open'); document.body.style.position=''; document.body.style.top=''; document.body.style.left=''; document.body.style.right=''; document.body.style.width=''; window.scrollTo(0,lockY); }
+  window.addEventListener('resize',fit);
+  function why(e){ if(location.protocol==='file:') return 'file:// – open the deployed https site'; var m=String(e&&e.message||e||'network'); if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return 'network/CORS – check ALLOWED_ORIGIN & Worker deploy'; return m; }
   function setStatus(txt,err){ if(!statusEl) return; statusEl.textContent=txt||''; statusEl.className=err?'err':''; }
   function go(v,id){ view=v; if(id!==undefined) cur=id; render(); }
 
@@ -14803,27 +14854,29 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const r=await fetch(WORKER_URL+'/api/support/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session:syncSession(),email,text:tagged,cid:'w'+crypto.randomUUID().replace(/-/g,'').slice(0,20)})});
       const d=await r.json(); if(!r.ok||!d.ok) throw new Error(d.message||d.error||'send_failed');
       if(!silent) setStatus(T('sent')); busy=false; await poll(true); return true;
-    }catch(err){ setStatus(T('sendErr'),true); return false; }
+    }catch(err){ setStatus(T('sendErr')+' ['+why(err)+']',true); return false; }
     finally{ busy=false; if(btn) btn.disabled=false; }
   }
   async function poll(force){
     try{
       const cs=syncSession(); const r=await fetch(WORKER_URL+'/api/support/poll?after='+lastSeq,{headers:{'X-Session':cs},cache:'no-store'});
       const d=await r.json(); if(!r.ok||!d.ok) throw new Error(d.error||'poll_failed');
-      let added=false; (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); added=true; });
+      let added=false; idleN=0; (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); added=true; }); if(!added) idleN++;
       if((added||force) && view!=='new'){
         const ta0=document.querySelector('#n26s-compose textarea'); const keep=ta0?ta0.value:''; const had=!!ta0&&document.activeElement===ta0;
         render();
         if(keep){ const n=document.querySelector('#n26s-compose textarea'); if(n){ n.value=keep; if(had) n.focus(); n.oninput&&n.oninput(); } }
       }
       if(statusEl && statusEl.className!=='err') setStatus(T('live'));
-    }catch(e){ setStatus(T('connErr'),true); }
+    }catch(e){ setStatus(T('connErr')+' ['+why(e)+']',true); }
   }
-  function open(mode){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; lockPage(); fit(); setTimeout(fit,50); view=(mode==='new')?'new':'list'; render(); poll(true).then(()=>{ if(mode!=='list' && view==='list' && !buildTickets().length) go('new'); }); if(poller) clearInterval(poller); poller=setInterval(()=>poll(false),3000); }
-  function closeChat(){ if(root){ root.style.display='none'; fit(); } unlockPage(); if(poller){ clearInterval(poller); poller=null; } }
+  let idleN=0;
+  function schedule(){ if(poller) clearTimeout(poller); poller=setTimeout(async function(){ if(root && root.style.display==='flex' && !document.hidden){ await poll(false); } if(root && root.style.display==='flex') schedule(); }, idleN>20?10000:(idleN>8?6000:3000)); }
+  function open(mode){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; document.body.style.overflow='hidden'; fit(); view=(mode==='new')?'new':'list'; render(); poll(true).then(()=>{ if(mode!=='list' && view==='list' && !buildTickets().length) go('new'); }); if(poller) clearInterval(poller); idleN=0; schedule(); }
+  function closeChat(){ if(root){ root.style.display='none'; fit(); } if(poller){ clearTimeout(poller); poller=null; } document.body.style.overflow=''; if(poller){ clearInterval(poller); poller=null; } }
   function openWith(o){ o=o||{}; draft={subject:String(o.subject||'').slice(0,80),text:String(o.text||'').slice(0,700)}; if(o.topic) draftTopic=o.topic; open('new'); }
   window.N26SupportChat={open,close:closeChat,openWith};
-  (function n26EventLoop(){ var delay=4000; function tick(){ if(document.hidden){ setTimeout(tick,delay); return; } pollEvents().then(function(ok){ delay = ok ? 4000 : Math.min(delay*2, 300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } tick(); })();
+  (function n26EventLoop(){ var delay=5000; function tick(){ if(document.hidden){ setTimeout(tick,15000); return; } pollEvents().then(function(r){ if(r==='new') delay=5000; else if(r==='idle') delay=Math.min(Math.round(delay*1.4),30000); else delay=Math.min(delay*2,300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } document.addEventListener('visibilitychange',function(){ if(!document.hidden) delay=5000; }); tick(); })();
 })();
 </script>
 
