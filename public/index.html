@@ -14364,7 +14364,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           </div>
           <header className="relative z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl px-4 py-4">
             <div className="mx-auto max-w-lg flex items-center justify-between">
-              <button type="button" onClick={onBack} className="text-sm font-medium text-slate-500 hover:text-slate-800">← {t('back')}</button>
+              {onBack ? <button type="button" onClick={onBack} className="text-sm font-medium text-slate-500 hover:text-slate-800">← {t('back')}</button> : <span />}
               <img src="./n26-logo.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
               <LangSwitch lang={lang} setLang={setLang} />
             </div>
@@ -14402,11 +14402,51 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       );
     }
 
+    // ========== APP / LANDING SEPARATION ==========
+    // Installed app (PWA / "Add to Home Screen") never shows the marketing landing: it starts at login / registration.
+    const isStandaloneApp = (function () {
+      try {
+        return (window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches))
+          || window.navigator.standalone === true || /[?&]source=pwa\b/.test(location.search);
+      } catch (e) { return false; }
+    })();
+
+    function AppPlanPicker({ lang, setLang, onPick, onBack }) {
+      const de = lang !== 'en';
+      const plans = [
+        { id: 'standard', name: 'N26 Standard', price: de ? '0 € / Monat' : '€0 / month', feats: de ? ['Girokonto mit deutscher IBAN', 'Virtuelle Mastercard sofort'] : ['Current account with German IBAN', 'Virtual Mastercard instantly'] },
+        { id: 'you', name: 'N26 You', price: de ? '9,90 € / Monat' : '€9.90 / month', feats: de ? ['Alles aus Standard', 'Physische Karte bestellbar (5,00 € Gebühr)'] : ['Everything in Standard', 'Physical card available to order (€5.00 fee)'] },
+        { id: 'metal', name: 'N26 Metal', price: de ? '16,90 € / Monat' : '€16.90 / month', feats: de ? ['Alles aus You', 'Metal-Karte in 3 Farben'] : ['Everything in You', 'Metal card in 3 colours'] },
+      ];
+      return (
+        <div className="min-h-screen bg-[#F7F6F3] px-4 pb-10" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}>
+          <div className="mx-auto max-w-lg">
+            <div className="mb-5 flex items-center justify-between">
+              <button type="button" onClick={onBack} className="text-sm font-medium text-slate-500">← {de ? 'Zurück zum Login' : 'Back to login'}</button>
+              <LangSwitch lang={lang} setLang={setLang} />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{de ? 'Wähle deinen Tarif' : 'Choose your plan'}</h1>
+            <p className="mt-1 text-sm text-slate-600">{de ? 'Du kannst ihn später jederzeit ändern.' : 'You can change it any time later.'}</p>
+            <div className="mt-5 space-y-3">
+              {plans.map(function(p) {
+                return (
+                  <button key={p.id} type="button" onClick={function() { onPick(p.id); }} className="block w-full rounded-2xl bg-white p-5 text-left ring-1 ring-black/5 transition active:scale-[.99]">
+                    <div className="flex items-baseline justify-between gap-3"><span className="text-base font-bold text-slate-900">{p.name}</span><span className="text-sm font-semibold text-teal-700">{p.price}</span></div>
+                    <ul className="mt-2 space-y-1 text-sm text-slate-600">{p.feats.map(function(f) { return <li key={f}>✓ {f}</li>; })}</ul>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     // ========== ROOT ==========
     function App() {
       const [page, setPage] = useState(() => {
         const session = getSession();
-        return session ? 'bank' : 'landing';
+        return session ? 'bank' : (isStandaloneApp ? 'login' : 'landing');
       });
       const [user, setUser] = useState(() => getSession());
       const [lang, setLang] = useState(() => {
@@ -14568,13 +14608,16 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         return () => { clearTimeout(tm); try { el.remove(); } catch (e) {} };
       }, [sessionNoticeShown]);
 
+      const [planPicked, setPlanPicked] = useState(() => { try { return !!API.skv.peek('n26_selected_plan'); } catch (e) { return false; } });
       const handleLogout = () => {
         setSession(null);
         setUser(null);
-        setPage('landing');
+        setPage(isStandaloneApp ? 'login' : 'landing');
       };
+      // installed app: landing does not exist; anything that points to it goes to login
+      const pg = (isStandaloneApp && page === 'landing') ? 'login' : page;
 
-      if (page === 'landing') {
+      if (pg === 'landing') {
         return (
           <div key="landing" className="screen-transition">
             <LandingPage
@@ -14588,11 +14631,11 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         );
       }
 
-      if (page === 'login') {
+      if (pg === 'login') {
         return (
           <div key="login" className="screen-transition">
             <LoginPage
-              onBack={() => setPage('landing')}
+              onBack={isStandaloneApp ? null : () => setPage('landing')}
               onRegister={() => setPage('register')}
               onSuccess={handleLoginSuccess}
               t={t}
@@ -14603,11 +14646,20 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         );
       }
 
-      if (page === 'register') {
+      if (pg === 'register' && isStandaloneApp && !planPicked) {
+        return (
+          <div key="plan" className="screen-transition">
+            <AppPlanPicker lang={lang} setLang={setLang} onBack={() => setPage('login')}
+              onPick={(id) => { try { API.skv.set('n26_selected_plan', id); } catch (e) {} setPlanPicked(true); }} />
+          </div>
+        );
+      }
+
+      if (pg === 'register') {
         return (
           <div key="register" className="screen-transition">
             <RegistrationPage
-              onBack={() => setPage('landing')}
+              onBack={() => setPage(isStandaloneApp ? 'login' : 'landing')}
               onComplete={handleRegisterComplete}
               t={t}
               lang={lang}
@@ -14922,6 +14974,43 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
     window.addEventListener(ev, function () { tick(); setTimeout(tick, 120); setTimeout(tick, 450); });
   });
   if (window.visualViewport) { visualViewport.addEventListener('resize', tick); visualViewport.addEventListener('scroll', tick); }
+})();
+</script>
+<script>
+/* "Install app" offer — only on the marketing landing in a normal browser; never inside the installed app */
+(function () {
+  var standalone = false;
+  try { standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true || /[?&]source=pwa\b/.test(location.search); } catch (e) {}
+  if (standalone) return;
+  var deferred = null, bar = null;
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  function dismissed() { try { return window.API && API.kv.peek('n26_install_dismissed') === '1'; } catch (e) { return false; } }
+  function de() { return (document.documentElement.lang || 'de') !== 'en'; }
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; });
+  window.addEventListener('appinstalled', function () { deferred = null; remove(); });
+  function remove() { if (bar) { try { bar.remove(); } catch (e) {} bar = null; } }
+  function build() {
+    bar = document.createElement('div');
+    bar.id = 'n26-install-bar';
+    bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:18px;background:#042f2e;color:#fff;font:600 13px/1.35 Inter,system-ui,sans-serif;box-shadow:0 14px 36px rgba(0,0,0,.35);max-width:460px;margin:0 auto';
+    var txt = document.createElement('div'); txt.style.cssText = 'flex:1;min-width:0';
+    var btn = document.createElement('button'); btn.type = 'button';
+    btn.style.cssText = 'flex:none;border:0;border-radius:999px;background:#fff;color:#042f2e;font:700 13px Inter,system-ui,sans-serif;padding:9px 14px';
+    var x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close');
+    x.style.cssText = 'flex:none;border:0;background:transparent;color:#fff;font-size:16px;padding:6px';
+    x.onclick = function () { try { API.kv.set('n26_install_dismissed', '1'); } catch (e) {} remove(); };
+    function paint() {
+      if (ios && !deferred) { txt.textContent = de() ? 'N26 als App: Teilen-Symbol antippen → „Zum Home-Bildschirm“.' : 'N26 as an app: tap the Share icon → “Add to Home Screen”.'; btn.style.display = 'none'; }
+      else { txt.textContent = de() ? 'N26 als App installieren – direkt zu Login & Konto.' : 'Install N26 as an app – straight to login & account.'; btn.textContent = de() ? 'Installieren' : 'Install'; btn.style.display = ''; }
+    }
+    btn.onclick = function () { if (!deferred) return; deferred.prompt(); deferred.userChoice.then(function () { deferred = null; remove(); }).catch(function () {}); };
+    paint(); bar.append(txt, btn, x); document.body.appendChild(bar);
+  }
+  setInterval(function () {
+    var onLanding = !!document.querySelector('.landing-root');
+    if (!onLanding || dismissed() || (!deferred && !ios)) { remove(); return; }
+    if (!bar) build();
+  }, 1000);
 })();
 </script>
 <script>
