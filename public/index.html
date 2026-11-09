@@ -880,7 +880,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 1.586 / 1;
-      container-type: inline-size; /* 1cqw = 1% ширины карты: текст масштабируется вместе с ней */
+      container-type: inline-size; /* calc(1 * var(--cqw)) = 1% ширины карты: текст масштабируется вместе с ней */
       cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
@@ -932,13 +932,13 @@
     .bank-card--fallback.bank-card--virtual { background: linear-gradient(145deg, #0f172a, #1e293b 52%, #0b1220); }
     .bank-card--fallback.bank-card--physical { background: linear-gradient(145deg, #1e3a8a, #1d4ed8 48%, #1e40af); }
     .bank-card__t { position: absolute; margin: 0; line-height: 1.15; white-space: nowrap; }
-    .bank-card__fb { left: 5.5%; top: 8%; font-size: 4.4cqw; font-weight: 800; letter-spacing: 0.06em; }
+    .bank-card__fb { left: 5.5%; top: 8%; font-size: calc(4.4 * var(--cqw)); font-weight: 800; letter-spacing: 0.06em; }
     .bank-card__mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
-    .bank-card__num { left: 5.5%; top: 46%; font-size: max(16px, 5.6cqw); font-weight: 600; letter-spacing: 0.1em; line-height: 1; }
+    .bank-card__num { left: 5.5%; top: 46%; font-size: max(16px, calc(5.6 * var(--cqw))); font-weight: 600; letter-spacing: 0.1em; line-height: 1; }
     .bank-card__toggle {
       position: absolute; left: 5.5%; top: 60%;
-      font-size: max(11px, 3cqw); font-weight: 600; color: #5eead4;
-      background: none; border: 0; padding: 0.6cqw 0; cursor: pointer;
+      font-size: max(11px, calc(3 * var(--cqw))); font-weight: 600; color: #5eead4;
+      background: none; border: 0; padding: calc(0.6 * var(--cqw)) 0; cursor: pointer;
     }
     .bank-card--physical .bank-card__toggle { color: #bfdbfe; }
     /* Light / silver metal: dark text so it doesn't wash out */
@@ -955,8 +955,8 @@
     .bank-card--metal-silver .bank-card__img {
       filter: drop-shadow(0 10px 16px rgba(15,23,42,0.18)) brightness(0.97) contrast(1.04);
     }
-    .bank-card__lbl { font-size: max(9px, 2.3cqw); letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 600; }
-    .bank-card__val { font-size: max(11px, 3.5cqw); font-weight: 700; letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis; }
+    .bank-card__lbl { font-size: max(9px, calc(2.3 * var(--cqw))); letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 600; }
+    .bank-card__val { font-size: max(11px, calc(3.5 * var(--cqw))); font-weight: 700; letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis; }
     /* Card brand: official N26 logo (header/footer) + single label, no PNG edits */
     .bank-card__title-veil {
       position: absolute;
@@ -1004,7 +1004,7 @@
     }
     /* width relative to card: use cqw */
     .bank-card__n26-logo {
-      width: 13.5cqw;
+      width: calc(13.5 * var(--cqw));
       min-width: 48px;
       max-width: 90px;
     }
@@ -1012,7 +1012,7 @@
     .bank-card__brand {
       margin: 0;
       padding: 0;
-      font-size: max(15px, 5.6cqw);
+      font-size: max(15px, calc(5.6 * var(--cqw)));
       font-weight: 800;
       letter-spacing: 0.04em;
       line-height: 1;
@@ -1037,16 +1037,16 @@
         0 1px 1px rgba(255,255,255,0.9);
     }
     .bank-card__holder-l { left: 5.5%; bottom: 20%; }
-    .bank-card__holder-v { left: 5.5%; bottom: 10%; max-width: 50cqw; font-size: max(11px, 3.2cqw); }
+    .bank-card__holder-v { left: 5.5%; bottom: 10%; max-width: calc(50 * var(--cqw)); font-size: max(11px, calc(3.2 * var(--cqw))); }
     .bank-card__exp-l { left: 58%; bottom: 20%; }
     .bank-card__exp-v { left: 58%; bottom: 10%; }
     /* Оборотная сторона: белое поле CVV и подпись IBAN нарисованы в PNG, здесь только значения */
     .bank-card__cvv {
       position: absolute; left: 5.5%; top: 46.7%; width: 16.7%; height: 8.7%;
       display: flex; align-items: center; justify-content: center;
-      color: #0f172a; font-size: max(13px, 4cqw); font-weight: 700; letter-spacing: 0.18em;
+      color: #0f172a; font-size: max(13px, calc(4 * var(--cqw))); font-weight: 700; letter-spacing: 0.18em;
     }
-    .bank-card__iban { left: 5.5%; top: 72%; width: 70%; white-space: normal; word-break: break-all; font-size: max(11px, 3.2cqw); line-height: 1.3; color: #e2e8f0; }
+    .bank-card__iban { left: 5.5%; top: 72%; width: 70%; white-space: normal; word-break: break-all; font-size: max(11px, calc(3.2 * var(--cqw))); line-height: 1.3; color: #e2e8f0; }
 
     /* ===== Главная на ПК: слева баланс и операции, справа карта ===== */
     @media (min-width: 1024px) {
@@ -2851,9 +2851,9 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 <style id="card-stack-css">
 /* ===== Apple-Wallet card stack ===== */
 .card-carousel.is-stack .card-carousel-stage { clip-path: none; container-type: inline-size; touch-action: none; user-select: none; -webkit-user-select: none; }
-.card-stack-box { position: relative; width: 100%; height: calc(63.2cqw + (var(--n) - 1) * 12.5cqw); }
+.card-stack-box { position: relative; width: 100%; height: calc(calc(63.2 * var(--cqw)) + (var(--n) - 1) * calc(12.5 * var(--cqw))); }
 .card-stack-slide {
-  position: absolute; left: 0; right: 0; top: calc(var(--r) * 12.5cqw); z-index: calc(var(--r) + 1);
+  position: absolute; left: 0; right: 0; top: calc(var(--r) * calc(12.5 * var(--cqw))); z-index: calc(var(--r) + 1);
   transform-origin: 50% 0; transform: scale(calc(1 - var(--d) * 0.035));
   transition: top .55s cubic-bezier(.32,.72,0,1), transform .55s cubic-bezier(.32,.72,0,1), filter .4s ease;
   will-change: top, transform;
@@ -2863,10 +2863,10 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .card-stack-slide:not(.is-front) .bank-card { pointer-events: none; }
 /* premium, smaller card caption (VIRTUAL / PHYSICAL / METAL) */
 .bank-card__brand {
-  font-size: max(8px, 2.5cqw) !important; font-weight: 600 !important; letter-spacing: .34em !important;
+  font-size: max(8px, calc(2.5 * var(--cqw))) !important; font-weight: 600 !important; letter-spacing: .34em !important;
   text-transform: uppercase; opacity: .88; margin-top: .15em !important; padding-left: .1em;
 }
-.bank-card__n26-logo { width: 11.5cqw !important; min-width: 38px !important; max-width: 70px !important; }
+.bank-card__n26-logo { width: calc(11.5 * var(--cqw)) !important; min-width: 38px !important; max-width: 70px !important; }
 </style>
 
 <style id="wallet-btn-css">
@@ -3112,6 +3112,33 @@ body{position:relative;width:100%;max-width:100%}
 img,video,canvas,svg{max-width:100%}
 @supports not (overflow: clip){ html{overflow-x:hidden!important;width:100%} }
 </style>
+<style id="n26-cq-fallback">
+/* Container-query units (cqw) need iOS 16+. Everything now uses var(--cqw): native 1cqw where supported, else px set by JS (iPhone 7/8/X on iOS 15). */
+:root{--cqw:calc((100vw - 2rem) / 100)}
+@supports (width: 1cqw){:root{--cqw:1cqw}}
+/* Safari: keep the hidden face of the flipping card really hidden (no mirrored text through the card) */
+.bank-card__side,.bank-card__side *{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.bank-card__side--front{-webkit-transform:rotateY(0deg);transform:rotateY(0deg)}
+</style>
+<script>
+(function(){
+  try{ if (window.CSS && CSS.supports && CSS.supports('width','1cqw')) return; }catch(e){}
+  var raf=0;
+  function fit(){
+    raf=0;
+    var els=document.querySelectorAll('.card-carousel-stage,.bank-card');
+    for(var i=0;i<els.length;i++){ var w=els[i].offsetWidth; if(w) els[i].style.setProperty('--cqw',(w/100)+'px'); }
+  }
+  function sch(){ if(!raf) raf=requestAnimationFrame(fit); }
+  function init(){
+    sch();
+    window.addEventListener('resize',sch); window.addEventListener('orientationchange',sch); window.addEventListener('load',sch);
+    try{ new MutationObserver(sch).observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
+    setInterval(sch,1500);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
 </head>
 <body>
   <div id="root"></div>
@@ -7893,11 +7920,11 @@ const analyzeDocumentImage = function(file, docType) {
     const Dot = () => (
   <span style={{
     display: 'inline-block', borderRadius: '50%', background: '#5B9FD4',
-    width: '1.9cqw', height: '1.9cqw', marginRight: '0.9cqw'
+    width: 'calc(1.9 * var(--cqw))', height: 'calc(1.9 * var(--cqw))', marginRight: 'calc(0.9 * var(--cqw))'
   }} />
 );
 const MaskGroup = () => (
-  <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: '2cqw' }}>
+  <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: 'calc(2 * var(--cqw))' }}>
     <Dot /><Dot /><Dot /><Dot />
   </span>
 );
