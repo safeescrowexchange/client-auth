@@ -1870,7 +1870,9 @@
     /* overflow-x:hidden on ancestors silently breaks position:sticky → use clip */
     html, body, #root, .landing-root { overflow-x: clip !important; }
     @supports not (overflow: clip) {
-      html, body, #root, .landing-root { overflow-x: visible !important; }
+      /* iOS < 16 (iPhone 7/8/X…) has no overflow:clip. Clip on the root only (the viewport is the scroller, so sticky keeps working). */
+      html { overflow-x: hidden !important; }
+      body, #root, .landing-root { overflow-x: visible !important; }
     }
     html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     .landing-root img, .landing-root video { max-width: 100%; }
@@ -3102,7 +3104,15 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 @keyframes wp-pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes wp-check{to{stroke-dashoffset:0}}
 @keyframes wp-ripple{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.45);opacity:0}}
-</style></head>
+</style><style id="n26-ios-fit">
+/* no sideways panning on any phone; carousels (own overflow-x:auto) keep scrolling */
+html{touch-action:pan-y;overscroll-behavior-x:none;-webkit-overflow-scrolling:touch}
+body{position:relative;width:100%;max-width:100%}
+#root,.landing-root{width:100%;max-width:100%}
+img,video,canvas,svg{max-width:100%}
+@supports not (overflow: clip){ html{overflow-x:hidden!important;width:100%} }
+</style>
+</head>
 <body>
   <div id="root"></div>
 
@@ -5138,7 +5148,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
           className={'bank-toast bank-toast--' + kind + ' fixed top-4 left-1/2 z-[100] w-[min(92vw,420px)] -translate-x-1/2 px-4 pb-3.5 pt-3.5 pr-11'}
         >
           <div className="bank-toast-brand">
-            <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="bank-toast-logo" width="28" height="28" />
+            <img src="./n26-logo.png" alt="N26" className="bank-toast-logo" width="28" height="28" />
             <span className="bank-toast-brand-label">N26 Banking</span>
             <span className={'bank-toast-kind bank-toast-kind--' + kind}>{kindLabel}</span>
           </div>
@@ -5501,7 +5511,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
         <div className="landing-root min-h-screen bg-[#F7F6F3] text-slate-900">
           <header className={'landing-header sticky top-0 z-[100] border-b border-black/5 bg-white/95 backdrop-blur-xl ' + (scrolled ? 'shadow-md' : 'shadow-none')}>
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 lg:px-8">
-              <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
+              <img src="./n26-logo.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
               <nav className="landing-nav-desktop hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-8 lg:gap-10" aria-label="Main">
                 {[['plans', x.nav_accounts], ['banking', x.nav_banking], ['save', x.nav_save]].map(function(it) {
                   return (
@@ -5750,7 +5760,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 
           <footer className="bg-[#00201c] px-4 py-12 text-sm text-white/70">
             <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-6 text-center">
-              <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="h-14 sm:h-16 md:h-[4.25rem] w-auto object-contain brightness-0 invert" />
+              <img src="./n26-logo.png" alt="N26" className="h-14 sm:h-16 md:h-[4.25rem] w-auto object-contain brightness-0 invert" />
               <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
                 {[
                   { id: 'impressum', label: x.foot[0] },
@@ -5790,7 +5800,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
             <div className="legal-page">
               <div className="legal-page__top">
                 <div className="legal-page__top-inner">
-                  <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
+                  <img src="./n26-logo.png" alt="N26" className="landing-logo h-14 w-auto object-contain sm:h-16 md:h-[4.25rem]" />
                 </div>
               </div>
               <main className="legal-page__main">
@@ -6841,7 +6851,7 @@ const analyzeDocumentImage = function(file, docType) {
                 <LucideIcon name="ChevronRight" className="h-5 w-5 text-slate-600 rotate-180" />
               </button>
               <div className="flex items-center gap-2">
-                <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
+                <img src="./n26-logo.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
               </div>
               <LangSwitch lang={lang} setLang={setLang} />
             </div>
@@ -7946,7 +7956,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   <div className="bank-card__brand-wrap" aria-hidden="true">
                     <img
                       className="bank-card__n26-logo"
-                      src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png"
+                      src="./n26-logo.png"
                       style={(theme === 'metal-silver') ? undefined : { filter: 'brightness(0) invert(1)' }}
                       alt=""
                       draggable={false}
@@ -12450,7 +12460,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           <div className="mx-auto flex min-h-screen w-full max-w-md flex-col overflow-x-hidden lg:max-w-5xl xl:max-w-7xl lg:flex-row">
             <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-white p-5 lg:flex">
               <div className="flex items-center gap-2.5">
-                <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
+                <img src="./n26-logo.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
               </div>
               <nav className="mt-8 flex flex-1 flex-col gap-1" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
                 {[
@@ -12560,7 +12570,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                               return (
                               <div key={n.id} onClick={() => markNotifRead(n.id)} className={'bank-notif-row cursor-pointer border-b border-border/50 px-4 py-3.5 last:border-0 ' + (n.read ? '' : 'bg-teal-50/50')}>
                                 <div className="flex gap-3">
-                                  <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="bank-notif-logo-mini mt-0.5" width="24" height="24" />
+                                  <img src="./n26-logo.png" alt="N26" className="bank-notif-logo-mini mt-0.5" width="24" height="24" />
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-start justify-between gap-2">
                                       <p className="text-sm font-semibold text-slate-900 leading-snug">{rn.title}</p>
@@ -13824,7 +13834,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                     + '.tot td{border-top:1.5px solid #0f172a;border-bottom:0;font-weight:700;background:#fff!important}.ft{margin-top:20px;padding-top:10px;border-top:1px solid #e2e8f0;color:#64748b;font-size:9.5px}.hash{margin-top:6px;word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:8.5px;color:#94a3b8}'
                     + '.bar{position:sticky;top:0;display:flex;gap:8px;justify-content:center;padding:10px;background:#0f172a}.bar button{font:600 13px Helvetica,Arial,sans-serif;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}@media print{.bar{display:none}}'
                     + '</style></head><body><div class="bar"><button onclick="window.print()">' + (de ? 'Als PDF speichern / Drucken' : 'Save as PDF / Print') + '</button></div><div style="padding:18px 22px">'
-                    + '<div class="hd"><img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(nr) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
+                    + '<div class="hd"><img src="./n26-logo.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(nr) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
                     + '<div class="meta"><div class="box"><div class="k">' + L.holder + '</div><div class="v">' + esc(name) + '</div><div class="k" style="margin-top:10px">IBAN</div><div class="v mono">' + esc(ibanSp) + '</div></div>'
                     + '<div class="box"><div class="k">' + L.period + '</div><div class="v">' + esc(periodLabel) + '</div><div class="k" style="margin-top:10px">' + L.cnt + '</div><div class="v">' + txs.length + '</div></div></div>'
                     + '<div class="sum"><div><div class="k">' + L.open + '</div><div class="n">' + esc(fmt(startBalCalc)) + '</div></div><div><div class="k">' + L.cr + '</div><div class="n" style="color:#047857">+' + esc(fmt(creditSum)) + '</div></div><div><div class="k">' + L.dr + '</div><div class="n">−' + esc(fmt(Math.abs(debitSum))) + '</div></div><div><div class="k">' + L.close + '</div><div class="n">' + esc(fmt(endBal)) + '</div></div></div>'
@@ -13883,7 +13893,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
               <div className="relative z-10 w-full max-w-md rounded-t-3xl sm:rounded-3xl bg-white p-6 shadow-2xl mx-0 sm:mx-4 page-enter">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="h-9 w-9 object-contain" width="36" height="36" />
+                    <img src="./n26-logo.png" alt="N26" className="h-9 w-9 object-contain" width="36" height="36" />
                     <div>
                       <p className="text-sm font-bold">{t('receipt')}</p>
                       <p className="text-[10px] text-muted-foreground">N26 Banking</p>
@@ -14253,7 +14263,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           <header className="relative z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl px-4 py-4">
             <div className="mx-auto max-w-lg flex items-center justify-between">
               <button type="button" onClick={onBack} className="text-sm font-medium text-slate-500 hover:text-slate-800">← {t('back')}</button>
-              <img src="https://logodownload.org/wp-content/uploads/2019/10/n26-logo-0.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
+              <img src="./n26-logo.png" alt="N26" className="app-logo h-12 sm:h-14 w-auto object-contain" />
               <LangSwitch lang={lang} setLang={setLang} />
             </div>
           </header>
