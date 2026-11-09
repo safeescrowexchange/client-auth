@@ -3161,7 +3161,32 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
 /* ===== support chat: footer opaque, last field never hidden behind it ===== */
 .n26s-foot{background:#F7F6F3!important;border-top:1px solid rgba(15,23,42,.06)}
 #n26s-body{scroll-padding-bottom:140px}
-</style>
+
+    /* ===== iPhone 7 (375×667) pass: tiles, logos, support chat ===== */
+    @media (max-width: 480px) {
+      img[src*="n26-logo"]:not(.bank-toast-logo):not(.bank-notif-logo-mini):not(.bank-card__n26-logo) { height: 1.55rem !important; width: auto !important; max-height: 1.55rem !important; }
+      .landing-header > div { padding-top: .55rem !important; padding-bottom: .55rem !important; }
+      /* glass stat tiles: never break words mid-letter, never overflow */
+      .landing-root [class*="backdrop-blur-md"][class*="ring-white/25"] { padding: .8rem .4rem !important; min-width: 0; overflow: hidden; }
+      .landing-root [class*="backdrop-blur-md"][class*="ring-white/25"] p { hyphens: manual !important; -webkit-hyphens: manual !important; overflow-wrap: normal !important; word-break: normal !important; }
+      .landing-root [class*="backdrop-blur-md"][class*="ring-white/25"] > p:first-child { white-space: nowrap; font-size: clamp(.8rem, 4.3vw, 1.05rem) !important; }
+      .landing-root [class*="backdrop-blur-md"][class*="ring-white/25"] > p + p { font-size: 10.5px !important; line-height: 1.25 !important; }
+      .landing-root .grid-cols-2 > * [class*="backdrop-blur-md"][class*="ring-white/25"], .landing-root .grid-cols-2 > [class*="backdrop-blur-md"][class*="ring-white/25"] { padding: 1rem .8rem !important; }
+      .landing-root .grid-cols-2 [class*="backdrop-blur-md"][class*="ring-white/25"] > p:first-child { font-size: clamp(1.2rem, 6.4vw, 1.9rem) !important; }
+      .landing-root .grid-cols-2 [class*="backdrop-blur-md"][class*="ring-white/25"] > p + p { font-size: .78rem !important; line-height: 1.3 !important; }
+    }
+    /* support chat: opaque, always exactly the visible area, nothing of the page shows through */
+    @media (max-width: 560px) {
+      #n26s-overlay { background: #F7F6F3 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; padding: 0 !important; }
+      #n26s-panel { animation: none !important; height: 100% !important; border-radius: 0 !important; box-shadow: none !important; }
+      #n26s-head { padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important; padding-bottom: 8px !important; }
+      #n26s-title { font-size: 16px !important; }
+      #n26s-compose textarea, #n26s-body input, #n26s-body textarea, #n26s-body select { font-size: 16px !important; }
+    }
+    #n26s-overlay.n26s-compact #n26s-titles > :nth-child(2) { display: none !important; }
+    #n26s-overlay.n26s-compact .n26s-foot { padding: 6px 12px 8px !important; }
+    #n26s-overlay.n26s-compact #n26s-status { display: none !important; }
+  </style>
 <script>
 (function(){
   var locked=false,y=0,raf=0;
@@ -3949,8 +3974,8 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
         ocr_review_pending: 'Daten zur Prüfung eingereicht — Freigabe durch Bank ausstehend',
         set_pin_btn: 'PIN festlegen',
         hero_badge: 'BaFin · Einlagensicherung 100.000 €',
-        trust_deposit: 'Einlagensicherung',
-        trust_license: 'Vollbanklizenz',
+        trust_deposit: 'Einlagen\u00ADsicherung',
+        trust_license: 'Voll\u00ADbank\u00ADlizenz',
         trust_realtime: 'Echtzeit',
         trust_live: 'Live',
         stmt_verify_title: 'Verifizierung erforderlich',
@@ -5456,7 +5481,7 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
         ],
         k_t: 'Sicherheit auf Bankniveau. Weil wir eine Bank sind.',
         k_p: 'Vollbanklizenz, Einlagensicherung und Echtzeit-Kontrolle in der App: Karte sperren, Limits setzen und jede Zahlung sofort sehen — ohne Filialtermin.',
-        k: [[100000, ' €', 'Einlagensicherung'], [10, ' s', 'Überweisung im Schnitt'], [24, '/7', 'Karte sofort sperren'], [0, ' €', 'Kontoführung im Basic']],
+        k: [[100000, ' €', 'Einlagen\u00ADsicherung'], [10, ' s', 'Überweisung im Schnitt'], [24, '/7', 'Karte sofort sperren'], [0, ' €', 'Konto\u00ADführung im Basic']],
         w_t: 'In drei Schritten dein Konto',
         w: [['Tarif wählen', 'Basic, Plus oder Premium — du kannst jederzeit wechseln.', 'pay'], ['Identität bestätigen', 'Per Video-Ident, in etwa fünf Minuten.', 'sign'], ['Loslegen', 'Karte zu Apple Pay hinzufügen und sofort bezahlen.', 'hands']],
         f_t: 'Häufige Fragen',
@@ -5469,7 +5494,7 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
         hero_sub: 'Banking, Sparen und Kontrolle in einer App — mit deutscher Banklizenz, Einlagensicherung und Identitätsprüfung. Wähle deinen Tarif und eröffne dein Konto digital.',
         choose_plan: 'Tarif wählen', login: 'Login',
         geo_notice: 'Die Apps im Google Play Store und im App Store sind nur für Bürgerinnen und Bürger Deutschlands verfügbar.',
-        trust_deposit: 'Einlagensicherung', trust_license: 'Vollbanklizenz', trust_realtime: 'Echtzeit', trust_live: 'Live',
+        trust_deposit: 'Einlagen\u00ADsicherung', trust_license: 'Voll\u00ADbank\u00ADlizenz', trust_realtime: 'Echtzeit', trust_live: 'Live',
       },
       en: {
         a_t: 'Pay as fast as you think',
@@ -14880,6 +14905,25 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 })();
 </script>
 
+<script>
+/* support chat on iOS: keep overlay glued to the visual viewport (keyboard open/close), compact mode while typing */
+(function () {
+  function tick() {
+    try {
+      var o = document.getElementById('n26s-overlay');
+      if (!o || o.style.display !== 'flex') return;
+      var vv = window.visualViewport, h = vv ? vv.height : window.innerHeight, t = vv ? vv.offsetTop : 0;
+      if (window.innerWidth <= 560) { o.style.top = t + 'px'; o.style.height = h + 'px'; o.style.bottom = 'auto'; }
+      o.classList.toggle('n26s-compact', h < 500);
+    } catch (e) {}
+  }
+  setInterval(tick, 200);
+  ['focusin', 'focusout', 'orientationchange', 'resize'].forEach(function (ev) {
+    window.addEventListener(ev, function () { tick(); setTimeout(tick, 120); setTimeout(tick, 450); });
+  });
+  if (window.visualViewport) { visualViewport.addEventListener('resize', tick); visualViewport.addEventListener('scroll', tick); }
+})();
+</script>
 <script>
 /* PWA: register service worker (does not affect app logic) */
 if ('serviceWorker' in navigator) {
