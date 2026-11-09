@@ -6582,12 +6582,12 @@ const analyzeDocumentImage = function(file, docType) {
               var variance = sum2 / n - mean * mean;
               var edgeRatio = edge / Math.max(1, n - 1);
               // Almost empty white/black scan
-              if (variance < 40) {
+              if (variance < 10) {
                 resolve({ ok: false, reason: 'content' });
                 return;
               }
               // Completely flat with no structure at all
-              if (edgeRatio < 0.008 && variance < 120) {
+              if (edgeRatio < 0.002 && variance < 40) {
                 resolve({ ok: false, reason: 'content' });
                 return;
               }
@@ -6611,8 +6611,8 @@ const analyzeDocumentImage = function(file, docType) {
                 }
               }
               var lapVar = l2 / lc - (l1 / lc) * (l1 / lc);
-              if (m2 < 30) { resolve({ ok: false, reason: 'dark' }); return; }
-              if (lapVar < 14) { resolve({ ok: false, reason: 'blur' }); return; }
+              if (m2 < 15) { resolve({ ok: false, reason: 'dark' }); return; }
+              if (lapVar < 5) { resolve({ ok: false, reason: 'blur' }); return; }
               resolve({ ok: true, reason: 'ok' });
             } catch (e) {
               try { URL.revokeObjectURL(url); } catch (e2) {}
@@ -6671,7 +6671,7 @@ const analyzeDocumentImage = function(file, docType) {
               if (txt === null) return r; // OCR unavailable (offline) -> fall back to basic check
               var c = n26ClassifyDocText(txt, isBack);
               console.log('[N26 KYC] content check', isBack ? 'back' : 'front', c);
-              return c.ok ? r : { ok: false, reason: c.reason };
+              return r; // OCR is advisory only: final identity check stays with admin
             });
           });
         };
@@ -6735,7 +6735,7 @@ const analyzeDocumentImage = function(file, docType) {
         runPhases(SELFIE_PHASES, function() {
           setSelfieVerified(true);
           setSelfieSkipped(false);
-          setKycLevel('full');
+          setKycLevel('pending');
           setStep(5);
         });
       };
@@ -10785,7 +10785,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 
     function BankingApp({ user, onLogout, t, lang, setLang }) {
       const userKey = (user && user.email ? user.email : 'guest').toLowerCase().trim();
-      const [kycLevel, setKycLevel] = useState(() => (user && user.kycLevel) || 'full');
+      const [kycLevel, setKycLevel] = useState(() => (user && user.kycLevel) || (user && user.docType ? 'document' : 'full'));
       const kycFull = kycLevel === 'full';
       const [kycModalOpen, setKycModalOpen] = useState(false);
       const [kycLockedOpen, setKycLockedOpen] = useState(false);
@@ -14330,7 +14330,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
             lastName: found.lastName,
             email: found.email,
             fullName: `${found.firstName} ${found.lastName}`,
-            kycLevel: found.kycLevel || 'full',
+            kycLevel: found.kycLevel || (found.docType ? 'document' : 'full'),
             docType: found.docType || '',
             plan: found.plan || 'standard',
             cardOrdered: !!found.cardOrdered,
