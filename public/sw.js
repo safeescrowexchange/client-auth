@@ -3,7 +3,7 @@
      so it cannot cause or hide CORS errors;
    - pages: network-first, cached copy only when offline;
    - static files (png/css/js/json): stale-while-revalidate. */
-const VERSION = 'n26-pwa-v4';
+const VERSION = 'n26-pwa-v2';
 const SHELL = ['./', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
