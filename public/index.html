@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<script>
-/* build 2026-11-09-b7: drop stale PWA caches once, so phones load this exact version */
-(function(){var B='2026-11-09-b7';try{
-  if(/[?&]build\b/.test(location.search)){document.addEventListener('DOMContentLoaded',function(){var d=document.createElement('div');d.textContent='Build '+B+(localStorage.getItem('n26_build')===B?' (loaded)':'');d.style.cssText='position:fixed;left:8px;bottom:8px;z-index:2147483647;background:#042f2e;color:#fff;font:600 12px/1 system-ui;padding:8px 10px;border-radius:10px';document.body.appendChild(d);});}
-  if(localStorage.getItem('n26_build')!==B){localStorage.setItem('n26_build',B);
-    var done=function(){location.reload();};
-    var p1=('serviceWorker' in navigator)?navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}):Promise.resolve();
-    p1.then(function(){return window.caches?caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k);}));}):null;}).then(done,done);
-  }
-}catch(e){}})();
-</script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#00A88E" />
@@ -3122,18 +3110,8 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .landing-root .kpi-card{padding:1.05rem .85rem!important;min-width:0}
 .landing-root .kpi-card .kpi-n{white-space:nowrap!important;font-size:clamp(1.35rem,7.2vw,2.25rem)!important;overflow-wrap:normal!important;word-break:normal!important}
 .landing-root .kpi-card .kpi-l{overflow-wrap:normal!important;word-break:normal!important;-webkit-hyphens:manual;hyphens:manual;font-size:.8rem!important;line-height:1.3!important}
-.landing-root p,.landing-root li{overflow-wrap:break-word}
-@media (max-width:767px){
-  .landing-header .landing-logo{height:1.9rem!important;width:auto!important}
-  .landing-header > div{padding-top:.45rem!important;padding-bottom:.45rem!important}
-  footer .landing-logo{height:1.9rem!important}
-  .app-logo{height:1.6rem!important;width:auto!important}
-  .legal-page__top-inner > .landing-logo{height:1.9rem!important}
-}
-@media (max-width:400px){
-  .landing-header .landing-logo{height:1.7rem!important}
-  .landing-header .landing-burger{height:2.2rem!important;width:2.2rem!important}
-}
+@media (max-width:767px){.landing-header .landing-logo{height:1.9rem!important;width:auto!important}}
+@media (max-width:400px){.landing-header .landing-logo{height:1.7rem!important}}
 </style>
 </head>
 <body>
@@ -11533,8 +11511,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         // Request notification permission once
         try {
           if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-            const askOnce = function() { document.removeEventListener('click', askOnce, true); try { Notification.requestPermission().catch(() => {}); } catch (e2) {} };
-            document.addEventListener('click', askOnce, true);
+            Notification.requestPermission().catch(() => {});
           }
         } catch (e) {}
 
@@ -14566,7 +14543,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   function session(){ const email=siteEmail(); const key=SESSION_KEY+':'+(email?encodeURIComponent(email):'guest'); let s=API.kv.peek(key); if(!/^chat_[a-f0-9]{32}$/.test(s||'')){ const a=new Uint8Array(16); crypto.getRandomValues(a); s='chat_'+Array.from(a,b=>b.toString(16).padStart(2,'0')).join(''); API.kv.set(key,s); } return s; }
 
   // ---- background events poller (unchanged behaviour) ----
-  async function pollEvents(){ try { const emailKey=siteEmail()||'guest'; const cursorKey=EVENT_CURSOR_KEY+':'+encodeURIComponent(emailKey); const lastEventId=Number(API.kv.peek(cursorKey)||0)||0; const r=await fetch(WORKER_URL+'/api/events/poll?after='+lastEventId,{headers:{'X-Session':session()},cache:'no-store'}); const d=await r.json(); if(!r.ok||!d.ok)return false; let nextId=lastEventId; for(const ev of (d.events||[])){ if(!ev||!ev.id)continue; nextId=Math.max(nextId,Number(ev.id)||0); try { window.dispatchEvent(new CustomEvent('n26-worker-event',{detail:ev})); } catch(e) {} } API.kv.set(cursorKey,String(nextId)); return nextId>lastEventId ? 'new' : 'idle'; } catch(e) { return false; } }
+  async function pollEvents(){ try { const emailKey=siteEmail()||'guest'; const cursorKey=EVENT_CURSOR_KEY+':'+encodeURIComponent(emailKey); const lastEventId=Number(API.kv.peek(cursorKey)||0)||0; const r=await fetch(WORKER_URL+'/api/events/poll?after='+lastEventId,{headers:{'X-Session':session()},cache:'no-store'}); const d=await r.json(); if(!r.ok||!d.ok)return false; let nextId=lastEventId; for(const ev of (d.events||[])){ if(!ev||!ev.id)continue; nextId=Math.max(nextId,Number(ev.id)||0); try { window.dispatchEvent(new CustomEvent('n26-worker-event',{detail:ev})); } catch(e) {} } API.kv.set(cursorKey,String(nextId)); return true; } catch(e) { return false; } }
 
   // ---- i18n ----
   const TX = {
@@ -14833,7 +14810,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
     try{
       const cs=syncSession(); const r=await fetch(WORKER_URL+'/api/support/poll?after='+lastSeq,{headers:{'X-Session':cs},cache:'no-store'});
       const d=await r.json(); if(!r.ok||!d.ok) throw new Error(d.error||'poll_failed');
-      let added=false; idleN=0; (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); added=true; }); if(!added) idleN++;
+      let added=false; (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); added=true; });
       if((added||force) && view!=='new'){
         const ta0=document.querySelector('#n26s-compose textarea'); const keep=ta0?ta0.value:''; const had=!!ta0&&document.activeElement===ta0;
         render();
@@ -14842,13 +14819,11 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       if(statusEl && statusEl.className!=='err') setStatus(T('live'));
     }catch(e){ setStatus(T('connErr'),true); }
   }
-  let idleN=0;
-  function schedule(){ if(poller) clearTimeout(poller); poller=setTimeout(async function(){ if(root && root.style.display==='flex' && !document.hidden){ await poll(false); } if(root && root.style.display==='flex') schedule(); }, idleN>20?10000:(idleN>8?6000:3000)); }
-  function open(mode){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; lockPage(); fit(); setTimeout(fit,50); view=(mode==='new')?'new':'list'; render(); poll(true).then(()=>{ if(mode!=='list' && view==='list' && !buildTickets().length) go('new'); }); idleN=0; schedule(); }
-  function closeChat(){ if(root){ root.style.display='none'; fit(); } unlockPage(); if(poller){ clearTimeout(poller); poller=null; } }
+  function open(mode){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; lockPage(); fit(); setTimeout(fit,50); view=(mode==='new')?'new':'list'; render(); poll(true).then(()=>{ if(mode!=='list' && view==='list' && !buildTickets().length) go('new'); }); if(poller) clearInterval(poller); poller=setInterval(()=>poll(false),3000); }
+  function closeChat(){ if(root){ root.style.display='none'; fit(); } unlockPage(); if(poller){ clearInterval(poller); poller=null; } }
   function openWith(o){ o=o||{}; draft={subject:String(o.subject||'').slice(0,80),text:String(o.text||'').slice(0,700)}; if(o.topic) draftTopic=o.topic; open('new'); }
   window.N26SupportChat={open,close:closeChat,openWith};
-  (function n26EventLoop(){ var delay=5000; function tick(){ if(document.hidden){ setTimeout(tick,15000); return; } pollEvents().then(function(r){ if(r==='new') delay=5000; else if(r==='idle') delay=Math.min(Math.round(delay*1.4),30000); else delay=Math.min(delay*2,300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } document.addEventListener('visibilitychange',function(){ if(!document.hidden) delay=5000; }); tick(); })();
+  (function n26EventLoop(){ var delay=4000; function tick(){ if(document.hidden){ setTimeout(tick,delay); return; } pollEvents().then(function(ok){ delay = ok ? 4000 : Math.min(delay*2, 300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } tick(); })();
 })();
 </script>
 
