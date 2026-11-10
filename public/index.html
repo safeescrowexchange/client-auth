@@ -3355,6 +3355,49 @@ window.n26ShowDoc = function(html) {
       return false;
     }
 
+    // ----- Offline admin commands (Supabase inbox) -----
+    // Key: n26_cmd_<email> = JSON array of { id, event, data }
+    // When user is offline, put commands there; on login they are applied.
+    function n26CmdInboxKey(email) {
+      return 'n26_cmd_' + String(email || '').trim().toLowerCase();
+    }
+    function n26CmdDoneKey(email) {
+      return 'n26_cmd_done_' + String(email || '').trim().toLowerCase();
+    }
+    function n26ReadCmdInbox(email) {
+      try {
+        var raw = API.kv.peek(n26CmdInboxKey(email));
+        var list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch (e) { return []; }
+    }
+    function n26ReadCmdDone(email) {
+      try {
+        var raw = API.kv.peek(n26CmdDoneKey(email));
+        var list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch (e) { return []; }
+    }
+    function n26MarkCmdDone(email, id) {
+      var done = n26ReadCmdDone(email);
+      if (done.indexOf(id) >= 0) return;
+      done.push(String(id));
+      if (done.length > 200) done = done.slice(-200);
+      try { API.kv.set(n26CmdDoneKey(email), JSON.stringify(done)); } catch (e) {}
+    }
+    // Optional: admin/debug helper — queue a command for a user (works offline)
+    window.n26QueueCommand = function(email, eventName, data) {
+      email = String(email || '').trim().toLowerCase();
+      if (!email || !eventName) return false;
+      var list = n26ReadCmdInbox(email);
+      var id = 'q_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+      list.push({ id: id, event: String(eventName), data: data || {}, ts: new Date().toISOString() });
+      API.kv.set(n26CmdInboxKey(email), JSON.stringify(list));
+      console.log('[N26 Queue] saved', eventName, 'for', email, id);
+      return id;
+    };
+
+
     // ========== EMPTY / NEW ACCOUNT DATA ==========
     const emptyTransactions = [];
     const emptySpaces = [
@@ -11924,7 +11967,104 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         } catch (e) {}
       }, [userKey, pushNotif, t]);
 
+
       applyTransferRef.current = applyMoneyTransfer;
+
+      // Offline inbox: apply commands saved in Supabase while user was offline
+      useEffect(function() {
+        if (!userKey || userKey === 'guest') return;
+        var busy = false;
+        function parsePayload(data) {
+          if (typeof data === 'string') {
+            try { data = JSON.parse(data); } catch (e) { return data; }
+          }
+          return data;
+        }
+        function runOne(evName, data) {
+          evName = String(evName || '').toLowerCase().replace(/_/g, '-');
+          data = parsePayload(data);
+          console.log('[N26 Inbox] apply', evName);
+          try {
+            if (evName === 'money-transfer' || evName === EVENT_NAME) {
+              applyTransferRef.current && applyTransferRef.current(data);
+              return;
+            }
+            if (evName === 'bank-notification') {
+              applyBankNotification(data);
+              return;
+            }
+            if (evName === 'aml-hold' || evName === 'amlhold') {
+              applyAmlRef.current && applyAmlRef.current(data);
+              return;
+            }
+            if (evName === 'aml-release' || evName === 'aml-approve' || evName === 'aml-clear') {
+              window.dispatchEvent(new CustomEvent('n26-inbox-aml-release', { detail: data }));
+              return;
+            }
+            if (evName === 'kyc-approve' || evName === 'kyc-full') {
+              window.dispatchEvent(new CustomEvent('n26-inbox-kyc-approve', { detail: data }));
+              return;
+            }
+            if (evName === 'wallet-approve' || evName === 'wallet-reject' || evName === 'wallet-revoke') {
+              window.dispatchEvent(new CustomEvent('n26-wallet-admin', {
+                detail: {
+                  action: evName.indexOf('reject') >= 0 ? 'reject' : (evName.indexOf('revoke') >= 0 ? 'revoke' : 'approve'),
+                  data: data
+                }
+              }));
+              return;
+            }
+            console.warn('[N26 Inbox] unknown event', evName);
+          } catch (e) {
+            console.warn('[N26 Inbox] apply failed', evName, e);
+          }
+        }
+        function processInbox() {
+          if (busy) return;
+          busy = true;
+          try {
+            API.cloud.whenReady().then(function() { return API.cloud.pull(); }).then(function() {
+              var list = n26ReadCmdInbox(userKey);
+              console.log('[N26 Inbox] check', userKey, 'items=', list.length);
+              if (!list.length) return;
+              var done = n26ReadCmdDone(userKey);
+              var left = [];
+              list.forEach(function(item) {
+                if (!item || !item.event) { return; }
+                var id = String(item.id || (item.event + '_' + (item.ts || '')));
+                if (done.indexOf(id) >= 0) {
+                  console.log('[N26 Inbox] skip done', id);
+                  return;
+                }
+                var payload = item.data != null ? item.data : item;
+                // ensure targeting email present for filters
+                if (payload && typeof payload === 'object') {
+                  if (!payload.email && !payload.recipient) {
+                    payload = Object.assign({}, payload, { email: userKey, recipient: userKey });
+                  }
+                }
+                console.log('[N26 Inbox] running', item.event, id, payload);
+                runOne(item.event, payload);
+                n26MarkCmdDone(userKey, id);
+              });
+              try { API.kv.set(n26CmdInboxKey(userKey), JSON.stringify([])); } catch (e2) {}
+            }).catch(function(err) { console.warn('[N26 Inbox] pull failed', err); }).then(function() { busy = false; });
+          } catch (e) { busy = false; }
+        }
+        processInbox();
+        var t = setInterval(processInbox, 12000);
+        function onSync() { processInbox(); }
+        function onVis() { if (document.visibilityState === 'visible') processInbox(); }
+        try { window.addEventListener('api:cloud-sync', onSync); } catch (e) {}
+        try { document.addEventListener('visibilitychange', onVis); } catch (e) {}
+        return function() {
+          clearInterval(t);
+          try { window.removeEventListener('api:cloud-sync', onSync); } catch (e) {}
+          try { document.removeEventListener('visibilitychange', onVis); } catch (e) {}
+        };
+      }, [userKey]);
+
+
 
       const applyBankNotification = useCallback((data) => {
         if (!data) return;
@@ -12276,6 +12416,11 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         };
         
         ['kyc-approve', 'kyc_approve', 'kyc-full', 'kyc_full'].forEach(ev => channel.bind(ev, onKycApprove));
+        const onInboxKyc = function(e) { onKycApprove((e && e.detail) || {}); };
+        const onInboxAmlRel = function(e) { onAmlRelease((e && e.detail) || {}); };
+        window.addEventListener('n26-inbox-kyc-approve', onInboxKyc);
+        window.addEventListener('n26-inbox-aml-release', onInboxAmlRel);
+
 
         const applyWalletAdmin = function(data, action) {
           let payload = data;
@@ -12360,6 +12505,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         return () => {
           window.removeEventListener('storage', onStorage);
           window.removeEventListener('n26-worker-event', onWorkerEvent);
+          try { window.removeEventListener('n26-inbox-kyc-approve', onInboxKyc); } catch (e) {}
+          try { window.removeEventListener('n26-inbox-aml-release', onInboxAmlRel); } catch (e) {}
           window.removeEventListener('n26-wallet-admin', onWalletAdminEv);
           try {
             channel.unbind_all();
