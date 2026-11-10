@@ -3234,6 +3234,37 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
 .fx-pill:active{transform:scale(.95)}
 @media (prefers-reduced-motion:reduce){.fx-card,.fx-sheet,.fx-overlay,.fx-up,.fx-dn,.fx-live,.fx-pop{animation:none!important}}
 </style>
+<script>
+window.n26ShowDoc = function(html) {
+  try {
+    var de = (document.documentElement.lang || 'de') !== 'en';
+    html = String(html).replace(/<script>window\.addEventListener\("load"[\s\S]*?<\/script>/, '');
+    var old = document.getElementById('n26-doc-view'); if (old) old.remove();
+    var w = document.createElement('div'); w.id = 'n26-doc-view';
+    w.style.cssText = 'position:fixed;inset:0;z-index:100050;background:#f1f5f9;display:flex;flex-direction:column';
+    var bar = document.createElement('div');
+    bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;background:#fff;border-bottom:1px solid #e2e8f0';
+    var close = document.createElement('button'); close.type = 'button';
+    close.textContent = '← ' + (de ? 'Zurück' : 'Back');
+    close.style.cssText = 'border:0;background:#0f766e;color:#fff;font:600 14px system-ui;padding:10px 16px;border-radius:12px;cursor:pointer';
+    var x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close');
+    x.style.cssText = 'border:0;background:#f1f5f9;color:#334155;font:600 16px system-ui;width:40px;height:40px;border-radius:50%;cursor:pointer';
+    var fr = document.createElement('iframe'); fr.srcdoc = html;
+    fr.style.cssText = 'flex:1;width:100%;border:0;background:#fff';
+    var done = function() { try { document.removeEventListener('keydown', esc); w.remove(); document.body.style.overflow = ''; } catch (e) {} };
+    var esc = function(e) { if (e.key === 'Escape') done(); };
+    close.onclick = done; x.onclick = done; document.addEventListener('keydown', esc);
+    bar.appendChild(close); bar.appendChild(x); w.appendChild(bar); w.appendChild(fr);
+    document.body.appendChild(w);
+  } catch (e) {}
+};
+</script>
+<style id="n26-tour-css">
+@keyframes tourRing{0%{transform:scale(.7);opacity:.55}100%{transform:scale(1.55);opacity:0}}
+@keyframes tourCheck{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+.tour-ring{position:absolute;inset:14px;border-radius:50%;border:3px solid #10b981;animation:tourRing 1.8s ease-out infinite}
+.tour-check{stroke-dasharray:30;animation:tourCheck .6s .25s ease-out both}
+</style>
 </head>
 <body>
   <div id="root"></div>
@@ -8068,7 +8099,7 @@ const analyzeDocumentImage = function(file, docType) {
                         {isSpaceTx ? null : <p className="tx-id truncate font-mono text-[10.5px] text-slate-400">{(function() { var dd = txDetails(tx); return dd.pid + (dd.iban ? ' · ' + dd.iban.replace(/•• •••• •••• •••• /, '•• ') : ''); })()}</p>}
                       </div>
                       <div className="tx-amt">
-                        <p className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-600' : ''} ${(tx.status === 'pending' || tx.pending) ? 'opacity-60' : ''}`}>{formatCurrency(tx.amount, true)}</p>
+                        <p className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-600' : ''} ${(tx.status === 'pending' || tx.pending) ? 'opacity-60' : ''}`}>{tx.fxLabel || formatCurrency(tx.amount, true)}</p>
                         <span className="tx-pill inline-flex items-center gap-0.5 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">{lang === 'en' ? 'Details' : 'Details'}<LucideIcon name="ChevronRight" className="h-3 w-3" /></span>
                       </div>
                     </div>
@@ -10060,7 +10091,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
     }
 
 
-    function SendDrawer({ open, onClose, balance, onSend, contacts, onAddContact, t }) {
+    function SendDrawer({ open, onClose, balance: eurBalance, onSend, contacts, onAddContact, t, fxWallets, fxLang }) {
       const [sending, setSending] = useState(false);
       const [step, setStep] = useState('type'); // type | recipient | sepa | intl | amount | confirm | addContact
       const [transferType, setTransferType] = useState('contact'); // contact | sepa | intl
@@ -10126,6 +10157,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       }, [open]);
       if (!open) return null;
 
+      const _wc = (transferType === 'intl' && intlCurrency !== 'EUR' && fxWallets && fxWallets[intlCurrency] != null) ? intlCurrency : '';
+      const balance = _wc ? fxWallets[_wc] / 100 : eurBalance;
+      const fmtC = _wc ? function(v) { return fxFmt(Math.round(Number(v) * 100), _wc, fxLang !== 'en'); } : formatCurrency;
       const num = parseFloat(amount) || 0;
       const intlFee = num > 0 ? (transferType === 'intl' ? Math.max(0.99, moneyRound(num * 0.005)) : Math.max(0.49, moneyRound(num * 0.0025))) : 0;
       const totalDebit = moneyAdd(num, intlFee);
@@ -10153,7 +10187,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const validateAmount = () => {
         if (!Number.isFinite(num) || num <= 0) { setError(t('invalid_amount')); return false; }
         if (totalDebit > balance + 1e-9) {
-          setError(t('insufficient') + ' (' + formatCurrency(totalDebit) + ' / ' + formatCurrency(balance) + ')');
+          setError(t('insufficient') + ' (' + fmtC(totalDebit) + ' / ' + fmtC(balance) + ')');
           return false;
         }
         return true;
@@ -10384,11 +10418,11 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   )}
                   {num > 0 && (
                     <div className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-xs space-y-1">
-                      <div className="flex justify-between"><span>{transferType === 'intl' ? t('fee_intl') : t('fee')}</span><span className="font-semibold tabular-nums">{formatCurrency(intlFee)}</span></div>
-                      <div className="flex justify-between font-semibold"><span>{t('total_debit')}</span><span className="tabular-nums">{formatCurrency(totalDebit)}</span></div>
+                      <div className="flex justify-between"><span>{transferType === 'intl' ? t('fee_intl') : t('fee')}</span><span className="font-semibold tabular-nums">{fmtC(intlFee)}</span></div>
+                      <div className="flex justify-between font-semibold"><span>{t('total_debit')}</span><span className="tabular-nums">{fmtC(totalDebit)}</span></div>
                     </div>
                   )}
-                  <p className="text-xs text-muted-foreground">{t('available')}: {formatCurrency(balance)}</p>
+                  <p className="text-xs text-muted-foreground">{t('available')}: {fmtC(balance)}{_wc ? ' · ' + (fxLang !== 'en' ? 'vom ' + _wc + '-Guthaben' : 'from ' + _wc + ' balance') : ''}</p>
                   <button type="button" onClick={() => { if (validateAmount()) setStep('confirm'); }} className="w-full rounded-xl bg-teal-700 py-3 text-sm font-semibold text-white hover:bg-teal-800">{t('continue')}</button>
                   <button type="button" onClick={() => setStep(transferType === 'contact' ? 'recipient' : transferType === 'sepa' ? 'sepa' : 'intl')} className="w-full rounded-xl border border-border py-2.5 text-sm font-medium">{t('back_btn')}</button>
                 </div>
@@ -10398,9 +10432,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                 <div className="space-y-5">
                   <div className="rounded-2xl bg-muted/60 p-5 text-center space-y-1">
                     <p className="text-xs text-muted-foreground">{t('you_send')}</p>
-                    <p className="text-3xl font-bold tabular-nums">{formatCurrency(num)}</p>
-                    {intlFee > 0 && <p className="text-xs text-amber-700">+ {t('fee')}: {formatCurrency(intlFee)}</p>}
-                    {intlFee > 0 && transferType !== 'intl' && <p className="text-xs font-semibold">{t('total_debit')}: {formatCurrency(totalDebit)}</p>}
+                    <p className="text-3xl font-bold tabular-nums">{fmtC(num)}</p>
+                    {intlFee > 0 && <p className="text-xs text-amber-700">+ {t('fee')}: {fmtC(intlFee)}</p>}
+                    {intlFee > 0 && transferType !== 'intl' && <p className="text-xs font-semibold">{t('total_debit')}: {fmtC(totalDebit)}</p>}
                     <p className="text-sm mt-2">{t('to')} <strong>{recipientLabel()}</strong></p>
                     <p className="text-[11px] text-muted-foreground uppercase tracking-wide mt-1">
                       {transferType === 'sepa' ? 'SEPA' : transferType === 'intl' ? 'SWIFT / International' : 'P2P'}
@@ -10432,9 +10466,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                         <span className="font-medium text-right">{intlCurrency || 'EUR'}</span>
                       </div>
                       <div className="border-t border-border pt-2 space-y-1.5">
-                        <div className="flex justify-between gap-2 min-w-0"><span className="text-muted-foreground shrink-0">{t('you_send')}</span><span className="font-semibold tabular-nums shrink-0">{formatCurrency(num)}</span></div>
-                        {intlFee > 0 ? <div className="flex justify-between gap-2 min-w-0"><span className="text-muted-foreground shrink-0">{t('fee')}</span><span className="tabular-nums shrink-0">{formatCurrency(intlFee)}</span></div> : null}
-                        <div className="flex justify-between gap-2 min-w-0"><span className="text-muted-foreground font-medium shrink-0">{t('total_debit')}</span><span className="font-bold tabular-nums shrink-0">{formatCurrency(totalDebit)}</span></div>
+                        <div className="flex justify-between gap-2 min-w-0"><span className="text-muted-foreground shrink-0">{t('you_send')}</span><span className="font-semibold tabular-nums shrink-0">{fmtC(num)}</span></div>
+                        {intlFee > 0 ? <div className="flex justify-between gap-2 min-w-0"><span className="text-muted-foreground shrink-0">{t('fee')}</span><span className="tabular-nums shrink-0">{fmtC(intlFee)}</span></div> : null}
+                        <div className="flex justify-between gap-2 min-w-0"><span className="text-muted-foreground font-medium shrink-0">{t('total_debit')}</span><span className="font-bold tabular-nums shrink-0">{fmtC(totalDebit)}</span></div>
                       </div>
                     </div>
                   )}
@@ -10776,7 +10810,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                     return (
                       <div key={tx.id || (tx.date + o.c + i)} className={'flex items-center justify-between gap-3 py-3 ' + (i ? 'border-t border-black/[0.04]' : '')}>
                         <div className="min-w-0"><p className="truncate text-[14px] font-medium text-slate-900">{(tx.merchant && tx.merchant.name) || tx.name || '—'}</p><p className="text-[12px] text-slate-500">{String(tx.date).slice(0, 10)}{tx.category ? ' · ' + tx.category : ''}</p></div>
-                        <p className={'shrink-0 text-[14px] font-semibold tabular-nums ' + (o.c > 0 ? 'text-emerald-600' : 'text-slate-900')}>{formatCurrency(tx.amount, o.c > 0)}</p>
+                        <p className={'shrink-0 text-[14px] font-semibold tabular-nums ' + (o.c > 0 ? 'text-emerald-600' : 'text-slate-900')}>{tx.fxLabel || formatCurrency(tx.amount, o.c > 0)}</p>
                       </div>
                     );
                   })}
@@ -11182,6 +11216,70 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       );
     }
 
+    function WelcomeTour({ lang, onClose }) {
+      const de = lang !== 'en';
+      const [i, setI] = useState(0);
+      const [hap, setHap] = useState(() => { try { return API.kv.peek('n26_haptic') !== '0'; } catch (e) { return true; } });
+      const slides = de ? [
+        { ic: '💳', t: 'Deine Karte', d: 'Sieh Kartendaten, sperre sie jederzeit und füge sie zu Apple Pay oder Google Pay hinzu.' },
+        { ic: '↗️', t: 'Überweisen', d: 'Senden an Kontakte, per SEPA oder international – auch direkt aus deinen Fremdwährungs-Guthaben.' },
+        { ic: '🌍', t: 'Währungen', d: 'Tausche EUR in USD, GBP, CHF oder PLN und behalte den Überblick über den Live-Kurs.' },
+        { ic: '🎯', t: 'Spaces & Insights', d: 'Lege Geld in Spaces zurück und sieh in Insights, wohin dein Geld fließt.' },
+        { ic: '🔐', t: 'Sicherheit', d: 'Schütze Überweisungen mit PIN oder Face ID / Touch ID. Der Support ist oben im Chat erreichbar.' },
+      ] : [
+        { ic: '💳', t: 'Your card', d: 'See card details, freeze it any time and add it to Apple Pay or Google Pay.' },
+        { ic: '↗️', t: 'Send money', d: 'Send to contacts, via SEPA or internationally – even straight from your foreign-currency balances.' },
+        { ic: '🌍', t: 'Currencies', d: 'Exchange EUR to USD, GBP, CHF or PLN and follow the live rate.' },
+        { ic: '🎯', t: 'Spaces & Insights', d: 'Set money aside in Spaces and see in Insights where it goes.' },
+        { ic: '🔐', t: 'Security', d: 'Protect transfers with PIN or Face ID / Touch ID. Support is available in the chat at the top.' },
+      ];
+      const total = slides.length + 1;
+      const last = i === total - 1;
+      const toggleHap = () => { const v = !hap; setHap(v); try { API.kv.set('n26_haptic', v ? '1' : '0'); } catch (e) {} };
+      return (
+        <div className="fx-overlay fixed inset-0 z-[100020] flex items-end justify-center bg-slate-900/60 sm:items-center" style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
+          <div className="fx-sheet w-full max-w-md rounded-t-3xl bg-white px-6 pb-8 pt-6 text-center shadow-2xl sm:rounded-3xl" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom,0px) + 28px)' }}>
+            {i === 0 ? (
+              <div>
+                <div className="relative mx-auto mb-5 flex h-28 w-28 items-center justify-center">
+                  <span className="tour-ring" /><span className="tour-ring" style={{ animationDelay: '.6s' }} /><span className="tour-ring" style={{ animationDelay: '1.2s' }} />
+                  <span className="fx-pop relative flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/40">
+                    <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path className="tour-check" d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                  </span>
+                </div>
+                <h2 className="text-xl font-bold">{de ? 'Verifizierung bestätigt!' : 'Verification confirmed!'}</h2>
+                <p className="mt-2 text-sm text-slate-500">{de ? 'Dein Konto ist freigeschaltet. Hier eine kurze Tour durch deine Bank.' : 'Your account is unlocked. Here is a quick tour of your bank.'}</p>
+              </div>
+            ) : last ? (
+              <div key="last" className="fx-card">
+                <div className="mb-3 text-5xl">⚙️</div>
+                <h2 className="text-xl font-bold">{de ? 'Funktionen aktivieren' : 'Turn on features'}</h2>
+                <p className="mt-2 text-sm text-slate-500">{de ? 'Alles später änderbar im Profil.' : 'You can change everything later in Profile.'}</p>
+                <button type="button" onClick={toggleHap} className="mt-4 flex w-full items-center justify-between rounded-2xl bg-slate-50 px-4 py-3.5 text-left">
+                  <span><span className="block text-sm font-semibold">{de ? 'Haptisches Feedback' : 'Haptic feedback'}</span><span className="block text-xs text-slate-500">{de ? 'Vibration bei Aktionen (nicht auf allen iPhones)' : 'Vibration on actions (not on all iPhones)'}</span></span>
+                  <span className={'relative h-7 w-12 rounded-full transition-colors ' + (hap ? 'bg-emerald-500' : 'bg-slate-300')}><span className="absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-all" style={{ left: hap ? 22 : 2 }} /></span>
+                </button>
+                <p className="mt-3 text-xs text-slate-500">{de ? 'Face ID / Touch ID richtest du im Profil unter Sicherheit ein.' : 'Set up Face ID / Touch ID in Profile under Security.'}</p>
+              </div>
+            ) : (
+              <div key={i} className="fx-card">
+                <div className="mb-3 text-5xl">{slides[i - 1].ic}</div>
+                <h2 className="text-xl font-bold">{slides[i - 1].t}</h2>
+                <p className="mt-2 text-sm text-slate-500">{slides[i - 1].d}</p>
+              </div>
+            )}
+            <div className="my-5 flex justify-center gap-1.5">
+              {Array.from({ length: total }).map((_, k) => <span key={k} className="h-1.5 rounded-full transition-all" style={{ width: k === i ? 22 : 6, background: k === i ? '#0f766e' : '#cbd5e1' }} />)}
+            </div>
+            <button type="button" onClick={() => last ? onClose() : setI(i + 1)} className="w-full rounded-2xl bg-teal-700 py-3.5 text-sm font-semibold text-white">
+              {last ? (de ? "Los geht's" : "Let's go") : (de ? 'Weiter' : 'Next')}
+            </button>
+            {!last ? <button type="button" onClick={onClose} className="mt-2 w-full py-2 text-xs font-medium text-slate-500">{de ? 'Überspringen' : 'Skip'}</button> : null}
+          </div>
+        </div>
+      );
+    }
+
     function BankingApp({ user, onLogout, t, lang, setLang }) {
       const userKey = (user && user.email ? user.email : 'guest').toLowerCase().trim();
       const [kycLevel, setKycLevel] = useState(() => (user && user.kycLevel) || (user && user.docType ? 'document' : 'full'));
@@ -11401,6 +11499,14 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [payeesOpen, setPayeesOpen] = useState(false);
       const [fx, setFx] = useState(() => kvLoad('n26_fx_' + userKey, { w: {}, h: [] }));
       const [fxOpen, setFxOpen] = useState(false);
+      const fxRef = useRef(fx); fxRef.current = fx;
+      const [tourOpen, setTourOpen] = useState(false);
+      useEffect(() => {
+        if (!kycFull) return undefined;
+        let tm = null;
+        try { if (!API.kv.peek('n26_tour_' + userKey)) tm = setTimeout(() => setTourOpen(true), 700); } catch (e) {}
+        return () => { if (tm) clearTimeout(tm); };
+      }, [kycFull]);
       useEffect(() => { kvSave('n26_fx_' + userKey, fx); }, [fx]);
       const cancelledTxRef = useRef(new Set());
       const notifPrefsRef = useRef(notifPrefs); notifPrefsRef.current = notifPrefs;
@@ -12263,7 +12369,53 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         };
       }, [applyBankNotification]);
 
+      const executeWalletTransfer = async (name, amount, note, meta) => {
+        if (financeBusyRef.current) return false;
+        financeBusyRef.current = true;
+        try {
+          const de = lang !== 'en';
+          const cur = meta.walletCur;
+          const amtC = Math.round(Number(amount) * 100), feeC = Math.round(Number(meta.fee || 0) * 100), totC = amtC + feeC;
+          const have = (fxRef.current.w && fxRef.current.w[cur]) || 0;
+          if (!(amtC > 0) || totC > have) { showToast(t('insufficient'), fxFmt(totC, cur, de) + ' > ' + fxFmt(have, cur, de)); return false; }
+          try { var csx = cardSettingsRef && cardSettingsRef.current; if (csx && csx.abroad === false) { showToast(t('abroad'), t('setting_off')); return false; } } catch (eA) {}
+          const eurEq = Math.round(amtC / fxRate(cur)) / 100;
+          const today = berlinDateKey();
+          let sentEur = (transactionsRef.current || []).filter(function(tx) {
+            try { return isExternalOutgoing(tx) && berlinDateKeyFromIso(tx.date) === today; } catch (e) { return false; }
+          }).reduce(function(s2, tx) { return moneyAdd(s2, Math.abs(Number(tx.amount) || 0)); }, 0);
+          sentEur = (transactionsRef.current || []).filter(function(tx) {
+            try { return tx.fxEur && berlinDateKeyFromIso(tx.date) === today; } catch (e) { return false; }
+          }).reduce(function(s2, tx) { return moneyAdd(s2, Number(tx.fxEur) || 0); }, sentEur);
+          if (moneyToCents(moneyAdd(sentEur, eurEq)) > moneyToCents(dailyLimit)) {
+            showToast(t('limit_exceeded'), t('limit_exceeded_body', { amount: formatCurrency(dailyLimit) }));
+            return false;
+          }
+          const id = 'tx-fxs-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+          const nowIso = new Date().toISOString();
+          const tx = {
+            id: id, transferType: 'intl', fx: true, fxCur: cur, fxAmt: amtC, fxFeeC: feeC, fxEur: eurEq,
+            fxLabel: '−' + fxFmt(totC, cur, de),
+            merchant: { name: name || 'International', icon: 'ArrowUpRight', color: 'text-amber-700', bgColor: 'bg-amber-50' },
+            category: 'Transfer', amount: 0, date: nowIso,
+            description: (note || 'International') + ' · ' + fxFmt(amtC, cur, de) + (feeC ? ' + ' + fxFmt(feeC, cur, de) : ''),
+            status: 'completed', pending: false,
+            iban: meta.iban ? String(meta.iban).replace(/\s+/g, '').toUpperCase() : undefined, bic: meta.bic || undefined,
+          };
+          const nextFx = Object.assign({}, fxRef.current, { w: Object.assign({}, fxRef.current.w, { [cur]: have - totC }) });
+          fxRef.current = nextFx; setFx(nextFx);
+          setTransactions(prev => [tx, ...prev]);
+          transactionsRef.current = [tx, ...(transactionsRef.current || [])];
+          showToast(t('tx_sent_toast'), fxFmt(amtC, cur, de) + ' → ' + (name || ''), 'success');
+          pushNotif(de ? 'Überweisung gesendet' : 'Transfer sent', fxFmt(amtC, cur, de) + ' → ' + (name || ''), 'info', { custom: true });
+          haptic([10, 30, 10]);
+          return true;
+        } finally {
+          financeBusyRef.current = false;
+        }
+      };
       const executeTransfer = async (name, amount, note, meta) => {
+        if (meta && meta.walletCur) return executeWalletTransfer(name, amount, note, meta);
         if (financeBusyRef.current) return false;
         financeBusyRef.current = true;
         var reserved = 0;
@@ -12428,6 +12580,18 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
             'error'
           );
           return false;
+        }
+        if (meta && meta.type === 'intl' && meta.currency && meta.currency !== 'EUR' && fxRef.current.w && fxRef.current.w[meta.currency] != null) {
+          const wAmt = Math.round(Number(amount) * 100), wFee = Math.round(Number(meta.fee || 0) * 100);
+          if (!(wAmt > 0) || wFee < 0) { showToast(t('invalid_amount'), ''); return false; }
+          if (wAmt + wFee > fxRef.current.w[meta.currency]) {
+            showToast(t('insufficient'), (lang === 'en' ? 'Exchange EUR → ' : 'Erst umtauschen: EUR → ') + meta.currency);
+            return false;
+          }
+          try { var csw = cardSettingsRef && cardSettingsRef.current; if (csw && csw.abroad === false) { showToast(t('abroad'), t('setting_off'), 'warn'); return false; } } catch (eW0) {}
+          setPendingTransfer({ name: name, amount: wAmt / 100, note: note, meta: Object.assign({}, meta || {}, { fee: wFee / 100, walletCur: meta.currency }) });
+          setSecOpen(true);
+          return true;
         }
         const amt = moneyRound(Number(amount));
         const fee = meta && meta.fee ? moneyRound(Number(meta.fee)) : 0;
@@ -12924,7 +13088,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       // ===== Receipt (PDF via print dialog) for every income / expense — same approach as the account statement =====
       const openTxReceipt = async (tx) => {
         var rw = null;
-        try { rw = window.open('', '_blank'); } catch (eW) {}
+        rw = null;
         var de = lang !== 'en';
         var loc = de ? 'de-DE' : 'en-GB';
         var esc = function(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
@@ -12965,11 +13129,11 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           + '</style></head><body><div class="bar"><button onclick="window.print()">' + L.print + '</button></div><div class="pg">'
           + '<div class="hd"><img src="./n26-logo.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(det.pid) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
           + '<div class="box"><div class="kk">' + L.holder + '</div><div class="vv">' + esc(holder || '—') + '</div><div class="kk" style="margin-top:10px">' + L.acc + '</div><div class="vv mono">' + esc(ibanSp) + '</div></div>'
-          + '<div class="amt"><div class="kk">' + L.amount + '</div><div class="n">' + esc(formatCurrency(amt, true)) + '</div></div>'
+          + '<div class="amt"><div class="kk">' + L.amount + '</div><div class="n">' + esc(tx.fxLabel || formatCurrency(amt, true)) + '</div></div>'
           + '<table>' + rowsHtml + '</table>'
           + '<div class="ft">' + L.foot + (hashStr ? '<div class="hash">SHA-256: ' + hashStr + '</div>' : '') + '</div></div>'
           + '<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print()}catch(e){}},600)})<\/script></body></html>';
-        if (rw && rw.document) { rw.document.open(); rw.document.write(doc); rw.document.close(); }
+        if (true) { window.n26ShowDoc(doc); }
         else {
           var blobR = new Blob([doc], { type: 'text/html;charset=utf-8' });
           var aR = document.createElement('a');
@@ -13917,11 +14081,12 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           </div>
 
           <BottomNav active={activeTab} onChange={handleTab} t={t} />
-          <SendDrawer open={sendOpen} onClose={() => setSendOpen(false)} balance={availableBalance} onSend={handleSend} contacts={contacts} onAddContact={handleAddContact} t={t} />
+          <SendDrawer open={sendOpen} onClose={() => setSendOpen(false)} balance={availableBalance} onSend={handleSend} contacts={contacts} onAddContact={handleAddContact} t={t} fxWallets={fx.w} fxLang={lang} />
           <RequestModal open={requestOpen} onClose={() => setRequestOpen(false)} onRequest={handleRequest} contacts={contacts} t={t} />
           <SpaceDepositModal open={spaceModalOpen} space={selectedSpace} onClose={() => setSpaceModalOpen(false)} onDeposit={handleSpaceDeposit} onWithdraw={handleSpaceWithdraw} t={t} />
           {/* >>> NEW: полная история операций */}
           <TxDetailModal tx={txDetail} onClose={function() { setTxDetail(null); }} t={t} lang={lang} ops={txOps} onReceipt={openTxReceipt} />
+          {tourOpen && <WelcomeTour lang={lang} onClose={() => { setTourOpen(false); try { API.kv.set('n26_tour_' + userKey, '1'); } catch (e) {} }} />}
           <FxPanel open={fxOpen} onClose={() => setFxOpen(false)} lang={lang} fx={fx} eurBalance={availableBalance} onAdd={fxAdd} onExchange={fxExchange} />
           <PayeesModal open={payeesOpen} onClose={() => setPayeesOpen(false)} lang={lang} favs={favs} templates={templates} recurring={recurring}
             onSendItem={sendSaved} onDelFav={id => setFavs(p => p.filter(f => f.id !== id))} onDelTpl={id => setTemplates(p => p.filter(x => x.id !== id))}
@@ -14370,7 +14535,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                 )}
                 <button type="button" onClick={async function() {
                   var stmtWin = null;
-                  try { stmtWin = window.open('', '_blank'); } catch (eW) {}
+                  stmtWin = null;
                   var now = new Date();
                   var fromD, toD = new Date(now);
                   if (statementPeriod === '7') { fromD = new Date(now); fromD.setDate(fromD.getDate() - 7); }
@@ -14453,8 +14618,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                     + '<tr class="tot"><td colspan="3" class="r">' + L.close + '</td><td class="r nw">' + esc(fmt(endBal)) + '</td></tr></tbody></table>'
                     + '<div class="ft">' + L.foot + (hashStr ? '<div class="hash">SHA-256: ' + hashStr + '</div>' : '') + '</div></div>'
                     + '<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print()}catch(e){}},600)})<\/script></body></html>';
-                  if (stmtWin && stmtWin.document) {
-                    stmtWin.document.open(); stmtWin.document.write(doc); stmtWin.document.close();
+                  if (true) {
+                    window.n26ShowDoc(doc);
                   } else {
                     var blobS = new Blob([doc], { type: 'text/html;charset=utf-8' });
                     var aS = document.createElement('a');
