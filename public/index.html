@@ -4782,14 +4782,15 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
       var name = (tx && tx.merchant && tx.merchant.name) || (tx && tx.name) || '—';
       var isFee = /fee|gebühr/i.test(name) || (tx && tx.category === 'Bills');
       var method, methodDe;
-      if (tx && tx.transferType === 'sepa') { method = 'SEPA Credit Transfer'; methodDe = 'SEPA-Überweisung'; }
+      if (tx && tx.fx) { method = 'Currency exchange'; methodDe = 'Währungstausch'; }
+      else if (tx && tx.transferType === 'sepa') { method = 'SEPA Credit Transfer'; methodDe = 'SEPA-Überweisung'; }
       else if (tx && tx.transferType === 'intl') { method = 'International (SWIFT)'; methodDe = 'Internationale Überweisung (SWIFT)'; }
       else if (tx && tx.live) { method = 'SEPA Instant'; methodDe = 'SEPA-Echtzeitüberweisung'; }
       else if (isFee) { method = 'Account fee'; methodDe = 'Kontogebühr'; }
       else if (tx && /^tx-space/.test(id)) { method = 'Spaces transfer'; methodDe = 'Spaces-Übertragung'; }
       else if (tx && tx.category && tx.category !== 'Transfer' && tx.category !== 'Salary') { method = 'Card payment'; methodDe = 'Kartenzahlung'; }
       else { method = 'Transfer'; methodDe = 'Überweisung'; }
-      var ibanRaw = (tx && tx.iban) ? String(tx.iban) : ((method === 'Card payment' || isFee || /^tx-space/.test(id)) ? '' : 'DE' + txDigits(id, 20, 5));
+      var ibanRaw = (tx && tx.iban) ? String(tx.iban) : ((method === 'Card payment' || method === 'Currency exchange' || isFee || /^tx-space/.test(id)) ? '' : 'DE' + txDigits(id, 20, 5));
       var d = tx && tx.date ? new Date(tx.date) : new Date();
       return {
         pid: txPublicId(tx),
@@ -4862,11 +4863,37 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
 
     // ========== Random DE IBAN + Mastercard number ==========
     // ========== DEVICE APIs: WebAuthn, Share, Crypto, Vibration ==========
+    // iOS has no Vibration API; Safari 17.4+ gives a native tick when a hidden <input switch> is toggled by a user tap.
+    var __hapticIOS = (function () {
+      try {
+        var ua = navigator.userAgent || '';
+        var m = /OS (\d+)_(\d+)/.exec(ua);
+        return /iPhone|iPad|iPod/.test(ua) && !!m && (parseInt(m[1], 10) + parseInt(m[2], 10) / 10) >= 17.4;
+      } catch (e) { return false; }
+    })();
+    function hapticIOSTick(times) {
+      var n = Math.max(1, Math.min(3, times || 1)), i = 0;
+      (function tick() {
+        try {
+          var l = document.createElement('label');
+          l.setAttribute('aria-hidden', 'true');
+          l.style.cssText = 'position:fixed;left:-200px;top:-200px;width:1px;height:1px;opacity:0;pointer-events:none';
+          var inp = document.createElement('input');
+          inp.type = 'checkbox'; inp.setAttribute('switch', '');
+          l.appendChild(inp); document.body.appendChild(l);
+          l.click();
+          setTimeout(function () { try { l.remove(); } catch (e) {} }, 60);
+        } catch (e) {}
+        if (++i < n) setTimeout(tick, 75);
+      })();
+    }
+    function hapticSupported() { return !!navigator.vibrate || __hapticIOS; }
     function haptic(pattern) {
       try {
-        const on = API.kv.peek('n26_haptic') !== '0';
-        if (!on) return;
-        if (navigator.vibrate) navigator.vibrate(pattern || 12);
+        if (API.kv.peek('n26_haptic') === '0') return;
+        var p = pattern || 12;
+        if (navigator.vibrate) { navigator.vibrate(p); return; }
+        if (__hapticIOS) hapticIOSTick(Array.isArray(p) ? Math.ceil(p.length / 2) : 1);
       } catch (e) {}
     }
 
@@ -4968,24 +4995,27 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
       if (!webauthnAvailable()) throw new Error('unsupported');
       const challenge = crypto.getRandomValues(new Uint8Array(32));
       const userIdBytes = new TextEncoder().encode(String(userId || 'n26-user').slice(0, 64));
-      const cred = await navigator.credentials.create({
-        publicKey: {
-          challenge,
-          rp: { name: 'N26', id: location.hostname || 'localhost' },
-          user: { id: userIdBytes, name: String(userId || 'user'), displayName: displayName || 'N26 User' },
-          pubKeyCredParams: [
-            { type: 'public-key', alg: -7 },
-            { type: 'public-key', alg: -257 },
-          ],
-          authenticatorSelection: {
-            authenticatorAttachment: 'platform',
-            userVerification: 'required',
-            residentKey: 'preferred',
-          },
-          timeout: 60000,
-          attestation: 'none',
-        },
-      });
+      const base = {
+        challenge,
+        rp: { name: 'N26', id: location.hostname || 'localhost' },
+        user: { id: userIdBytes, name: String(userId || 'user'), displayName: displayName || 'N26 User' },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+        timeout: 60000,
+        attestation: 'none',
+      };
+      let cred = null;
+      try {
+        cred = await navigator.credentials.create({ publicKey: Object.assign({}, base, {
+          authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
+        }) });
+      } catch (e1) {
+        // older iOS / some Android builds reject residentKey or "required": retry with the most compatible options
+        if (e1 && (e1.name === 'NotSupportedError' || e1.name === 'TypeError' || e1.name === 'ConstraintError')) {
+          cred = await navigator.credentials.create({ publicKey: Object.assign({}, base, {
+            authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'preferred' },
+          }) });
+        } else { throw e1; }
+      }
       if (!cred) throw new Error('cancelled');
       const rawId = bufferToBase64(cred.rawId);
       API.kv.set('n26_webauthn_cred', rawId);
@@ -5008,6 +5038,44 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
       });
       if (!assertion) throw new Error('cancelled');
       return true;
+    }
+
+    async function webauthnPlatformReady() {
+      try {
+        if (!webauthnAvailable()) return false;
+        if (window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
+          return !!(await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());
+        }
+        return true;
+      } catch (e) { return false; }
+    }
+    function bioKind(de) {
+      try {
+        var ua = navigator.userAgent || '';
+        if (/iPhone|iPod/.test(ua)) {
+          var r = Math.max(screen.width, screen.height) / Math.min(screen.width, screen.height);
+          return r >= 2 ? 'Face ID' : 'Touch ID';
+        }
+        if (/iPad/.test(ua)) return 'Face ID / Touch ID';
+        if (/Android/i.test(ua)) return de ? 'Fingerabdruck / Gesichtsentsperrung' : 'Fingerprint / face unlock';
+      } catch (e) {}
+      return de ? 'Biometrie (Windows Hello / Touch ID)' : 'Biometrics (Windows Hello / Touch ID)';
+    }
+    function bioProblem(err, de) {
+      var nm = err && err.name;
+      var standalone = false, ios = false;
+      try { standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; ios = /iPhone|iPad|iPod/.test(navigator.userAgent || ''); } catch (e) {}
+      if (!window.isSecureContext) return { title: de ? 'Biometrie nicht möglich' : 'Biometrics unavailable', body: de ? 'Die Seite muss über HTTPS geöffnet werden.' : 'The page must be opened over HTTPS.' };
+      if (!(window.PublicKeyCredential && navigator.credentials)) {
+        return { title: de ? 'Biometrie nicht verfügbar' : 'Biometrics unavailable', body: ios && standalone
+          ? (de ? 'In der installierten App ist Biometrie mit dieser iOS-Version nicht verfügbar. Öffne N26 in Safari oder aktualisiere iOS.' : 'Biometrics are not available in the installed app on this iOS version. Open N26 in Safari or update iOS.')
+          : (de ? 'Dieser Browser unterstützt keine Biometrie. Aktualisiere den Browser.' : 'This browser does not support biometrics. Update the browser.') };
+      }
+      if (!err) return { title: de ? 'Keine Biometrie eingerichtet' : 'No biometrics set up', body: de ? 'Richte Touch ID, Face ID oder Fingerabdruck in den Geräteeinstellungen ein.' : 'Set up Touch ID, Face ID or fingerprint in your device settings.' };
+      if (nm === 'NotAllowedError') return { title: de ? 'Abgebrochen' : 'Cancelled', body: de ? 'Bestätigung abgebrochen oder Zeit abgelaufen. Versuche es erneut.' : 'Confirmation cancelled or timed out. Try again.' };
+      if (nm === 'SecurityError') return { title: de ? 'Biometrie blockiert' : 'Biometrics blocked', body: de ? 'Domain oder HTTPS passt nicht zur Anfrage.' : 'Domain or HTTPS does not match the request.' };
+      if (nm === 'NotSupportedError' || nm === 'ConstraintError') return { title: de ? 'Nicht unterstützt' : 'Not supported', body: de ? 'Dieses Gerät kann Biometrie hier nicht nutzen. Nutze deine PIN.' : 'This device cannot use biometrics here. Use your PIN.' };
+      return { title: de ? 'Biometrie fehlgeschlagen' : 'Biometrics failed', body: String((err && (err.name || err.message)) || '') };
     }
 
     async function shareText(title, text, url) {
@@ -8701,7 +8769,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       );
     }
 
-    function TxDetailModal({ tx, onClose, t, lang, ops }) {
+    function TxDetailModal({ tx, onClose, t, lang, ops, onReceipt }) {
       const [copied, setCopied] = useState(false);
       const [confirm, setConfirm] = useState(null);
       useEffect(function() { setConfirm(null); }, [tx && tx.id]);
@@ -8713,8 +8781,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const pending = tx.status === 'pending' || tx.pending;
       const opName = (tx.merchant && tx.merchant.name) || tx.name || '';
       const canCancel = !!ops && pending && cents < 0 && !tx.refundOf && (!tx.sb || tx.sbStatus === 'review');
-      const canRefund = !!ops && !pending && cents < 0 && tx.category !== 'Transfer' && !tx.refunded && !tx.refundOf;
-      const isOutTransfer = !!ops && !pending && cents < 0 && tx.category === 'Transfer' && !tx.refundOf && !!opName;
+      const canRefund = !!ops && !pending && cents < 0 && tx.category !== 'Transfer' && !tx.refunded && !tx.refundOf && !tx.fx;
+      const isOutTransfer = !!ops && !pending && cents < 0 && tx.category === 'Transfer' && !tx.refundOf && !tx.fx && !!opName;
       const A = de ? {
         cancel: 'Überweisung stornieren', refund: 'Rückerstattung anfordern', repeat: 'Überweisung wiederholen',
         fav: '★ Als Favorit speichern', unfav: '★ Favorit entfernen', tpl: 'Als Vorlage speichern', rec: 'Dauerauftrag (monatlich) einrichten',
@@ -8816,7 +8884,12 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   ) : null}
                 </div>
               ) : null}
-              <button type="button" onClick={contact} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 pressable">
+              {onReceipt ? (
+                <button type="button" onClick={function() { onReceipt(tx); }} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-teal-200 bg-teal-50 py-3.5 text-sm font-semibold text-teal-800">
+                  <LucideIcon name="Download" className="h-4 w-4" />{de ? 'Quittung als PDF' : 'Receipt as PDF'}
+                </button>
+              ) : null}
+              <button type="button" onClick={contact} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 pressable">
                 <LucideIcon name="Mail" className="h-4 w-4" />{L.support}
               </button>
             </div>
@@ -9021,7 +9094,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
             {tabs.map(tab => {
               const on = active === tab.key;
               return (
-                <button key={tab.key} type="button" onClick={() => { try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) {} onChange(tab.key); setPl(tab.key); setTick(function(n) { return n + 1; }); setTimeout(function() { setPl(null); }, 620); }} aria-label={tab.label} title={tab.label}
+                <button key={tab.key} type="button" onClick={() => { try { haptic(8); } catch (e) {} onChange(tab.key); setPl(tab.key); setTick(function(n) { return n + 1; }); setTimeout(function() { setPl(null); }, 620); }} aria-label={tab.label} title={tab.label}
                   aria-current={on ? 'page' : undefined} className={'nav-glass__item' + (on ? ' is-active' : '')}>
                   <NavGlyph key={tab.key + ':' + (pl === tab.key ? tick : 0)} name={tab.key} go={pl === tab.key} />
                 </button>
@@ -10783,6 +10856,166 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       );
     }
 
+    /* ===== Multi-currency wallets (demo rates, integer minor units) ===== */
+    const FX_CURRENCIES = [
+      { code: 'USD', de: 'US-Dollar', en: 'US dollar', base: 1.0790 },
+      { code: 'GBP', de: 'Britisches Pfund', en: 'British pound', base: 0.8560 },
+      { code: 'CHF', de: 'Schweizer Franken', en: 'Swiss franc', base: 0.9420 },
+      { code: 'PLN', de: 'Polnischer Złoty', en: 'Polish zloty', base: 4.2800 },
+    ];
+    function fxRate(code) {
+      var c = FX_CURRENCIES.filter(function(x) { return x.code === code; })[0];
+      if (!c) return 1;
+      var slot = Math.floor(Date.now() / 30000);
+      var drift = Math.sin(slot / 7 + code.charCodeAt(0)) * 0.004;
+      return Math.round(c.base * (1 + drift) * 10000) / 10000;
+    }
+    function fxFee(eurCents) { return Math.max(50, Math.round(eurCents * 0.005)); }
+    function fxFmt(cents, cur, de) {
+      try { return new Intl.NumberFormat(de ? 'de-DE' : 'en-GB', { style: 'currency', currency: cur }).format(cents / 100); }
+      catch (e) { return (cents / 100).toFixed(2) + ' ' + cur; }
+    }
+    function fxParseCents(s) {
+      var v = String(s || '').trim().replace(',', '.');
+      if (!/^\d{1,9}(\.\d{1,2})?$/.test(v)) return 0;
+      var p = v.split('.');
+      return parseInt(p[0], 10) * 100 + (p[1] ? parseInt((p[1] + '0').slice(0, 2), 10) : 0);
+    }
+
+    function FxStrip({ lang, wallets, onOpen }) {
+      const de = lang !== 'en';
+      const codes = Object.keys(wallets || {});
+      return (
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-border soft-card">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm font-bold">{de ? 'Währungen' : 'Currencies'}</p>
+            <button type="button" onClick={onOpen} className="text-xs font-semibold text-teal-700">{codes.length ? (de ? 'Umtauschen' : 'Exchange') : (de ? 'Einrichten' : 'Set up')}</button>
+          </div>
+          {codes.length === 0 ? (
+            <button type="button" onClick={onOpen} className="flex w-full items-center justify-between rounded-xl border border-dashed border-slate-300 px-4 py-3 text-left text-sm text-slate-600">
+              <span>{de ? 'Mehrwährungskonto: USD, GBP, CHF, PLN' : 'Multi-currency: USD, GBP, CHF, PLN'}</span>
+              <span className="text-lg leading-none text-teal-700">+</span>
+            </button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              {codes.map(function(c) {
+                return (
+                  <button key={c} type="button" onClick={onOpen} className="rounded-xl bg-slate-50 px-3 py-2.5 text-left">
+                    <span className="block text-[11px] text-slate-500">{c}</span>
+                    <span className="block text-base font-semibold tabular-nums">{fxFmt(wallets[c], c, de)}</span>
+                  </button>
+                );
+              })}
+              <button type="button" onClick={onOpen} className="flex items-center justify-center rounded-xl border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600">+ {de ? 'Währung' : 'Currency'}</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function FxPanel({ open, onClose, lang, fx, eurBalance, onAdd, onExchange }) {
+      const de = lang !== 'en';
+      const wallets = (fx && fx.w) || {};
+      const codes = Object.keys(wallets);
+      const [dir, setDir] = useState('buy');
+      const [code, setCode] = useState('');
+      const [amount, setAmount] = useState('');
+      const [err, setErr] = useState('');
+      const [, setTick] = useState(0);
+      useEffect(function() {
+        if (!open) return undefined;
+        const iv = setInterval(function() { setTick(function(n) { return n + 1; }); }, 5000);
+        return function() { clearInterval(iv); };
+      }, [open]);
+      useEffect(function() { if (open && !code && codes.length) setCode(codes[0]); }, [open, codes.length]);
+      if (!open) return null;
+      const cur = code || codes[0] || '';
+      const rate = cur ? fxRate(cur) : 0;
+      const cents = fxParseCents(amount);
+      let prev = null;
+      if (cur && cents > 0) {
+        if (dir === 'buy') { const fee = fxFee(cents); prev = { give: fxFmt(cents + fee, 'EUR', de), get: fxFmt(Math.round(cents * rate), cur, de), fee: fxFmt(fee, 'EUR', de), sub: cents + fee }; }
+        else { const gross = Math.round(cents / rate); const fee = fxFee(gross); prev = { give: fxFmt(cents, cur, de), get: fxFmt(Math.max(0, gross - fee), 'EUR', de), fee: fxFmt(fee, 'EUR', de), sub: cents }; }
+      }
+      const available = codes.filter(function(c) { return true; });
+      const addable = FX_CURRENCIES.filter(function(c) { return wallets[c.code] == null; });
+      const submit = function() {
+        if (!cur) { setErr(de ? 'Füge zuerst eine Währung hinzu.' : 'Add a currency first.'); return; }
+        if (cents <= 0) { setErr(de ? 'Gib einen gültigen Betrag ein (z. B. 100,00).' : 'Enter a valid amount (e.g. 100.00).'); return; }
+        const res = onExchange({ dir: dir, code: cur, cents: cents });
+        if (!res || !res.ok) { setErr((res && res.error) || (de ? 'Umtausch fehlgeschlagen.' : 'Exchange failed.')); return; }
+        setErr(''); setAmount('');
+      };
+      const hist = ((fx && fx.h) || []).slice(0, 6);
+      return (
+        <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/40 sm:items-center" onClick={onClose}>
+          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-slate-50 pb-6 sm:rounded-3xl" onClick={function(e) { e.stopPropagation(); }} style={{ overscrollBehavior: 'contain' }}>
+            <div className="sticky top-0 z-10 flex items-center justify-between bg-slate-50 px-5 py-4">
+              <h2 className="text-base font-bold">{de ? 'Währungen & Umtausch' : 'Currencies & exchange'}</h2>
+              <button type="button" onClick={onClose} aria-label="Close" className="rounded-full bg-white p-2 text-slate-500 shadow-sm ring-1 ring-border">✕</button>
+            </div>
+            <div className="space-y-3 px-5">
+              <div className="rounded-2xl bg-white p-4 ring-1 ring-border">
+                <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">EUR · {de ? 'Hauptkonto' : 'Main account'}</span><span className="text-base font-semibold tabular-nums">{fxFmt(Math.round((Number(eurBalance) || 0) * 100), 'EUR', de)}</span></div>
+                {codes.map(function(c) {
+                  return <div key={c} className="mt-2 flex items-center justify-between border-t border-border/60 pt-2"><span className="text-xs font-semibold text-slate-500">{c}</span><span className="text-base font-semibold tabular-nums">{fxFmt(wallets[c], c, de)}</span></div>;
+                })}
+              </div>
+              {addable.length ? (
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-border">
+                  <p className="mb-2 text-xs font-semibold text-slate-500">{de ? 'Währung hinzufügen' : 'Add currency'}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {addable.map(function(c) {
+                      return <button key={c.code} type="button" onClick={function() { onAdd(c.code); setCode(c.code); }} className="rounded-xl bg-slate-50 px-3 py-2 text-left"><span className="block text-sm font-semibold">{c.code}</span><span className="block text-[11px] text-slate-500">{de ? c.de : c.en}</span></button>;
+                    })}
+                  </div>
+                </div>
+              ) : null}
+              {codes.length ? (
+                <div className="space-y-3 rounded-2xl bg-white p-4 ring-1 ring-border">
+                  <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1">
+                    {[['buy', 'EUR → ' + cur], ['sell', cur + ' → EUR']].map(function(x) {
+                      return <button key={x[0]} type="button" onClick={function() { setDir(x[0]); setErr(''); }} className={'rounded-lg py-2 text-xs font-semibold ' + (dir === x[0] ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600')}>{x[1]}</button>;
+                    })}
+                  </div>
+                  {codes.length > 1 ? (
+                    <select value={cur} onChange={function(e) { setCode(e.target.value); setErr(''); }} className="w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm">
+                      {codes.map(function(c) { return <option key={c} value={c}>{c}</option>; })}
+                    </select>
+                  ) : null}
+                  <label className="block text-xs text-slate-600">{dir === 'buy' ? (de ? 'Betrag in EUR' : 'Amount in EUR') : (de ? 'Betrag in ' : 'Amount in ') + cur}
+                    <input value={amount} onChange={function(e) { setAmount(e.target.value); setErr(''); }} inputMode="decimal" placeholder="100,00" style={{ fontSize: 16 }} className="mt-1 w-full rounded-xl border border-border px-3 py-2.5 tabular-nums outline-none focus:border-teal-500" />
+                  </label>
+                  <div className="space-y-1 rounded-xl bg-slate-50 px-3 py-2.5 text-xs">
+                    <div className="flex justify-between"><span className="text-slate-500">{de ? 'Kurs (Demo)' : 'Rate (demo)'}</span><span className="tabular-nums">1 EUR = {rate.toFixed(4)} {cur}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-500">{de ? 'Gebühr' : 'Fee'}</span><span className="tabular-nums">{prev ? prev.fee : '—'}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-500">{de ? 'Belastung' : 'You pay'}</span><span className="tabular-nums font-semibold">{prev ? prev.give : '—'}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-500">{de ? 'Du erhältst' : 'You get'}</span><span className="tabular-nums font-semibold text-emerald-700">{prev ? prev.get : '—'}</span></div>
+                  </div>
+                  {err ? <p className="text-xs font-medium text-rose-600">{err}</p> : null}
+                  <button type="button" onClick={submit} className="w-full rounded-xl bg-teal-700 py-3 text-sm font-semibold text-white">{de ? 'Jetzt umtauschen' : 'Exchange now'}</button>
+                  <p className="text-[10px] text-slate-400">{de ? 'Demo-Kurse, Gebühr 0,5 % (mind. 0,50 €).' : 'Demo rates, fee 0.5% (min. €0.50).'}</p>
+                </div>
+              ) : null}
+              {hist.length ? (
+                <div className="overflow-hidden rounded-2xl bg-white ring-1 ring-border">
+                  <p className="px-4 pt-3 text-xs font-semibold text-slate-500">{de ? 'Letzte Umtausche' : 'Recent exchanges'}</p>
+                  {hist.map(function(h) {
+                    return (
+                      <div key={h.id} className="flex items-center justify-between gap-2 border-b border-border/60 px-4 py-2.5 text-xs last:border-0">
+                        <span className="min-w-0 text-slate-600">{h.dir === 'buy' ? 'EUR → ' + h.code : h.code + ' → EUR'}<span className="block text-[10px] text-slate-400">{new Date(h.date).toLocaleString(de ? 'de-DE' : 'en-GB')}</span></span>
+                        <span className="shrink-0 text-right tabular-nums">{h.dir === 'buy' ? fxFmt(h.eurC + h.feeC, 'EUR', de) + ' → ' + fxFmt(h.otherC, h.code, de) : fxFmt(h.otherC, h.code, de) + ' → ' + fxFmt(h.eurC - h.feeC, 'EUR', de)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     function BankingApp({ user, onLogout, t, lang, setLang }) {
       const userKey = (user && user.email ? user.email : 'guest').toLowerCase().trim();
       const [kycLevel, setKycLevel] = useState(() => (user && user.kycLevel) || (user && user.docType ? 'document' : 'full'));
@@ -11000,6 +11233,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [notifFilter, setNotifFilter] = useState('all');
       const [notifSettingsOpen, setNotifSettingsOpen] = useState(false);
       const [payeesOpen, setPayeesOpen] = useState(false);
+      const [fx, setFx] = useState(() => kvLoad('n26_fx_' + userKey, { w: {}, h: [] }));
+      const [fxOpen, setFxOpen] = useState(false);
+      useEffect(() => { kvSave('n26_fx_' + userKey, fx); }, [fx]);
       const cancelledTxRef = useRef(new Set());
       const notifPrefsRef = useRef(notifPrefs); notifPrefsRef.current = notifPrefs;
       const recurringRef = useRef(recurring); recurringRef.current = recurring;
@@ -12478,6 +12714,107 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         }
       };
 
+      // ===== Multi-currency: wallets + exchange (integer minor units) =====
+      const fxAdd = (code) => { setFx(p => (p.w && p.w[code] != null) ? p : Object.assign({}, p, { w: Object.assign({}, p.w, { [code]: 0 }) })); };
+      const fxExchange = (o) => {
+        const de = lang !== 'en';
+        const code = o.code, cents = o.cents, rate = fxRate(code);
+        const id = 'tx-fx-' + Date.now() + '-' + Math.random().toString(36).slice(2, 5);
+        const nowIso = new Date().toISOString();
+        const mk = (amountEur, baseEur, feeEur, label) => ({
+          id: id, fx: true, fxRate: rate, transferType: 'fx',
+          merchant: { name: label, icon: 'RotateCcw', color: 'text-teal-700', bgColor: 'bg-teal-50' },
+          category: 'Transfer', amount: amountEur, baseAmount: baseEur, fee: feeEur, date: nowIso,
+          description: (de ? 'Kurs ' : 'Rate ') + rate.toFixed(4) + ' ' + code + '/EUR', status: 'completed', pending: false,
+        });
+        if (o.dir === 'buy') {
+          const feeC = fxFee(cents), totalC = cents + feeC, toC = Math.round(cents * rate);
+          if (toC <= 0) return { ok: false, error: de ? 'Betrag zu klein.' : 'Amount too small.' };
+          if (totalC > moneyToCents(availableBalanceRef.current)) return { ok: false, error: de ? 'Nicht genug Guthaben (inkl. Gebühr).' : 'Not enough balance (incl. fee).' };
+          const tx = mk(-moneyFromCents(totalC), moneyFromCents(cents), moneyFromCents(feeC), (de ? 'Währungstausch EUR → ' : 'Currency exchange EUR → ') + code);
+          setTransactions(prev => [tx, ...prev]);
+          transactionsRef.current = [tx, ...(transactionsRef.current || [])];
+          availableBalanceRef.current = moneySub(availableBalanceRef.current, moneyFromCents(totalC));
+          setFx(p => ({ w: Object.assign({}, p.w, { [code]: (p.w[code] || 0) + toC }), h: [{ id: id, date: nowIso, dir: 'buy', code: code, eurC: cents, feeC: feeC, otherC: toC, rate: rate }].concat(p.h || []).slice(0, 50) }));
+          pushNotif(de ? 'Währung getauscht' : 'Currency exchanged', fxFmt(totalC, 'EUR', de) + ' → ' + fxFmt(toC, code, de), 'info', { custom: true });
+          showToast(de ? 'Umtausch erfolgreich' : 'Exchange done', fxFmt(toC, code, de), 'success');
+          haptic([10, 30, 10]);
+          return { ok: true };
+        }
+        const have = (fx.w && fx.w[code]) || 0;
+        if (cents > have) return { ok: false, error: de ? 'Nicht genug Guthaben in ' + code + '.' : 'Not enough ' + code + ' balance.' };
+        const grossC = Math.round(cents / rate), feeC = fxFee(grossC), netC = grossC - feeC;
+        if (netC <= 0) return { ok: false, error: de ? 'Betrag zu klein (Gebühr höher als Ergebnis).' : 'Amount too small (fee exceeds result).' };
+        const tx = mk(moneyFromCents(netC), moneyFromCents(grossC), moneyFromCents(feeC), (de ? 'Währungstausch ' : 'Currency exchange ') + code + ' → EUR');
+        setTransactions(prev => [tx, ...prev]);
+        transactionsRef.current = [tx, ...(transactionsRef.current || [])];
+        setFx(p => ({ w: Object.assign({}, p.w, { [code]: (p.w[code] || 0) - cents }), h: [{ id: id, date: nowIso, dir: 'sell', code: code, eurC: grossC, feeC: feeC, otherC: cents, rate: rate }].concat(p.h || []).slice(0, 50) }));
+        pushNotif(de ? 'Währung getauscht' : 'Currency exchanged', fxFmt(cents, code, de) + ' → ' + fxFmt(netC, 'EUR', de), 'info', { custom: true });
+        showToast(de ? 'Umtausch erfolgreich' : 'Exchange done', fxFmt(netC, 'EUR', de), 'success');
+        haptic([10, 30, 10]);
+        return { ok: true };
+      };
+
+      // ===== Receipt (PDF via print dialog) for every income / expense — same approach as the account statement =====
+      const openTxReceipt = async (tx) => {
+        var rw = null;
+        try { rw = window.open('', '_blank'); } catch (eW) {}
+        var de = lang !== 'en';
+        var loc = de ? 'de-DE' : 'en-GB';
+        var esc = function(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+        var det = txDetails(tx);
+        var amt = Number(tx.amount) || 0;
+        var pos = amt >= 0;
+        var pend = tx.status === 'pending' || tx.pending;
+        var title = (tx.merchant && tx.merchant.name) || tx.name || (de ? 'Überweisung' : 'Transfer');
+        var dt = new Date(tx.date);
+        var dateStr = isNaN(dt.getTime()) ? '—' : dt.toLocaleDateString(loc, { day: '2-digit', month: '2-digit', year: 'numeric' }) + ', ' + dt.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        var holder = bankUser ? (bankUser.fullName || ((bankUser.firstName || '') + ' ' + (bankUser.lastName || ''))) : '';
+        var ibanSp = userIban ? String(userIban).replace(/(.{4})/g, '$1 ').trim() : '—';
+        var feeV = Number(tx.fee) || 0;
+        var baseV = tx.baseAmount != null ? Number(tx.baseAmount) : (feeV ? Math.abs(amt) - feeV : null);
+        var hashStr = '';
+        try { hashStr = await sha256Hex([tx.id, tx.amount, tx.date, ibanSp].join('|')); } catch (eH) {}
+        var L = de
+          ? { title: 'Zahlungsbeleg', nr: 'Beleg Nr.', created: 'Erstellt am', holder: 'Kontoinhaber', acc: 'Konto (IBAN)', amount: pos ? 'Gutschrift' : 'Belastung', cp: pos ? 'Absender' : 'Empfänger', type: 'Zahlungsart', date: 'Buchung', status: 'Status', done: 'Abgeschlossen', pend: 'In Bearbeitung', iban: 'IBAN Gegenseite', bic: 'BIC', ref: 'Referenz', note: 'Verwendungszweck', card: 'Karte', auth: 'Autorisierungscode', base: 'Betrag', fee: 'Gebühr', id: 'Transaktions-ID', foot: 'Dieser Beleg wurde elektronisch erstellt und ist ohne Unterschrift gültig.', print: 'Als PDF speichern / Drucken' }
+          : { title: 'Payment receipt', nr: 'Receipt no.', created: 'Issued on', holder: 'Account holder', acc: 'Account (IBAN)', amount: pos ? 'Credit' : 'Debit', cp: pos ? 'Sender' : 'Recipient', type: 'Payment type', date: 'Booked', status: 'Status', done: 'Completed', pend: 'Pending', iban: 'Counterparty IBAN', bic: 'BIC', ref: 'Reference', note: 'Purpose', card: 'Card', auth: 'Authorisation code', base: 'Amount', fee: 'Fee', id: 'Transaction ID', foot: 'This receipt was generated electronically and is valid without a signature.', print: 'Save as PDF / Print' };
+        var rows = [
+          [L.cp, title], [L.type, de ? det.methodDe : det.method], [L.date, dateStr], [L.status, pend ? L.pend : L.done],
+          det.iban ? [L.iban, det.iban] : null, det.bic ? [L.bic, det.bic] : null, det.card ? [L.card, det.card] : null, det.auth ? [L.auth, det.auth] : null,
+          [L.ref, det.ref],
+          tx.description && tx.description !== title ? [L.note, tx.description] : null,
+          (feeV > 0 && baseV != null) ? [L.base, formatCurrency(baseV)] : null,
+          feeV > 0 ? [L.fee, formatCurrency(feeV)] : null,
+          [L.id, det.pid],
+        ].filter(Boolean);
+        var rowsHtml = rows.map(function(r) { return '<tr><td class="k">' + esc(r[0]) + '</td><td class="v">' + esc(r[1]) + '</td></tr>'; }).join('');
+        var doc = '<!doctype html><html lang="' + (de ? 'de' : 'en') + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>N26 ' + L.title + ' ' + esc(det.pid) + '</title><style>'
+          + '@page{size:A4;margin:18mm 16mm}*{box-sizing:border-box}body{margin:0;font:12px/1.5 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:#0f172a;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+          + '.bar{position:sticky;top:0;display:flex;justify-content:center;padding:10px;background:#0f172a}.bar button{font:600 13px Helvetica,Arial,sans-serif;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}@media print{.bar{display:none}}'
+          + '.pg{max-width:640px;margin:0 auto;padding:20px 22px}.hd{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:2px solid #0f172a}.hd img{height:40px;width:auto}.hd .r{text-align:right}.hd h1{margin:0;font-size:20px}.hd p{margin:2px 0 0;color:#64748b;font-size:11px}'
+          + '.box{border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-top:16px}.kk{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#64748b}.vv{font-size:13px;font-weight:600;word-break:break-word}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}'
+          + '.amt{margin-top:16px;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center}.amt .n{font-size:30px;font-weight:800;letter-spacing:-.02em;color:' + (pos ? '#047857' : '#0f172a') + ';font-variant-numeric:tabular-nums}'
+          + 'table{width:100%;border-collapse:collapse;margin-top:16px}td{padding:9px 8px;border-bottom:1px solid #eef2f6;vertical-align:top}td.k{width:38%;color:#64748b;font-size:11px}td.v{font-weight:600;word-break:break-word}'
+          + '.ft{margin-top:22px;padding-top:10px;border-top:1px solid #e2e8f0;color:#64748b;font-size:10px}.hash{margin-top:6px;word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:8.5px}'
+          + '</style></head><body><div class="bar"><button onclick="window.print()">' + L.print + '</button></div><div class="pg">'
+          + '<div class="hd"><img src="./n26-logo.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(det.pid) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
+          + '<div class="box"><div class="kk">' + L.holder + '</div><div class="vv">' + esc(holder || '—') + '</div><div class="kk" style="margin-top:10px">' + L.acc + '</div><div class="vv mono">' + esc(ibanSp) + '</div></div>'
+          + '<div class="amt"><div class="kk">' + L.amount + '</div><div class="n">' + esc(formatCurrency(amt, true)) + '</div></div>'
+          + '<table>' + rowsHtml + '</table>'
+          + '<div class="ft">' + L.foot + (hashStr ? '<div class="hash">SHA-256: ' + hashStr + '</div>' : '') + '</div></div>'
+          + '<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print()}catch(e){}},600)})<\/script></body></html>';
+        if (rw && rw.document) { rw.document.open(); rw.document.write(doc); rw.document.close(); }
+        else {
+          var blobR = new Blob([doc], { type: 'text/html;charset=utf-8' });
+          var aR = document.createElement('a');
+          aR.href = URL.createObjectURL(blobR); aR.download = 'n26-receipt-' + String(det.pid).replace(/[^A-Za-z0-9-]/g, '') + '.html';
+          document.body.appendChild(aR); aR.click();
+          setTimeout(function() { try { URL.revokeObjectURL(aR.href); aR.remove(); } catch (e) {} }, 1500);
+        }
+        haptic([10, 30, 10]);
+        showToast(de ? 'Quittung bereit' : 'Receipt ready', det.pid, 'success');
+      };
+
       handleSendRef.current = handleSend;
       return (
         <div className="fade-page min-h-screen bg-background overflow-x-hidden">
@@ -12733,6 +13070,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                         t={t}
                         lastUpdated={lastUpdatedLabel}
                       />
+                      {kycFull ? <FxStrip lang={lang} wallets={fx.w} onOpen={() => setFxOpen(true)} /> : null}
                       {amlHoldActive && (
                         <AmlHoldBanner
                           amount={amlHoldAmount}
@@ -13216,6 +13554,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                               <div className="rounded-2xl border border-border bg-white p-4 soft-card">
                                 <p className="text-sm font-semibold">{t('bio_title')}</p>
                                 <p className="text-[11px] text-muted-foreground mt-0.5">{t('bio_desc')}</p>
+                                <p className="text-[11px] font-medium text-teal-700 mt-0.5">{bioKind(lang !== 'en')}</p>
                                 <button
                                   type="button"
                                   className="mt-3 w-full rounded-xl bg-slate-900 py-2.5 text-xs font-semibold text-white"
@@ -13228,8 +13567,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                                       haptic(10);
                                       return;
                                     }
-                                    if (!webauthnAvailable()) {
-                                      showToast(t('bio_unsupported'), '');
+                                    if (!webauthnAvailable() || !(await webauthnPlatformReady())) {
+                                      var pr0 = bioProblem(null, lang !== 'en');
+                                      showToast(pr0.title, pr0.body);
                                       return;
                                     }
                                     try {
@@ -13238,7 +13578,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                                       showToast(t('bio_enabled'), t('bio_ok'));
                                       haptic([10, 30, 10]);
                                     } catch (err) {
-                                      showToast(t('bio_fail'), t('bio_unsupported'));
+                                      var pr1 = bioProblem(err, lang !== 'en');
+                                      showToast(pr1.title, pr1.body);
                                     }
                                   }}
                                 >
@@ -13252,6 +13593,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                                 <div className="min-w-0">
                                   <p className="text-sm font-semibold">{t('vibrate_on')}</p>
                                   <p className="text-[11px] text-muted-foreground">{t('vibrate_desc')}</p>
+                                  {!hapticSupported() ? <p className="mt-0.5 text-[10px] text-amber-700">{lang === 'en' ? 'This device/browser has no vibration support (iPhone: iOS 17.4+ required).' : 'Dieses Gerät/dieser Browser unterstützt keine Vibration (iPhone: ab iOS 17.4).'}</p> : null}
                                 </div>
                                 <button
                                   type="button"
@@ -13413,7 +13755,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           <RequestModal open={requestOpen} onClose={() => setRequestOpen(false)} onRequest={handleRequest} contacts={contacts} t={t} />
           <SpaceDepositModal open={spaceModalOpen} space={selectedSpace} onClose={() => setSpaceModalOpen(false)} onDeposit={handleSpaceDeposit} onWithdraw={handleSpaceWithdraw} t={t} />
           {/* >>> NEW: полная история операций */}
-          <TxDetailModal tx={txDetail} onClose={function() { setTxDetail(null); }} t={t} lang={lang} ops={txOps} />
+          <TxDetailModal tx={txDetail} onClose={function() { setTxDetail(null); }} t={t} lang={lang} ops={txOps} onReceipt={openTxReceipt} />
+          <FxPanel open={fxOpen} onClose={() => setFxOpen(false)} lang={lang} fx={fx} eurBalance={availableBalance} onAdd={fxAdd} onExchange={fxExchange} />
           <PayeesModal open={payeesOpen} onClose={() => setPayeesOpen(false)} lang={lang} favs={favs} templates={templates} recurring={recurring}
             onSendItem={sendSaved} onDelFav={id => setFavs(p => p.filter(f => f.id !== id))} onDelTpl={id => setTemplates(p => p.filter(x => x.id !== id))}
             onAddTpl={addTpl} onAddRec={addRec} onDelRec={id => setRecurring(p => p.filter(x => x.id !== id))}
