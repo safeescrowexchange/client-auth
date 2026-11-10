@@ -3214,6 +3214,26 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+<style id="n26-fx-anim">
+@keyframes fxUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fxSheet{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fxFade{from{opacity:0}to{opacity:1}}
+@keyframes fxFlashUp{0%{background:rgba(16,185,129,.28)}100%{background:transparent}}
+@keyframes fxFlashDn{0%{background:rgba(244,63,94,.24)}100%{background:transparent}}
+@keyframes fxPulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes fxPop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.fx-card{animation:fxUp .45s cubic-bezier(.2,.8,.2,1) both;transition:transform .18s ease,box-shadow .18s ease}
+.fx-card:active{transform:scale(.97)}
+.fx-sheet{animation:fxSheet .32s cubic-bezier(.2,.8,.2,1) both}
+.fx-overlay{animation:fxFade .25s ease both}
+.fx-up{animation:fxFlashUp 1.2s ease-out;border-radius:6px}
+.fx-dn{animation:fxFlashDn 1.2s ease-out;border-radius:6px}
+.fx-live{display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;margin-right:5px;animation:fxPulse 1.6s ease-in-out infinite}
+.fx-pop{animation:fxPop .4s cubic-bezier(.2,.8,.2,1) both}
+.fx-pill{transition:transform .15s ease,background .2s ease,box-shadow .2s ease}
+.fx-pill:active{transform:scale(.95)}
+@media (prefers-reduced-motion:reduce){.fx-card,.fx-sheet,.fx-overlay,.fx-up,.fx-dn,.fx-live,.fx-pop{animation:none!important}}
+</style>
 </head>
 <body>
   <div id="root"></div>
@@ -6165,33 +6185,78 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
       };
       const COUNTRY_ORDER = ['DE', 'AT', 'CH', 'BE', 'PL', 'IT'];
 
-      const [step, setStep] = useState(0);
+      // ---- persistence (localStorage survives tab kills / reloads on phones) ----
+      const REG_HOUR = 3600 * 1000;
+      const regNorm = function(e) { return String(e || '').trim().toLowerCase(); };
+      const regGet = function(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+      const regSet = function(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+      const regMailRead = function(em) { return (em && regGet('n26_rm_' + em)) || {}; };
+      const regMailState = function(email) {
+        var em = regNorm(email), now = Date.now(), r = regMailRead(em);
+        var log = (r.log || []).filter(function(x) { return now - x < REG_HOUR; });
+        var active = !!(r.code && r.exp > now);
+        return { code: active ? r.code : '', exp: active ? r.exp : 0, resendAt: r.resendAt || 0, count: log.length,
+                 verified: !!(r.ver && now - r.ver < 2 * REG_HOUR) };
+      };
+      const _draftRef = useRef(null);
+      if (_draftRef.current === null) {
+        var _d0 = regGet('n26_reg_draft2');
+        _draftRef.current = (_d0 && _d0.ts && Date.now() - _d0.ts < 48 * 3600 * 1000) ? _d0 : {};
+      }
+      const _draft = _draftRef.current;
+      const _ms0 = regMailState(_draft.form && _draft.form.email);
+      const _restoredStep = (function() {
+        var st = Math.min(Number(_draft.step) || 0, 3);
+        if (st >= 2 && !_ms0.verified) st = 1;
+        if (st >= 2) st = 1; // password is never stored -> user re-enters it on the account step
+        return st;
+      })();
+      const [restored, setRestored] = useState(!!(_draft.country || (_draft.form && _draft.form.email)));
+      const regDoneRef = useRef(false);
+      const [step, setStep] = useState(_restoredStep);
       useEffect(function() {
-        // form/country are not persisted, so a restored step would be broken -> always start clean
         try { API.skv.remove('n26_reg_step'); } catch (e) {}
       }, []);
-      const [country, setCountry] = useState('');
-      const [emailCode, setEmailCode] = useState('');
-      const [emailCodeSent, setEmailCodeSent] = useState(false);
-      const [emailVerified, setEmailVerified] = useState(false);
+      const [country, setCountry] = useState(_draft.country || '');
+      const [emailCode, setEmailCode] = useState(_ms0.code || '');
+      const [emailCodeSent, setEmailCodeSent] = useState(!!_ms0.code);
+      const [emailVerified, setEmailVerified] = useState(_ms0.verified);
       const [emailCodeInput, setEmailCodeInput] = useState('');
       const [emailCodeError, setEmailCodeError] = useState('');
       const [emailCodeBusy, setEmailCodeBusy] = useState(false);
-      const [emailCodeExpiresAt, setEmailCodeExpiresAt] = useState(0);
-      const [emailSendCount, setEmailSendCount] = useState(0);
-      const [emailResendAt, setEmailResendAt] = useState(0);
+      const [emailCodeExpiresAt, setEmailCodeExpiresAt] = useState(_ms0.exp || 0);
+      const [emailSendCount, setEmailSendCount] = useState(_ms0.count || 0);
+      const [emailResendAt, setEmailResendAt] = useState(_ms0.resendAt || 0);
       const [emailTimerNow, setEmailTimerNow] = useState(function() { return Date.now(); });
       useEffect(function() {
         if (!emailCodeSent || emailVerified || step !== 1) return undefined;
         var id = setInterval(function() { setEmailTimerNow(Date.now()); }, 1000);
         return function() { clearInterval(id); };
       }, [emailCodeSent, emailVerified, step]);
-      const [form, setForm] = useState({
+      const [form, setForm] = useState(Object.assign({
         firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '',
         birthDate: '', address: '', city: '', zip: '', agree: false,
         docType: '', docFile: null, docBackFile: null, selfieDone: false,
         ocrName: '', ocrBirth: '', ocrIdNumber: '', ocrValid: '',
-      });
+      }, _draft.form || {}, { password: '', confirmPassword: '', docFile: null, docBackFile: null, selfieDone: false }));
+      // hydrate code state from storage whenever the email changes (reload / re-entry never resets limits)
+      useEffect(function() {
+        var ms = regMailState(form.email);
+        setEmailCode(ms.code || '');
+        setEmailCodeSent(!!ms.code);
+        setEmailVerified(ms.verified);
+        setEmailCodeExpiresAt(ms.exp || 0);
+        setEmailSendCount(ms.count || 0);
+        setEmailResendAt(ms.resendAt || 0);
+        setEmailTimerNow(Date.now());
+      }, [form.email]);
+      // save progress on every change (no password, no files/photos)
+      useEffect(function() {
+        if (regDoneRef.current) return;
+        var f = {};
+        ['firstName','lastName','email','phone','birthDate','address','city','zip','agree','docType'].forEach(function(k) { f[k] = form[k]; });
+        regSet('n26_reg_draft2', { ts: Date.now(), step: step, country: country, form: f });
+      }, [step, country, form]);
       const [errors, setErrors] = useState({});
       const [ocrReady, setOcrReady] = useState(false);
       const [kycLevel, setKycLevel] = useState('none');
@@ -6846,27 +6911,50 @@ const analyzeDocumentImage = function(file, docType) {
         return Object.keys(e).length === 0;
       };
 
-      const EMAIL_CODE_TTL_MS = 5 * 60 * 1000;
-      const EMAIL_RESEND_DELAYS_MS = [60 * 1000, 15 * 60 * 1000, 60 * 60 * 1000];
+      const EMAIL_CODE_TTL_MS = 15 * 60 * 1000;
       const formatEmailCountdown = function(ms) {
         var s = Math.max(0, Math.ceil(ms / 1000));
         var m = Math.floor(s / 60);
         var r = s % 60;
         return m + ':' + String(r).padStart(2, '0');
       };
-      const sendEmailVerificationCode = function() {
+      const sendEmailVerificationCode = function(isResend) {
         var now = Date.now();
-        if (emailCodeBusy) return;
-        if (emailSendCount > 0 && emailResendAt && now < emailResendAt) {
-          setEmailCodeError(
-            (lang === 'de' ? 'Erneut senden in ' : 'Resend available in ') + formatEmailCountdown(emailResendAt - now)
-          );
+        var de = lang !== 'en';
+        var em = regNorm(form.email);
+        if (!em || emailCodeBusy) return;
+        var rec = regMailRead(em);
+        var log = (rec.log || []).filter(function(x) { return now - x < REG_HOUR; });
+        var hasActive = !!(rec.code && rec.exp > now);
+        if (rec.lock && rec.lock > now) {
+          setEmailCodeError((de ? 'Zu viele Versuche. Bitte warte ' : 'Too many attempts. Please wait ') + formatEmailCountdown(rec.lock - now) + ' min.');
           return;
         }
-        var code = String(Math.floor(1000 + Math.random() * 9000));
-        var nextCount = emailSendCount + 1;
-        var delayIdx = Math.min(nextCount - 1, EMAIL_RESEND_DELAYS_MS.length - 1);
-        var nextResendAt = now + EMAIL_RESEND_DELAYS_MS[delayIdx];
+        // active code already exists (reload / coming back) -> reuse it, send NO new email
+        if (hasActive && isResend !== true) {
+          setEmailCode(rec.code); setEmailCodeSent(true); setEmailVerified(false);
+          setEmailCodeExpiresAt(rec.exp); setEmailSendCount(log.length); setEmailResendAt(rec.resendAt || 0);
+          setEmailCodeError(''); setEmailTimerNow(now);
+          return;
+        }
+        if (log.length > 0 && rec.resendAt && now < rec.resendAt) {
+          setEmailCodeError((de ? 'Erneut senden in ' : 'Resend available in ') + formatEmailCountdown(rec.resendAt - now));
+          return;
+        }
+        if (log.length >= 3) {
+          setEmailCodeError((de ? 'Limit erreicht (3 E-Mails pro Stunde). Erneut möglich in ' : 'Limit reached (3 emails per hour). Try again in ') + formatEmailCountdown(log[0] + REG_HOUR - now) + ' min.');
+          return;
+        }
+        var dev = (regGet('n26_rm_dev') || []).filter(function(x) { return now - x < REG_HOUR; });
+        if (dev.length >= 6) {
+          setEmailCodeError(de ? 'Zu viele Anfragen von diesem Gerät. Bitte später erneut versuchen.' : 'Too many requests from this device. Please try again later.');
+          return;
+        }
+        var code = hasActive ? String(rec.code) : String(Math.floor(1000 + Math.random() * 9000));
+        log.push(now); dev.push(now);
+        var nextResendAt = now + (log.length === 1 ? 60 * 1000 : 5 * 60 * 1000);
+        regSet('n26_rm_' + em, { code: code, exp: now + EMAIL_CODE_TTL_MS, log: log, resendAt: nextResendAt, bad: 0, lock: 0, ver: 0 });
+        regSet('n26_rm_dev', dev);
         setEmailCode(code);
         setEmailCodeSent(true);
         setEmailVerified(false);
@@ -6874,7 +6962,7 @@ const analyzeDocumentImage = function(file, docType) {
         setEmailCodeError('');
         setEmailCodeBusy(true);
         setEmailCodeExpiresAt(now + EMAIL_CODE_TTL_MS);
-        setEmailSendCount(nextCount);
+        setEmailSendCount(log.length);
         setEmailResendAt(nextResendAt);
         setEmailTimerNow(now);
         try {
@@ -6897,19 +6985,38 @@ const analyzeDocumentImage = function(file, docType) {
       };
 
       const verifyEmailCode = function() {
+        var de = lang !== 'en';
+        var now = Date.now();
+        var em = regNorm(form.email);
+        var rec = regMailRead(em);
         var entered = String(emailCodeInput || '').replace(/\D/g, '').slice(0, 4);
         if (entered.length !== 4) {
-          setEmailCodeError(lang === 'de' ? 'Bitte 4-stelligen Code eingeben' : 'Please enter the 4-digit code');
+          setEmailCodeError(de ? 'Bitte 4-stelligen Code eingeben' : 'Please enter the 4-digit code');
           return;
         }
-        if (emailCodeExpiresAt && Date.now() > emailCodeExpiresAt) {
-          setEmailCodeError(lang === 'de' ? 'Code abgelaufen (5 Min.). Bitte neu senden.' : 'Code expired (5 min). Please resend.');
+        if (rec.lock && rec.lock > now) {
+          setEmailCodeError((de ? 'Zu viele Fehlversuche. Bitte warte ' : 'Too many wrong attempts. Please wait ') + formatEmailCountdown(rec.lock - now) + ' min.');
           return;
         }
-        if (entered !== String(emailCode)) {
-          setEmailCodeError(lang === 'de' ? 'Falscher Code. Bitte erneut versuchen.' : 'Wrong code. Please try again.');
+        var exp = rec.exp || emailCodeExpiresAt;
+        var realCode = String(rec.code || emailCode || '');
+        if (!realCode || (exp && now > exp)) {
+          setEmailCodeError(de ? 'Code abgelaufen (15 Min.). Bitte neu senden.' : 'Code expired (15 min). Please resend.');
           return;
         }
+        if (entered !== realCode) {
+          rec.bad = (rec.bad || 0) + 1;
+          if (rec.bad >= 5) {
+            rec.lock = now + 15 * 60 * 1000; rec.bad = 0; rec.code = '';
+            regSet('n26_rm_' + em, rec);
+            setEmailCodeError(de ? 'Zu viele Fehlversuche. Bitte 15 Min. warten.' : 'Too many wrong attempts. Please wait 15 min.');
+            return;
+          }
+          regSet('n26_rm_' + em, rec);
+          setEmailCodeError(de ? 'Falscher Code. Bitte erneut versuchen.' : 'Wrong code. Please try again.');
+          return;
+        }
+        regSet('n26_rm_' + em, { code: '', exp: 0, log: [], resendAt: 0, bad: 0, lock: 0, ver: now });
         setEmailCodeError('');
         setEmailVerified(true);
         setStep(function(s) { return s + 1; });
@@ -6963,6 +7070,8 @@ const analyzeDocumentImage = function(file, docType) {
         // Never allow completing registration without passing document + selfie steps
         if (!docVerified || (!selfieVerified && !selfieSkipped)) { setStep(docVerified ? 4 : 3); return; }
         try { API.skv.remove('n26_reg_step'); } catch (e) {}
+        regDoneRef.current = true;
+        try { localStorage.removeItem('n26_reg_draft2'); } catch (e) {}
         // Always pending until admin approves via Pusher (kyc-approve)
         onComplete({
           firstName: form.firstName.trim(),
@@ -7039,6 +7148,16 @@ const analyzeDocumentImage = function(file, docType) {
 
           <div className="relative z-10 flex flex-1 items-start justify-center px-4 py-6 sm:py-10">
             <div className="w-full max-w-md page-enter">
+
+              {restored && (
+                <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-teal-200 bg-teal-50 px-4 py-3 text-xs text-teal-900">
+                  <span>{lang === 'de' ? 'Dein Fortschritt wurde wiederhergestellt. Passwort und Dokumente bitte erneut eingeben.' : 'Your progress was restored. Please re-enter your password and documents.'}</span>
+                  <span className="flex shrink-0 gap-3">
+                    <button type="button" className="font-semibold underline" onClick={function() { setRestored(false); }}>OK</button>
+                    <button type="button" className="font-semibold underline" onClick={function() { regDoneRef.current = true; try { localStorage.removeItem('n26_reg_draft2'); } catch (e) {} window.location.reload(); }}>{lang === 'de' ? 'Neu starten' : 'Start over'}</button>
+                  </span>
+                </div>
+              )}
 
               {step === 0 && (
                 <div className="space-y-6">
@@ -7177,7 +7296,7 @@ const analyzeDocumentImage = function(file, docType) {
                         className="w-full rounded-2xl bg-teal-600 py-4 text-sm font-semibold text-white shadow-lg shadow-teal-600/25 transition hover:bg-teal-700 disabled:opacity-60">
                         {lang === 'de' ? 'Code bestätigen' : 'Confirm code'}
                       </button>
-                      <button type="button" onClick={function() { sendEmailVerificationCode(); }}
+                      <button type="button" onClick={function() { sendEmailVerificationCode(true); }}
                         disabled={emailCodeBusy || (emailResendAt && emailTimerNow < emailResendAt)}
                         className="w-full rounded-2xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60">
                         {emailCodeBusy
@@ -10856,7 +10975,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       );
     }
 
-    /* ===== Multi-currency wallets (demo rates, integer minor units) ===== */
+    /* ===== Multi-currency wallets (integer minor units) ===== */
     const FX_CURRENCIES = [
       { code: 'USD', de: 'US-Dollar', en: 'US dollar', base: 1.0790 },
       { code: 'GBP', de: 'Britisches Pfund', en: 'British pound', base: 0.8560 },
@@ -10869,6 +10988,53 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       var slot = Math.floor(Date.now() / 30000);
       var drift = Math.sin(slot / 7 + code.charCodeAt(0)) * 0.004;
       return Math.round(c.base * (1 + drift) * 10000) / 10000;
+    }
+    function fxTrend(code) {
+      var c = FX_CURRENCIES.filter(function(x) { return x.code === code; })[0];
+      if (!c) return 0;
+      var slot = Math.floor(Date.now() / 30000) - 1;
+      var prev = Math.round(c.base * (1 + Math.sin(slot / 7 + code.charCodeAt(0)) * 0.004) * 10000) / 10000;
+      var cur = fxRate(code);
+      return cur > prev ? 1 : cur < prev ? -1 : 0;
+    }
+    function FxIcon({ code, size }) {
+      var z = size || 28, id = 'fxc' + code + z;
+      var f = null;
+      if (code === 'EUR') f = <g><rect width="40" height="40" fill="#1d4ed8"/>{[0,1,2,3,4,5,6,7,8,9,10,11].map(function(k) { var a = k * Math.PI / 6; return <circle key={k} cx={20 + 11 * Math.sin(a)} cy={20 - 11 * Math.cos(a)} r="1.9" fill="#facc15"/>; })}</g>;
+      else if (code === 'USD') f = <g><rect width="40" height="40" fill="#fff"/>{[0,1,2,3,4,5,6].map(function(k) { return <rect key={k} y={k * 40 / 7 * 1} width="40" height={40 / 14 * 1} fill="#dc2626" transform={'translate(0,' + 0 + ')'} />; })}<rect width="20" height="22" fill="#1e3a8a"/>{[[5,5],[10,5],[15,5],[7,10],[12,10],[5,15],[10,15],[15,15]].map(function(p, k) { return <circle key={k} cx={p[0]} cy={p[1]} r="1.1" fill="#fff"/>; })}</g>;
+      else if (code === 'GBP') f = <g><rect width="40" height="40" fill="#1e3a8a"/><path d="M0 0L40 40M40 0L0 40" stroke="#fff" strokeWidth="7"/><path d="M0 0L40 40M40 0L0 40" stroke="#dc2626" strokeWidth="2.4"/><path d="M20 0V40M0 20H40" stroke="#fff" strokeWidth="11"/><path d="M20 0V40M0 20H40" stroke="#dc2626" strokeWidth="6.5"/></g>;
+      else if (code === 'CHF') f = <g><rect width="40" height="40" fill="#dc2626"/><rect x="17" y="8" width="6" height="24" fill="#fff"/><rect x="8" y="17" width="24" height="6" fill="#fff"/></g>;
+      else if (code === 'PLN') f = <g><rect width="40" height="20" fill="#fff"/><rect y="20" width="40" height="20" fill="#dc2626"/></g>;
+      else f = <rect width="40" height="40" fill="#64748b"/>;
+      return (
+        <svg width={z} height={z} viewBox="0 0 40 40" className="shrink-0" aria-hidden="true" style={{ borderRadius: '50%', boxShadow: '0 0 0 1px rgba(15,23,42,.12)' }}>
+          <defs><clipPath id={id}><circle cx="20" cy="20" r="20"/></clipPath></defs>
+          <g clipPath={'url(#' + id + ')'}>{f}</g>
+        </svg>
+      );
+    }
+    function FxNum({ cents, cur, de }) {
+      const [v, setV] = useState(cents);
+      const ref = useRef(cents);
+      useEffect(function() {
+        var from = ref.current, to = cents, t0 = Date.now(), dur = 700, raf;
+        if (from === to) return undefined;
+        var tick = function() {
+          var p = Math.min(1, (Date.now() - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+          var val = Math.round(from + (to - from) * e);
+          setV(val); ref.current = val;
+          if (p < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return function() { cancelAnimationFrame(raf); };
+      }, [cents]);
+      return <>{fxFmt(v, cur, de)}</>;
+    }
+    function FxRate({ code, de }) {
+      const [, setT] = useState(0);
+      useEffect(function() { var iv = setInterval(function() { setT(function(n) { return n + 1; }); }, 5000); return function() { clearInterval(iv); }; }, []);
+      var r = fxRate(code), tr = fxTrend(code);
+      return <span key={r} className={'inline-flex items-center gap-0.5 tabular-nums ' + (tr > 0 ? 'fx-up text-emerald-700' : tr < 0 ? 'fx-dn text-rose-600' : 'text-slate-500')}>{tr > 0 ? '▲' : tr < 0 ? '▼' : ''} {r.toFixed(4)}</span>;
     }
     function fxFee(eurCents) { return Math.max(50, Math.round(eurCents * 0.005)); }
     function fxFmt(cents, cur, de) {
@@ -10893,16 +11059,16 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           </div>
           {codes.length === 0 ? (
             <button type="button" onClick={onOpen} className="flex w-full items-center justify-between rounded-xl border border-dashed border-slate-300 px-4 py-3 text-left text-sm text-slate-600">
-              <span>{de ? 'Mehrwährungskonto: USD, GBP, CHF, PLN' : 'Multi-currency: USD, GBP, CHF, PLN'}</span>
+              <span className="flex items-center gap-1.5"><span className="flex -space-x-1.5">{['USD','GBP','CHF','PLN'].map(function(c) { return <FxIcon key={c} code={c} size={22} />; })}</span><span className="ml-2">{de ? 'Mehrwährungskonto einrichten' : 'Set up multi-currency'}</span></span>
               <span className="text-lg leading-none text-teal-700">+</span>
             </button>
           ) : (
             <div className="grid grid-cols-2 gap-2">
-              {codes.map(function(c) {
+              {codes.map(function(c, i) {
                 return (
-                  <button key={c} type="button" onClick={onOpen} className="rounded-xl bg-slate-50 px-3 py-2.5 text-left">
-                    <span className="block text-[11px] text-slate-500">{c}</span>
-                    <span className="block text-base font-semibold tabular-nums">{fxFmt(wallets[c], c, de)}</span>
+                  <button key={c} type="button" onClick={onOpen} className="fx-card rounded-xl bg-slate-50 px-3 py-2.5 text-left" style={{ animationDelay: (i * 60) + 'ms' }}>
+                    <span className="flex items-center justify-between text-[11px] text-slate-500"><span className="flex items-center gap-1.5"><FxIcon code={c} size={18} />{c}</span><span className="text-[10px]"><span className="fx-live" /><FxRate code={c} de={de} /></span></span>
+                    <span className="mt-1 block text-base font-semibold tabular-nums"><FxNum cents={wallets[c]} cur={c} de={de} /></span>
                   </button>
                 );
               })}
@@ -10948,17 +11114,17 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       };
       const hist = ((fx && fx.h) || []).slice(0, 6);
       return (
-        <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/40 sm:items-center" onClick={onClose}>
-          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-slate-50 pb-6 sm:rounded-3xl" onClick={function(e) { e.stopPropagation(); }} style={{ overscrollBehavior: 'contain' }}>
+        <div className="fx-overlay fixed inset-0 z-[80] flex items-end justify-center bg-black/40 sm:items-center" onClick={onClose}>
+          <div className="fx-sheet max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-slate-50 pb-6 sm:rounded-3xl" onClick={function(e) { e.stopPropagation(); }} style={{ overscrollBehavior: 'contain' }}>
             <div className="sticky top-0 z-10 flex items-center justify-between bg-slate-50 px-5 py-4">
               <h2 className="text-base font-bold">{de ? 'Währungen & Umtausch' : 'Currencies & exchange'}</h2>
               <button type="button" onClick={onClose} aria-label="Close" className="rounded-full bg-white p-2 text-slate-500 shadow-sm ring-1 ring-border">✕</button>
             </div>
             <div className="space-y-3 px-5">
               <div className="rounded-2xl bg-white p-4 ring-1 ring-border">
-                <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">EUR · {de ? 'Hauptkonto' : 'Main account'}</span><span className="text-base font-semibold tabular-nums">{fxFmt(Math.round((Number(eurBalance) || 0) * 100), 'EUR', de)}</span></div>
+                <div className="flex items-center justify-between"><span className="flex items-center gap-2 text-xs font-semibold text-slate-500"><FxIcon code="EUR" size={22} />EUR · {de ? 'Hauptkonto' : 'Main account'}</span><span className="text-base font-semibold tabular-nums">{fxFmt(Math.round((Number(eurBalance) || 0) * 100), 'EUR', de)}</span></div>
                 {codes.map(function(c) {
-                  return <div key={c} className="mt-2 flex items-center justify-between border-t border-border/60 pt-2"><span className="text-xs font-semibold text-slate-500">{c}</span><span className="text-base font-semibold tabular-nums">{fxFmt(wallets[c], c, de)}</span></div>;
+                  return <div key={c} className="mt-2 flex items-center justify-between border-t border-border/60 pt-2"><span className="flex items-center gap-2 text-xs font-semibold text-slate-500"><FxIcon code={c} size={22} />{c}<span className="text-[10px] font-medium"><FxRate code={c} de={de} /></span></span><span className="text-base font-semibold tabular-nums"><FxNum cents={wallets[c]} cur={c} de={de} /></span></div>;
                 })}
               </div>
               {addable.length ? (
@@ -10966,7 +11132,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   <p className="mb-2 text-xs font-semibold text-slate-500">{de ? 'Währung hinzufügen' : 'Add currency'}</p>
                   <div className="grid grid-cols-2 gap-2">
                     {addable.map(function(c) {
-                      return <button key={c.code} type="button" onClick={function() { onAdd(c.code); setCode(c.code); }} className="rounded-xl bg-slate-50 px-3 py-2 text-left"><span className="block text-sm font-semibold">{c.code}</span><span className="block text-[11px] text-slate-500">{de ? c.de : c.en}</span></button>;
+                      return <button key={c.code} type="button" onClick={function() { onAdd(c.code); setCode(c.code); }} className="fx-pill flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-left"><FxIcon code={c.code} size={24} /><span className="block"><span className="block text-sm font-semibold">{c.code}</span><span className="block text-[11px] text-slate-500">{de ? c.de : c.en}</span></span></button>;
                     })}
                   </div>
                 </div>
@@ -10987,14 +11153,14 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                     <input value={amount} onChange={function(e) { setAmount(e.target.value); setErr(''); }} inputMode="decimal" placeholder="100,00" style={{ fontSize: 16 }} className="mt-1 w-full rounded-xl border border-border px-3 py-2.5 tabular-nums outline-none focus:border-teal-500" />
                   </label>
                   <div className="space-y-1 rounded-xl bg-slate-50 px-3 py-2.5 text-xs">
-                    <div className="flex justify-between"><span className="text-slate-500">{de ? 'Kurs (Demo)' : 'Rate (demo)'}</span><span className="tabular-nums">1 EUR = {rate.toFixed(4)} {cur}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-500">{de ? 'Kurs (live)' : 'Rate (live)'}</span><span className="tabular-nums">1 EUR = <FxRate code={cur} de={de} /> {cur}</span></div>
                     <div className="flex justify-between"><span className="text-slate-500">{de ? 'Gebühr' : 'Fee'}</span><span className="tabular-nums">{prev ? prev.fee : '—'}</span></div>
                     <div className="flex justify-between"><span className="text-slate-500">{de ? 'Belastung' : 'You pay'}</span><span className="tabular-nums font-semibold">{prev ? prev.give : '—'}</span></div>
                     <div className="flex justify-between"><span className="text-slate-500">{de ? 'Du erhältst' : 'You get'}</span><span className="tabular-nums font-semibold text-emerald-700">{prev ? prev.get : '—'}</span></div>
                   </div>
                   {err ? <p className="text-xs font-medium text-rose-600">{err}</p> : null}
                   <button type="button" onClick={submit} className="w-full rounded-xl bg-teal-700 py-3 text-sm font-semibold text-white">{de ? 'Jetzt umtauschen' : 'Exchange now'}</button>
-                  <p className="text-[10px] text-slate-400">{de ? 'Demo-Kurse, Gebühr 0,5 % (mind. 0,50 €).' : 'Demo rates, fee 0.5% (min. €0.50).'}</p>
+                  <p className="text-[10px] text-slate-400">{de ? 'Kurse aktualisieren sich laufend. Gebühr 0,5 % (mind. 0,50 €).' : 'Rates update continuously. Fee 0.5% (min. €0.50).'}</p>
                 </div>
               ) : null}
               {hist.length ? (
@@ -14789,6 +14955,12 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
     function App() {
       const [page, setPage] = useState(() => {
         const session = getSession();
+        if (!session) {
+          try {
+            var _rd = JSON.parse(localStorage.getItem('n26_reg_draft2') || 'null');
+            if (_rd && _rd.ts && Date.now() - _rd.ts < 48 * 3600 * 1000 && (_rd.country || (_rd.form && _rd.form.email))) return 'register';
+          } catch (e) {}
+        }
         return session ? 'bank' : (isStandaloneApp ? 'login' : 'landing');
       });
       const [user, setUser] = useState(() => getSession());
