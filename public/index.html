@@ -3265,6 +3265,27 @@ window.n26ShowDoc = function(html) {
 .tour-ring{position:absolute;inset:14px;border-radius:50%;border:3px solid #10b981;animation:tourRing 1.8s ease-out infinite}
 .tour-check{stroke-dasharray:30;animation:tourCheck .6s .25s ease-out both}
 </style>
+<style id="n26-aml-v2">
+.aml-deadline{margin:10px 0 0;font-size:12px;font-weight:600;color:#0f766e}
+.aml-deadline.overdue{color:#b91c1c}
+.aml-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.aml-choice-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:16px 10px;border-radius:16px;background:#F7F6F3;border:1px solid #e6ebe9;color:#0f172a;cursor:pointer;transition:background .15s,box-shadow .15s}
+.aml-choice-card:hover{background:#eef6f4;box-shadow:0 6px 16px -10px rgba(15,118,110,.4)}
+.aml-choice-card:active{transform:scale(.98)}
+.aml-choice-title{font-size:13px;font-weight:600}
+.aml-choice-sub{font-size:11.5px;color:#64748b}
+.aml-switch-link{display:block;margin-top:10px;background:none;border:0;padding:0;font:inherit;font-size:12px;font-weight:600;color:#0f766e;cursor:pointer}
+.aml-quiz{margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.aml-quiz-q{display:flex;flex-direction:column;gap:8px}
+.aml-quiz-qtext{margin:0;font-size:13px;font-weight:600;color:#0f172a;line-height:1.4}
+.aml-quiz-opts{display:flex;flex-wrap:wrap;gap:8px}
+.aml-quiz-opt{font:inherit;font-size:12.5px;font-weight:500;padding:8px 12px;border-radius:999px;background:#fff;border:1.5px solid #e2e8f0;color:#334155;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.aml-quiz-opt.on{background:#0f766e;border-color:#0f766e;color:#fff}
+.aml-quiz-submit{margin-top:4px}
+.aml-support-btn{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:9px 14px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;color:#0f172a;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.aml-support-btn:hover{background:#f8fafc}
+</style>
+
 </head>
 <body>
   <div id="root"></div>
@@ -7954,13 +7975,93 @@ const analyzeDocumentImage = function(file, docType) {
       );
     }
 
-    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, t, lang }) {
+    const AML_QUIZ_DE = [
+      { id: 'src', q: 'Woher stammt dieser Betrag?', options: ['Gehalt / Lohn', 'Verkauf (z. B. Auto, Immobilie, Gegenstand)', 'Geschenk oder Erbschaft', 'Rückzahlung eines Darlehens', 'Geschäftseinnahme', 'Sonstiges'] },
+      { id: 'know', q: 'Kennst du die absendende Person oder das Unternehmen persönlich?', options: ['Ja, gut bekannt (Familie/Freund)', 'Ja, geschäftlich bekannt', 'Nein, aber die Zahlung war erwartet', 'Nein, mir nicht bekannt'] },
+      { id: 'recur', q: 'Ist das eine einmalige Zahlung oder wiederholt sich das regelmäßig?', options: ['Einmalig', 'Wiederkehrend (z. B. monatlich)', 'Weiß ich noch nicht'] },
+      { id: 'purpose', q: 'Wofür wirst du das Geld hauptsächlich verwenden?', options: ['Alltägliche Ausgaben', 'Sparen / zur Seite legen', 'Größere Anschaffung', 'Weiterleitung an jemand anderen', 'Noch nicht entschieden'] },
+      { id: 'expect', q: 'Hast du mit diesem Betrag ungefähr in dieser Höhe gerechnet?', options: ['Ja, genau das erwartet', 'Ungefähr, etwas abweichend', 'Nein, überraschend hoch'] },
+      { id: 'prior', q: 'Hattest du mit dieser Person/Firma schon einmal eine Zahlung in ähnlicher Höhe?', options: ['Ja, schon öfter', 'Ja, einmal', 'Nein, zum ersten Mal'] },
+      { id: 'proof', q: 'Kannst du einen Nachweis zur Herkunft vorlegen (Vertrag, Rechnung, Gehaltsabrechnung o. Ä.)?', options: ['Ja, liegt vor', 'Teilweise', 'Nein, aktuell nicht'] },
+      { id: 'contact', q: 'Falls Rückfragen nötig sind — bist du in den nächsten 48 Stunden erreichbar?', options: ['Ja, jederzeit', 'Ja, mit etwas Verzögerung', 'Eher schlecht erreichbar'] },
+    ];
+    const AML_QUIZ_EN = [
+      { id: 'src', q: 'Where does this amount come from?', options: ['Salary / wages', 'Sale (e.g. car, property, item)', 'Gift or inheritance', 'Loan repayment', 'Business income', 'Other'] },
+      { id: 'know', q: 'Do you personally know the sender (person or company)?', options: ['Yes, close (family/friend)', 'Yes, a business contact', 'No, but the payment was expected', 'No, I don’t know them'] },
+      { id: 'recur', q: 'Is this a one-time payment or does it repeat regularly?', options: ['One-time', 'Recurring (e.g. monthly)', 'Not sure yet'] },
+      { id: 'purpose', q: 'What will you mainly use this money for?', options: ['Everyday expenses', 'Saving it', 'A larger purchase', 'Forwarding it to someone else', 'Not decided yet'] },
+      { id: 'expect', q: 'Did you expect roughly this amount?', options: ['Yes, exactly', 'Roughly, a bit different', 'No, surprisingly high'] },
+      { id: 'prior', q: 'Have you received a similar amount from this person/company before?', options: ['Yes, several times', 'Yes, once', 'No, this is the first time'] },
+      { id: 'proof', q: 'Can you provide proof of origin (contract, invoice, payslip, etc.)?', options: ['Yes, I have it', 'Partially', 'Not right now'] },
+      { id: 'contact', q: 'If we need to follow up — are you reachable in the next 48 hours?', options: ['Yes, anytime', 'Yes, with some delay', 'Hard to reach'] },
+    ];
+
+    function AmlQuizForm({ de, onSubmit }) {
+      const QS = de ? AML_QUIZ_DE : AML_QUIZ_EN;
+      const [answers, setAnswers] = useState({});
+      const done = QS.every(function(qq) { return answers[qq.id]; });
+      return (
+        <div className="aml-quiz">
+          {QS.map(function(qq, i) {
+            return (
+              <div key={qq.id} className="aml-quiz-q">
+                <p className="aml-quiz-qtext">{(i + 1) + '. ' + qq.q}</p>
+                <div className="aml-quiz-opts">
+                  {qq.options.map(function(opt) {
+                    const on = answers[qq.id] === opt;
+                    return (
+                      <button key={opt} type="button" aria-pressed={on}
+                        onClick={function() { setAnswers(function(a) { return Object.assign({}, a, { [qq.id]: opt }); }); }}
+                        className={'aml-quiz-opt' + (on ? ' on' : '')}>
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+          <button type="button" disabled={!done} onClick={function() { onSubmit(answers); }} className="aml-btn aml-quiz-submit">
+            {de ? 'Antworten senden' : 'Submit answers'}
+          </button>
+        </div>
+      );
+    }
+
+    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, t, lang }) {
       const de = lang !== 'en';
       const inputId = 'n26-aml-file-input';
       const [open, setOpen] = useState(function() { try { return localStorage.getItem('n26_aml_open') !== '0'; } catch (e) { return true; } });
       const [info, setInfo] = useState(false);
+      const [pick, setPick] = useState(null); // 'doc' | 'quiz' — which check the user chose to do first
+      const [, forceTick] = useState(0);
+      useEffect(function() { const iv = setInterval(function() { forceTick(function(n) { return n + 1; }); }, 30000); return function() { clearInterval(iv); }; }, []);
       const toggle = function() { setOpen(function(v) { try { localStorage.setItem('n26_aml_open', v ? '0' : '1'); } catch (e) {} return !v; }); };
       const cur = pending ? 2 : (uploading ? 1 : 0);
+      const deadlineMs = startedAt ? startedAt + 48 * 3600 * 1000 : null;
+      const msLeft = deadlineMs ? deadlineMs - Date.now() : null;
+      const overdue = msLeft != null && msLeft <= 0;
+      const hLeft = msLeft != null ? Math.max(0, Math.floor(msLeft / 3600000)) : null;
+      const mLeft = msLeft != null ? Math.max(0, Math.floor((msLeft % 3600000) / 60000)) : null;
+      const openSupport = function() {
+        try {
+          if (window.N26SupportChat && window.N26SupportChat.openWith) {
+            window.N26SupportChat.openWith({
+              topic: 'account',
+              subject: de ? 'Frage zur AML-Prüfung' : 'Question about my AML review',
+              text: (de ? 'Meine AML-Prüfung über ' : 'My AML review for ') + formatCurrency(amount) + (de ? ' — meine Frage: ' : ' — my question: ')
+            });
+          } else if (window.N26SupportChat) {
+            window.N26SupportChat.open();
+          }
+        } catch (e) {}
+      };
+      let stage;
+      if (pending) stage = 'waiting';
+      else if (docDone && !quizDone) stage = 'quiz';
+      else if (quizDone && !docDone) stage = 'doc';
+      else if (pick) stage = pick;
+      else stage = 'choose';
       const labels = de ? ['Sperre', 'Dokument', 'Prüfung', 'Freigabe'] : ['Hold', 'Document', 'Review', 'Release'];
       const status = pending ? (de ? 'In Prüfung' : 'In review') : (de ? 'Nachweis erforderlich' : 'Proof required');
       const chev = (
@@ -7986,6 +8087,14 @@ const analyzeDocumentImage = function(file, docType) {
                     : 'We need proof of origin for part of your balance. This amount stays on hold until it is released – the rest of your balance remains fully available.')}
               </p>
 
+              {deadlineMs && !pending && (
+                <p className={'aml-deadline' + (overdue ? ' overdue' : '')}>
+                  {overdue
+                    ? (de ? 'Frist abgelaufen — bitte jetzt handeln.' : 'Deadline passed — please act now.')
+                    : (de ? 'Frist zur Einreichung: noch ' : 'Deadline to submit: ') + hLeft + (de ? ' Std. ' : 'h ') + mLeft + (de ? ' Min.' : 'm')}
+                </p>
+              )}
+
               <div className="aml-steps" role="list">
                 {labels.map(function(lb, idx) {
                   const cls = idx < cur ? 'done' : (idx === cur ? 'cur' : '');
@@ -8000,15 +8109,47 @@ const analyzeDocumentImage = function(file, docType) {
 
               {statusText ? <p className="aml-status">{statusText}</p> : null}
 
-              {!pending && (
+              {stage === 'choose' && (
+                <div className="aml-choice-grid">
+                  <button type="button" className="aml-choice-card" onClick={function() { setPick('doc'); }}>
+                    <LucideIcon name="file-image" className="h-5 w-5" />
+                    <span className="aml-choice-title">{de ? 'Dokument hochladen' : 'Upload document'}</span>
+                    <span className="aml-choice-sub">{de ? 'Nachweis der Herkunft' : 'Proof of origin'}</span>
+                  </button>
+                  <button type="button" className="aml-choice-card" onClick={function() { setPick('quiz'); }}>
+                    <LucideIcon name="ShieldCheck" className="h-5 w-5" />
+                    <span className="aml-choice-title">{de ? 'Sicherheitsfragen' : 'Security questions'}</span>
+                    <span className="aml-choice-sub">{de ? '8 kurze Fragen' : '8 short questions'}</span>
+                  </button>
+                </div>
+              )}
+
+              {stage === 'doc' && (
                 <div className="aml-actions">
                   <label htmlFor={inputId} className={'aml-btn' + (uploading ? ' is-busy' : '')}>
                     {uploading ? (t ? t('aml_checking') : '...') : (t ? t('aml_upload') : 'Upload')}
                   </label>
-                  <input id={inputId} type="file" accept="image/*,.pdf,application/pdf,*/*" className="hidden" disabled={uploading} onChange={onUpload} />
+                  <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="hidden" disabled={uploading} onChange={onUpload} />
                   <span className="aml-hint">{de ? 'PDF, JPG oder PNG · max. 15 MB' : 'PDF, JPG or PNG · max. 15 MB'}</span>
+                  {!docDone && !quizDone && (
+                    <button type="button" className="aml-switch-link" onClick={function() { setPick('quiz'); }}>{de ? 'Stattdessen Sicherheitsfragen beantworten' : 'Answer security questions instead'}</button>
+                  )}
                 </div>
               )}
+
+              {stage === 'quiz' && (
+                <>
+                  <AmlQuizForm de={de} onSubmit={onQuizSubmit} />
+                  {!docDone && !quizDone && (
+                    <button type="button" className="aml-switch-link" onClick={function() { setPick('doc'); }}>{de ? 'Stattdessen Dokument hochladen' : 'Upload document instead'}</button>
+                  )}
+                </>
+              )}
+
+              <button type="button" className="aml-support-btn" onClick={openSupport}>
+                <LucideIcon name="mail" className="h-4 w-4" />
+                {de ? 'Frage an den Support' : 'Ask support'}
+              </button>
 
               <button type="button" className="aml-info-toggle" onClick={function() { setInfo(function(v) { return !v; }); }} aria-expanded={info}>
                 {info ? (de ? 'Weniger anzeigen' : 'Show less') : (de ? 'Was ist die AML-Prüfung?' : 'What is an AML review?')}
@@ -11440,7 +11581,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           const raw = API.kv.peek(AML_KEY);
           if (raw) {
             const d = JSON.parse(raw);
-            if (d && d.locked && d.amount > 0) return { active: true, amount: Number(d.amount), docPending: !!d.docPending };
+            if (d && d.locked && d.amount > 0) return { active: true, amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
           }
         } catch (e) {}
         return { active: false, amount: 0, docPending: false };
@@ -11518,6 +11659,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [amlUploading, setAmlUploading] = useState(false);
       const [amlStatusText, setAmlStatusText] = useState('');
       const [amlDocPending, setAmlDocPending] = useState(!!initialAml.docPending);
+      const [amlStartedAt, setAmlStartedAt] = useState(initialAml.startedAt || 0);
+      const [amlQuizDone, setAmlQuizDone] = useState(!!initialAml.quizDone);
+      const [amlDocDone, setAmlDocDone] = useState(!!initialAml.docDone);
       const NOTIF_KEY = 'n26_notif_' + userKey;
       const loadNotifs = () => {
         try {
@@ -11779,7 +11923,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       useEffect(() => {
         try {
           if (amlHoldActive && amlHoldAmount > 0) {
-            API.kv.set(AML_KEY, JSON.stringify({ locked: true, amount: amlHoldAmount }));
+            let prevAml = {};
+            try { prevAml = JSON.parse(API.kv.peek(AML_KEY) || '{}'); } catch (e) {}
+            API.kv.set(AML_KEY, JSON.stringify({ ...prevAml, locked: true, amount: amlHoldAmount }));
           } else {
             API.kv.remove(AML_KEY);
           }
@@ -12162,10 +12308,16 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         amount = moneyRound(amount);
 
         amlActiveRef.current = true;
+        const amlStartTs = Date.now();
         setAmlHoldActive(true);
         setAmlHoldAmount(amount);
         setAmlStatusText('');
         setAmlUploading(false);
+        setAmlStartedAt(amlStartTs);
+        setAmlQuizDone(false);
+        setAmlDocDone(false);
+        setAmlDocPending(false);
+        try { API.kv.set(AML_KEY, JSON.stringify({ locked: true, amount, startedAt: amlStartTs, quizDone: false, docDone: false, docPending: false })); } catch (eK) {}
         setActiveTab('home'); // ensure banner is visible
         console.log('[N26 AML] applied hold', amount, 'user', userKey);
         showToast(t('notif_aml_hold'), formatCurrency(amount) + ' — ' + t('aml_toast_body'));
@@ -12189,6 +12341,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         setAmlUploading(false);
         setAmlDocPending(false);
         setAmlStatusText('');
+        setAmlStartedAt(0);
+        setAmlQuizDone(false);
+        setAmlDocDone(false);
         try { API.kv.remove(AML_KEY); } catch (e) {}
         showToast(t('notif_aml_release'), t('aml_released_body'));
         pushNotif(t('notif_aml_release'), t('aml_released_body'), 'aml_release');
@@ -12230,24 +12385,62 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           console.warn('[N26 AML] upload ignored — hold not active');
           return;
         }
+        const de0 = lang !== 'en';
+        if (!/^(image\/(jpeg|png|webp)|application\/pdf)$/i.test(file.type)) {
+          showToast(de0 ? 'Falsches Dateiformat' : 'Wrong file type', de0 ? 'Bitte PDF, JPG oder PNG hochladen.' : 'Please upload a PDF, JPG or PNG.', 'error');
+          try { e.target.value = ''; } catch (err0) {}
+          return;
+        }
+        if (file.size > 15 * 1024 * 1024) {
+          showToast(de0 ? 'Datei zu groß' : 'File too large', de0 ? 'Maximal 15 MB.' : 'Maximum 15 MB.', 'error');
+          try { e.target.value = ''; } catch (err0) {}
+          return;
+        }
         console.log('[N26 AML] file selected', file.name, file.type, file.size);
         setAmlUploading(true);
         setAmlStatusText(t('aml_docs_check'));
-        // Document submitted → pending only. Release happens only via admin (Pusher aml-release).
+        // Document submitted. Case only goes to admin review once the security
+        // questions are answered too — release still only happens via admin (Pusher aml-release).
         setTimeout(() => {
           setAmlUploading(false);
-          setAmlDocPending(true);
-          setAmlStatusText(t('aml_pending'));
-          showToast(t('notif_aml_pending'), t('aml_pending_toast_body'));
-          pushNotif(t('notif_aml_pending'), t('aml_pending_toast_body'), 'aml_pending');
+          setAmlDocDone(true);
           try {
             const raw = API.kv.peek(AML_KEY);
             const d = raw ? JSON.parse(raw) : {};
-            API.kv.set(AML_KEY, JSON.stringify({ ...d, locked: true, amount: amlHoldAmount, docPending: true, fileName: file.name }));
+            const bothDone = !!d.quizDone;
+            API.kv.set(AML_KEY, JSON.stringify({ ...d, locked: true, amount: amlHoldAmount, docDone: true, fileName: file.name, docPending: bothDone }));
+            if (bothDone) {
+              setAmlDocPending(true);
+              setAmlStatusText(t('aml_pending'));
+              showToast(t('notif_aml_pending'), t('aml_pending_toast_body'));
+              pushNotif(t('notif_aml_pending'), t('aml_pending_toast_body'), 'aml_pending');
+            } else {
+              setAmlStatusText(de0 ? 'Dokument erhalten. Bitte beantworte noch die Sicherheitsfragen.' : 'Document received. Please also answer the security questions.');
+            }
           } catch (err) {}
         }, 1500);
         try { e.target.value = ''; } catch (err) {}
-      }, [AML_KEY, amlHoldAmount, pushNotif, t]);
+      }, [AML_KEY, amlHoldAmount, pushNotif, t, lang]);
+
+      const handleAmlQuizSubmit = useCallback((answers) => {
+        if (!amlActiveRef.current) return;
+        const de0 = lang !== 'en';
+        setAmlQuizDone(true);
+        try {
+          const raw = API.kv.peek(AML_KEY);
+          const d = raw ? JSON.parse(raw) : {};
+          const bothDone = !!d.docDone;
+          API.kv.set(AML_KEY, JSON.stringify({ ...d, locked: true, amount: amlHoldAmount, quizDone: true, quizAnswers: answers, docPending: bothDone }));
+          if (bothDone) {
+            setAmlDocPending(true);
+            setAmlStatusText(t('aml_pending'));
+            showToast(t('notif_aml_pending'), t('aml_pending_toast_body'));
+            pushNotif(t('notif_aml_pending'), t('aml_pending_toast_body'), 'aml_pending');
+          } else {
+            setAmlStatusText(de0 ? 'Antworten erhalten. Bitte lade noch dein Dokument hoch.' : 'Answers received. Please also upload your document.');
+          }
+        } catch (err) {}
+      }, [AML_KEY, amlHoldAmount, pushNotif, t, lang]);
 
       // Init Pusher + localStorage bridge
       useEffect(() => {
@@ -13555,6 +13748,10 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                           uploading={amlUploading}
                           statusText={amlStatusText}
                           pending={amlDocPending}
+                          quizDone={amlQuizDone}
+                          docDone={amlDocDone}
+                          onQuizSubmit={handleAmlQuizSubmit}
+                          startedAt={amlStartedAt}
                           t={t}
                           lang={lang}
                         />
