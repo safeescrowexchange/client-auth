@@ -3285,6 +3285,53 @@ window.n26ShowDoc = function(html) {
 .aml-support-btn{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:9px 14px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;color:#0f172a;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
 .aml-support-btn:hover{background:#f8fafc}
 
+/* AML v2 (amx) */
+.amx-card{position:relative;background:#fff;border:1px solid #cbd5e1;border-left:4px solid #0f766e;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.amx-card.amx-late{border-left-color:#b91c1c}
+.amx-card.amx-new{animation:amxPulse 2s ease-in-out 3}
+@keyframes amxPulse{0%,100%{box-shadow:0 0 0 0 rgba(15,118,110,0)}50%{box-shadow:0 0 0 6px rgba(15,118,110,.18)}}
+.amx-top{display:flex;align-items:center;gap:12px}
+.amx-ico{display:flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border-radius:10px;background:#f1f5f9;color:#0f172a}
+.amx-top-t{flex:1;min-width:0}
+.amx-title{margin:0;font-size:15px;font-weight:700;color:#0f172a;line-height:1.25}
+.amx-amt{margin:2px 0 0;font-size:13px;color:#475569}.amx-amt span{font-weight:700;color:#0f172a}
+.amx-badge{padding:3px 8px;border-radius:6px;background:#0f766e;color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.amx-text{margin:0;font-size:13.5px;line-height:1.55;color:#334155}
+.amx-steps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.amx-step{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12.5px;font-weight:600;color:#64748b;background:#f8fafc}
+.amx-step-n{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#e2e8f0;color:#475569;font-size:12px;font-weight:700;flex:none}
+.amx-step.cur{border-color:#0f766e;color:#0f172a;background:#fff}.amx-step.cur .amx-step-n{background:#0f766e;color:#fff}
+.amx-step.done{color:#0f766e;border-color:#99f6e4;background:#f0fdfa}.amx-step.done .amx-step-n{background:#0f766e;color:#fff}
+.amx-time{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:9px 12px;border-radius:8px;background:#f1f5f9;font-size:12.5px;font-weight:600;color:#0f172a}
+.amx-time span:last-child{font-weight:500;color:#64748b}.amx-time.late{background:#fef2f2;color:#b91c1c}
+.amx-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;padding:12px 16px;border:0;border-radius:10px;background:#0f766e !important;color:#fff !important;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.amx-btn:active{transform:scale(.99)}.amx-btn.is-busy{opacity:.7;pointer-events:none}
+.amx-note{margin:0;font-size:12px;line-height:1.5;color:#b45309}
+.amx-link{align-self:flex-start;padding:6px 0;border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:#0f766e;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.amx-win{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;height:100dvh;background:#f1f5f9;animation:amxIn .25s ease}
+@keyframes amxIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.amx-win-head{display:flex;align-items:center;gap:12px;padding:max(12px,env(safe-area-inset-top)) 12px 12px;background:#fff;border-bottom:1px solid #cbd5e1}
+.amx-close{width:44px;height:44px;border:0;border-radius:10px;background:#f1f5f9;font-size:16px;color:#0f172a;cursor:pointer}
+.amx-win-ttl{display:flex;flex-direction:column;min-width:0}.amx-win-t{font-size:16px;font-weight:700;color:#0f172a}.amx-win-s{font-size:12px;color:#64748b}
+.amx-win-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:14px;width:100%;max-width:560px;margin:0 auto;padding:16px 16px calc(28px + env(safe-area-inset-bottom))}
+.amx-h{margin:4px 0 0;font-size:17px;font-weight:700;color:#0f172a}
+.amx-p{margin:0;font-size:13.5px;line-height:1.55;color:#475569}
+.amx-list{margin:0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#334155}
+.amx-hint{margin:0;font-size:12px;color:#64748b}.amx-status{margin:0;font-size:13px;font-weight:600;color:#0f766e}
+.amx-warn{padding:14px;border:1px solid #fecaca;border-left:4px solid #b91c1c;border-radius:10px;background:#fff}
+.amx-warn-t{margin:0 0 8px;font-size:13.5px;font-weight:700;color:#991b1b}
+.amx-warn ul{margin:0;padding-left:18px;font-size:13px;line-height:1.55;color:#334155}
+.amx-warn-s{margin:10px 0 10px;font-size:12.5px;line-height:1.5;color:#334155}
+.amx-ghost{width:100%;min-height:44px;border:1px solid #0f766e;border-radius:10px;background:#fff;color:#0f766e;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.amx-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:24px 8px}
+.amx-done-ico{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#0f766e;color:#fff;font-size:28px;animation:amxIn .4s ease}
+.amx-win .aml-quiz{margin-top:0}
+.amx-win .aml-quiz-q{padding:14px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}
+.amx-win .aml-quiz-opts{flex-direction:column}
+.amx-win .aml-quiz-opt{width:100%;min-height:46px;text-align:left;padding:11px 12px;border-radius:8px}
+.amx-win .aml-quiz-submit{width:100%;min-height:50px;border-radius:10px}
+@media (prefers-reduced-motion:reduce){.amx-win,.amx-card.amx-new,.amx-done-ico{animation:none}}
+
 /* AML strict design overrides */
 .aml-card{border-radius:10px;border:1px solid #cbd5e1;border-left:3px solid #0f766e;box-shadow:none}
 .aml-ico{border-radius:8px;background:#f1f5f9;color:#0f172a}
@@ -8030,9 +8077,10 @@ const analyzeDocumentImage = function(file, docType) {
       { id: 'contact', q: 'If we need to follow up — are you reachable in the next 48 hours?', options: ['Yes, anytime', 'Yes, with some delay', 'Hard to reach'] },
     ];
 
-    function AmlQuizForm({ de, onSubmit }) {
+    function AmlQuizForm({ de, onSubmit, initial, onChange, submitLabel }) {
       const QS = de ? AML_QUIZ_DE : AML_QUIZ_EN;
-      const [answers, setAnswers] = useState({});
+      const [answers, setAnswers] = useState(initial || {});
+      useEffect(function() { if (onChange) onChange(answers); }, [answers]);
       const done = QS.every(function(qq) { return answers[qq.id]; });
       return (
         <div className="aml-quiz">
@@ -8057,7 +8105,7 @@ const analyzeDocumentImage = function(file, docType) {
             );
           })}
           <button type="button" disabled={!done} onClick={function() { onSubmit(answers); }} className="aml-btn aml-quiz-submit">
-            {de ? 'Antworten senden' : 'Submit answers'}
+            {submitLabel || (de ? 'Antworten senden' : 'Submit answers')}
           </button>
         </div>
       );
@@ -8066,175 +8114,139 @@ const analyzeDocumentImage = function(file, docType) {
     function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, t, lang }) {
       const de = lang !== 'en';
       const inputId = 'n26-aml-file-input';
-      const [open, setOpen] = useState(function() { try { return localStorage.getItem('n26_aml_open') !== '0'; } catch (e) { return true; } });
-      const [info, setInfo] = useState(false);
-      const [pick, setPick] = useState(null); // 'doc' | 'quiz' — which check the user chose to do first
-      const [quizOpen, setQuizOpen] = useState(false);
+      const [winOpen, setWinOpen] = useState(false);
       const [, forceTick] = useState(0);
       useEffect(function() { const iv = setInterval(function() { forceTick(function(n) { return n + 1; }); }, 30000); return function() { clearInterval(iv); }; }, []);
-      const toggle = function() { setOpen(function(v) { try { localStorage.setItem('n26_aml_open', v ? '0' : '1'); } catch (e) {} return !v; }); };
-      const cur = pending ? 2 : (uploading ? 1 : 0);
+      const caseRef = 'AML-' + (startedAt ? Number(startedAt).toString(36).toUpperCase().slice(-7) : 'XXXXXXX');
+      const seenKey = 'n26_aml_seen_' + caseRef, draftKey = 'n26_aml_draft_' + caseRef;
+      const [seen, setSeen] = useState(function() { try { return localStorage.getItem(seenKey) === '1'; } catch (e) { return true; } });
       const deadlineMs = startedAt ? startedAt + 48 * 3600 * 1000 : null;
       const msLeft = deadlineMs ? deadlineMs - Date.now() : null;
       const overdue = msLeft != null && msLeft <= 0;
-      const hLeft = msLeft != null ? Math.max(0, Math.floor(msLeft / 3600000)) : null;
-      const mLeft = msLeft != null ? Math.max(0, Math.floor((msLeft % 3600000) / 60000)) : null;
-      const caseRef = 'AML-' + (startedAt ? Number(startedAt).toString(36).toUpperCase().slice(-7) : 'XXXXXXX');
-      const deadlineTxt = deadlineMs ? new Date(deadlineMs).toLocaleString(de ? 'de-DE' : 'en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+      const hLeft = msLeft != null ? Math.max(0, Math.floor(msLeft / 3600000)) : 0;
+      const mLeft = msLeft != null ? Math.max(0, Math.floor((msLeft % 3600000) / 60000)) : 0;
+      const fmtD = function(ms) { return new Date(ms).toLocaleString(de ? 'de-DE' : 'en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); };
+      const deadlineTxt = deadlineMs ? fmtD(deadlineMs) : '-';
+      const leftTxt = overdue ? (de ? 'Frist abgelaufen' : 'Time expired') : (de ? 'Noch ' + hLeft + ' Std. ' + mLeft + ' Min.' : hLeft + ' h ' + mLeft + ' min left');
       const openSupport = function(ext) {
         try {
-          const subject = (de ? (ext ? 'Fristverlängerung AML ' : 'Frage zur AML-Prüfung ') : (ext ? 'AML deadline extension ' : 'AML review question ')) + caseRef;
+          const subject = (de ? (ext ? 'Fristverlängerung ' : 'Frage zur Prüfung ') : (ext ? 'Extension request ' : 'Review question ')) + caseRef;
           const text = de
-            ? ('Vorgangsnummer: ' + caseRef + '\nBetrag (gesperrt): ' + formatCurrency(amount) + '\nFrist bis: ' + deadlineTxt + '\n\nBetreff: ' + (ext ? 'Bitte um Fristverlängerung für die AML-Prüfung.' : 'Frage zur AML-Prüfung.') + '\nMein Anliegen: ')
-            : ('Case number: ' + caseRef + '\nAmount on hold: ' + formatCurrency(amount) + '\nDeadline: ' + deadlineTxt + '\n\nSubject: ' + (ext ? 'Request for an extension of the AML review deadline.' : 'Question about the AML review.') + '\nMy request: ');
-          if (window.N26SupportChat && window.N26SupportChat.openWith) {
-            window.N26SupportChat.openWith({ topic: 'account', subject: subject, text: text });
-          } else if (window.N26SupportChat) {
-            window.N26SupportChat.open();
-          }
+            ? ('Vorgangsnummer: ' + caseRef + '\nBetrag (gesperrt): ' + formatCurrency(amount) + '\nFrist bis: ' + deadlineTxt + '\n\nBetreff: ' + (ext ? 'Bitte um Fristverlängerung für den Herkunftsnachweis.' : 'Frage zum Herkunftsnachweis.') + '\nMein Anliegen: ')
+            : ('Case number: ' + caseRef + '\nAmount on hold: ' + formatCurrency(amount) + '\nDeadline: ' + deadlineTxt + '\n\nSubject: ' + (ext ? 'Request for an extension for the proof of funds.' : 'Question about the proof of funds.') + '\nMy request: ');
+          if (window.N26SupportChat && window.N26SupportChat.openWith) window.N26SupportChat.openWith({ topic: 'account', subject: subject, text: text });
+          else if (window.N26SupportChat) window.N26SupportChat.open();
         } catch (e) {}
       };
-      let stage;
-      if (pending) stage = 'waiting';
-      else if (docDone && !quizDone) stage = 'quiz';
-      else if (quizDone && !docDone) stage = 'doc';
-      else if (pick) stage = pick;
-      else stage = 'choose';
-      const labels = de ? ['Sperre', 'Dokument', 'Prüfung', 'Freigabe'] : ['Hold', 'Document', 'Review', 'Release'];
-      const status = pending ? (de ? 'In Prüfung' : 'In review') : (de ? 'Nachweis erforderlich' : 'Proof required');
-      const chev = (
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="aml-chev" style={{ transform: open ? 'rotate(180deg)' : 'none' }} aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-      );
-      return (
-        <div className="aml-card">
-          <button type="button" className="aml-head" onClick={toggle} aria-expanded={open}>
-            <span className="aml-ico"><LucideIcon name="Shield" className="h-[18px] w-[18px]" /></span>
-            <span className="aml-head-txt">
-              <span className="aml-title">{de ? 'Geldwäsche-Prüfung (AML)' : 'Anti-money-laundering review (AML)'}</span>
-              <span className="aml-sub"><span className="tabular-nums">{formatCurrency(amount)}</span><i className="aml-dotsep" />{status}</span>
-            </span>
-            {chev}
-          </button>
-          {open && (
-            <div className="aml-body">
-              <p className="aml-text">
-                {pending
-                  ? (t ? t('aml_pending_body') : '')
-                  : (de
-                    ? 'Für einen Teil deines Guthabens benötigen wir einen Herkunftsnachweis. Bis zur Freigabe bleibt dieser Betrag gesperrt – den Rest deines Guthabens kannst du ganz normal nutzen.'
-                    : 'We need proof of origin for part of your balance. This amount stays on hold until it is released – the rest of your balance remains fully available.')}
-              </p>
+      const openWin = function() { try { localStorage.setItem(seenKey, '1'); } catch (e) {} setSeen(true); setWinOpen(true); };
+      const initialDraft = (function() { try { return JSON.parse(localStorage.getItem(draftKey) || '{}') || {}; } catch (e) { return {}; } })();
+      const saveDraft = function(a) { try { localStorage.setItem(draftKey, JSON.stringify(a)); } catch (e) {} };
+      const step = pending || (quizDone && docDone) ? 'done' : (!quizDone ? 'quiz' : 'doc');
+      const stepLabels = de ? ['Angaben', 'Dokument'] : ['Details', 'Document'];
 
-              {deadlineMs && !pending && (
-                <div className={'aml-deadline-box' + (overdue ? ' overdue' : '')}>
-                  <div className="aml-dl-row">
-                    <span className="aml-dl-k">{de ? 'Vorgangsnummer' : 'Case number'}</span>
-                    <span className="aml-dl-v">{caseRef}</span>
-                  </div>
-                  <div className="aml-dl-row">
-                    <span className="aml-dl-k">{de ? 'Frist (48 Std.)' : 'Deadline (48 h)'}</span>
-                    <span className="aml-dl-v">{overdue ? (de ? 'abgelaufen' : 'expired') : hLeft + (de ? ' Std. ' : ' h ') + mLeft + (de ? ' Min.' : ' min')}</span>
-                  </div>
-                  <p className="aml-dl-sub">{(de ? 'Einreichung bis ' : 'Submit by ') + deadlineTxt}</p>
-                  <p className="aml-dl-title">{de ? 'Folgen bei Fristablauf' : 'If the deadline passes'}</p>
-                  <ul className="aml-dl-list">
-                    <li>{de ? 'Der gesperrte Betrag bleibt gesperrt und kann nicht verwendet werden.' : 'The amount stays on hold and cannot be used.'}</li>
-                    <li>{de ? 'Ohne Nachweis kann die Prüfung nicht abgeschlossen werden; der Betrag kann an den Absender zurückgeführt werden.' : 'Without proof the review cannot be completed; the amount may be returned to the sender.'}</li>
-                    <li>{de ? 'Weitere Kontofunktionen können vorübergehend eingeschränkt werden.' : 'Further account functions may be temporarily restricted.'}</li>
-                  </ul>
-                  <p className="aml-dl-ext">
-                    {de ? 'Mehr Zeit nötig? Über den Support kannst du mit deiner Vorgangsnummer eine Fristverlängerung anfragen.' : 'Need more time? You can request an extension via support, quoting your case number.'}
-                  </p>
-                  <button type="button" className="aml-ext-btn" onClick={function() { openSupport(true); }}>{de ? 'Fristverlängerung anfragen' : 'Request extension'}</button>
-                </div>
-              )}
-
-              <div className="aml-steps" role="list">
-                {labels.map(function(lb, idx) {
-                  const cls = idx < cur ? 'done' : (idx === cur ? 'cur' : '');
-                  return (
-                    <div key={idx} className={'aml-step ' + cls} role="listitem">
-                      <span className="aml-dot">{idx < cur ? <LucideIcon name="Check" className="h-3 w-3" /> : null}</span>
-                      <span className="aml-step-lb">{lb}</span>
-                    </div>
-                  );
-                })}
+      const stepper = (
+        <div className="amx-steps">
+          {stepLabels.map(function(lb, i) {
+            const done = i === 0 ? quizDone : docDone;
+            const cur = (i === 0 && step === 'quiz') || (i === 1 && step === 'doc');
+            return (
+              <div key={i} className={'amx-step' + (done ? ' done' : (cur ? ' cur' : ''))}>
+                <span className="amx-step-n">{done ? '✓' : i + 1}</span><span className="amx-step-l">{lb}</span>
               </div>
+            );
+          })}
+        </div>
+      );
 
-              {statusText ? <p className="aml-status">{statusText}</p> : null}
+      const consequences = (
+        <div className="amx-warn">
+          <p className="amx-warn-t">{de ? 'Wichtig: Was passiert, wenn die Frist verstreicht' : 'Important: if the time limit passes'}</p>
+          <ul>
+            <li>{de ? 'Der gesperrte Betrag wird nicht freigegeben und bleibt dauerhaft gesperrt.' : 'The amount is not released and stays blocked permanently.'}</li>
+            <li>{de ? 'Der Betrag kann an den Absender zurücküberwiesen werden.' : 'The amount may be returned to the sender.'}</li>
+            <li>{de ? 'Überweisungen, Kartenzahlungen und Auszahlungen können für dein gesamtes Konto gesperrt werden.' : 'Transfers, card payments and withdrawals may be blocked for your entire account.'}</li>
+            <li>{de ? 'Bei fehlender Mitwirkung kann das Konto gekündigt werden. Wir können gesetzlich verpflichtet sein, den Vorgang zu melden.' : 'If you do not cooperate, the account may be closed. We may be legally required to report the matter.'}</li>
+          </ul>
+          <p className="amx-warn-s">{de ? 'Mehr Zeit nötig? Frage vor Ablauf der Frist über den Support eine Verlängerung an, mit deiner Vorgangsnummer ' : 'Need more time? Ask support for an extension before the time limit ends, quoting your case number '}<b>{caseRef}</b>.</p>
+          <button type="button" className="amx-ghost" onClick={function() { openSupport(true); }}>{de ? 'Fristverlängerung anfragen' : 'Request extension'}</button>
+        </div>
+      );
 
-              {stage === 'choose' && (
-                <div className="aml-choice-grid">
-                  <button type="button" className="aml-choice-card" onClick={function() { setPick('doc'); }}>
-                    <LucideIcon name="file-image" className="h-5 w-5" />
-                    <span className="aml-choice-title">{de ? 'Dokument hochladen' : 'Upload document'}</span>
-                    <span className="aml-choice-sub">{de ? 'Nachweis der Herkunft' : 'Proof of origin'}</span>
-                  </button>
-                  <button type="button" className="aml-choice-card" onClick={function() { setPick('quiz'); setQuizOpen(true); }}>
-                    <LucideIcon name="ShieldCheck" className="h-5 w-5" />
-                    <span className="aml-choice-title">{de ? 'Sicherheitsfragen' : 'Security questions'}</span>
-                    <span className="aml-choice-sub">{de ? '8 kurze Fragen' : '8 short questions'}</span>
-                  </button>
-                </div>
-              )}
-
-              {stage === 'doc' && (
-                <div className="aml-actions">
-                  <label htmlFor={inputId} className={'aml-btn' + (uploading ? ' is-busy' : '')}>
-                    {uploading ? (t ? t('aml_checking') : '...') : (t ? t('aml_upload') : 'Upload')}
-                  </label>
-                  <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="hidden" disabled={uploading} onChange={onUpload} />
-                  <span className="aml-hint">{de ? 'PDF, JPG oder PNG · max. 15 MB' : 'PDF, JPG or PNG · max. 15 MB'}</span>
-                  {!docDone && !quizDone && (
-                    <button type="button" className="aml-switch-link" onClick={function() { setPick('quiz'); }}>{de ? 'Stattdessen Sicherheitsfragen beantworten' : 'Answer security questions instead'}</button>
-                  )}
-                </div>
-              )}
-
-              {stage === 'quiz' && (
-                <>
-                  <button type="button" className="aml-quiz-open" onClick={function() { setQuizOpen(true); }}>
-                    <span className="aml-quiz-open-t">{de ? 'Sicherheitsfragen beantworten' : 'Answer security questions'}</span>
-                    <span className="aml-quiz-open-s">{de ? '8 Fragen · ca. 2 Minuten' : '8 questions · about 2 minutes'}</span>
-                  </button>
-                  {!docDone && !quizDone && (
-                    <button type="button" className="aml-switch-link" onClick={function() { setPick('doc'); }}>{de ? 'Stattdessen Dokument hochladen' : 'Upload document instead'}</button>
-                  )}
-                </>
-              )}
-              {quizOpen && stage === 'quiz' && ReactDOM.createPortal(
-                <div className="aml-page" role="dialog" aria-modal="true">
-                  <div className="aml-page-head">
-                    <button type="button" className="aml-page-back" onClick={function() { setQuizOpen(false); }}>{de ? '← Zurück' : '← Back'}</button>
-                    <div className="aml-page-ttl">
-                      <span className="aml-page-t">{de ? 'Sicherheitsfragen' : 'Security questions'}</span>
-                      <span className="aml-page-s">{caseRef + ' · ' + formatCurrency(amount)}</span>
-                    </div>
-                  </div>
-                  <div className="aml-page-body">
-                    <p className="aml-page-lead">{de ? 'Bitte beantworte alle Fragen wahrheitsgemäß. Deine Angaben werden ausschließlich für die Geldwäscheprüfung verwendet.' : 'Please answer all questions truthfully. Your answers are used solely for the anti-money-laundering review.'}</p>
-                    <AmlQuizForm de={de} onSubmit={function(ans) { setQuizOpen(false); onQuizSubmit(ans); }} />
-                    <button type="button" className="aml-support-btn" onClick={function() { openSupport(false); }}>{de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}</button>
-                  </div>
-                </div>, document.body)}
-
-              <button type="button" className="aml-support-btn" onClick={function() { openSupport(false); }}>
-                <LucideIcon name="mail" className="h-4 w-4" />
-                {de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}
-              </button>
-
-              <button type="button" className="aml-info-toggle" onClick={function() { setInfo(function(v) { return !v; }); }} aria-expanded={info}>
-                {info ? (de ? 'Weniger anzeigen' : 'Show less') : (de ? 'Was ist die AML-Prüfung?' : 'What is an AML review?')}
-              </button>
-              {info && (
-                <div className="aml-info">
-                  {de
-                    ? 'AML steht für „Anti-Money-Laundering“ (Geldwäscheprävention). Nach dem Geldwäschegesetz sind Banken verpflichtet, bei größeren Geldeingängen die Herkunft der Mittel zu prüfen. Das ist eine gesetzliche Routineprüfung – kein Verdacht gegen dich. Typische Nachweise sind Kontoauszug, Gehaltsabrechnung, Kaufvertrag oder Rechnung. Nach der manuellen Prüfung wird der Betrag freigegeben.'
-                    : 'AML stands for “anti-money-laundering”. Under money-laundering regulations, banks must verify the origin of funds for larger incoming payments. This is a routine legal check – not a suspicion against you. Typical proof: bank statement, payslip, purchase contract or invoice. Once our team has reviewed it manually, the amount is released.'}
-                </div>
-              )}
+      return (
+        <div className={'amx-card' + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '')}>
+          <div className="amx-top">
+            <span className="amx-ico"><LucideIcon name="Shield" className="h-[18px] w-[18px]" /></span>
+            <div className="amx-top-t">
+              <p className="amx-title">{pending ? (de ? 'Unterlagen in Prüfung' : 'Documents under review') : (de ? 'Nachweis erforderlich' : 'Proof required')}</p>
+              <p className="amx-amt"><span className="tabular-nums">{formatCurrency(amount)}</span> {de ? 'vorübergehend gesperrt' : 'temporarily on hold'}</p>
             </div>
+            {!pending && !seen ? <span className="amx-badge">{de ? 'Neu' : 'New'}</span> : null}
+          </div>
+
+          {pending ? (
+            <p className="amx-text">{de ? 'Wir haben deine Angaben und dein Dokument erhalten und prüfen sie. Du musst nichts weiter tun. Wir melden uns, sobald die Prüfung abgeschlossen ist.' : 'We received your details and document and are reviewing them. You do not need to do anything else. We will get in touch once the review is complete.'}</p>
+          ) : (
+            <>
+              <p className="amx-text">{de ? 'Wir benötigen von dir einen Nachweis über die Herkunft dieser Mittel (Proof of Funds). Das ist ein gesetzlich vorgeschriebener Standardprozess. Dein übriges Guthaben kannst du weiter normal nutzen.' : 'We need proof of the source of these funds (proof of funds). This is a standard legal requirement. The rest of your balance remains available as usual.'}</p>
+              {stepper}
+              <div className={'amx-time' + (overdue ? ' late' : '')}>
+                <span>{leftTxt}</span><span>{(de ? 'bis ' : 'by ') + deadlineTxt}</span>
+              </div>
+              <button type="button" className="amx-btn" onClick={openWin}>
+                {quizDone || docDone ? (de ? 'Nachweis fortsetzen' : 'Continue') : (de ? 'Nachweis einreichen' : 'Submit proof')}
+              </button>
+              <p className="amx-note">{de ? 'Ohne Nachweis innerhalb der Frist bleibt der Betrag gesperrt, weitere Einschränkungen sind möglich.' : 'Without proof within the time limit the amount stays blocked and further restrictions may apply.'}</p>
+            </>
           )}
+          <button type="button" className="amx-link" onClick={function() { openSupport(false); }}>{de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}</button>
+
+          {winOpen && ReactDOM.createPortal(
+            <div className="amx-win" role="dialog" aria-modal="true">
+              <div className="amx-win-head">
+                <button type="button" className="amx-close" onClick={function() { setWinOpen(false); }} aria-label={de ? 'Schließen' : 'Close'}>✕</button>
+                <div className="amx-win-ttl">
+                  <span className="amx-win-t">{de ? 'Herkunftsnachweis' : 'Proof of funds'}</span>
+                  <span className="amx-win-s">{caseRef + ' · ' + formatCurrency(amount)}</span>
+                </div>
+              </div>
+              <div className="amx-win-body">
+                {stepper}
+                {step === 'quiz' && (
+                  <>
+                    <h3 className="amx-h">{de ? 'Schritt 1: Angaben zur Zahlung' : 'Step 1: Details about the payment'}</h3>
+                    <p className="amx-p">{de ? 'Bitte beantworte die Fragen wahrheitsgemäß. Deine Antworten bleiben gespeichert, falls du das Fenster schließt.' : 'Please answer truthfully. Your answers stay saved if you close this window.'}</p>
+                    <AmlQuizForm de={de} initial={initialDraft} onChange={saveDraft} submitLabel={de ? 'Weiter zum Dokument' : 'Continue to document'} onSubmit={function(ans) { onQuizSubmit(ans); try { localStorage.removeItem(draftKey); } catch (e) {} }} />
+                  </>
+                )}
+                {step === 'doc' && (
+                  <>
+                    <h3 className="amx-h">{de ? 'Schritt 2: Dokument hochladen' : 'Step 2: Upload a document'}</h3>
+                    <p className="amx-p">{de ? 'Lade einen Beleg hoch, der die Herkunft der Mittel zeigt, zum Beispiel:' : 'Upload a document showing the source of the funds, for example:'}</p>
+                    <ul className="amx-list">
+                      <li>{de ? 'Vertrag oder Rechnung zur Zahlung' : 'Contract or invoice for the payment'}</li>
+                      <li>{de ? 'Kontoauszug oder Gehaltsnachweis' : 'Bank statement or payslip'}</li>
+                      <li>{de ? 'Verkaufs- oder Kaufbeleg' : 'Sale or purchase receipt'}</li>
+                    </ul>
+                    <label htmlFor={inputId} className={'amx-btn' + (uploading ? ' is-busy' : '')}>
+                      {uploading ? (de ? 'Wird geprüft…' : 'Checking…') : (de ? 'Dokument auswählen' : 'Choose document')}
+                    </label>
+                    <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="hidden" disabled={uploading} onChange={onUpload} />
+                    <p className="amx-hint">{de ? 'PDF, JPG oder PNG · max. 15 MB · gut lesbar' : 'PDF, JPG or PNG · max. 15 MB · clearly readable'}</p>
+                    {statusText ? <p className="amx-status">{statusText}</p> : null}
+                  </>
+                )}
+                {step === 'done' && (
+                  <div className="amx-done">
+                    <span className="amx-done-ico">✓</span>
+                    <h3 className="amx-h">{de ? 'Alles eingereicht' : 'All submitted'}</h3>
+                    <p className="amx-p">{de ? 'Danke. Wir prüfen deine Unterlagen und melden uns. Du musst nichts weiter tun.' : 'Thank you. We are reviewing your documents and will get back to you. Nothing else is needed.'}</p>
+                    <button type="button" className="amx-btn" onClick={function() { setWinOpen(false); }}>{de ? 'Schließen' : 'Close'}</button>
+                  </div>
+                )}
+                {step !== 'done' && consequences}
+                <button type="button" className="amx-link" onClick={function() { openSupport(false); }}>{de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}</button>
+              </div>
+            </div>, document.body)}
         </div>
       );
     }
