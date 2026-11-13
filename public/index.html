@@ -3296,6 +3296,28 @@ window.n26ShowDoc = function(html) {
 .amx-ico-pend{background:#ecfdf5;color:#0f766e;box-shadow:inset 0 0 0 1px #a7f3d0}
 .amx-ico-late{background:#fef2f2;color:#b91c1c;box-shadow:inset 0 0 0 1px #fecaca}
 @keyframes amxTurn{0%,40%{transform:rotate(0)}70%,100%{transform:rotate(180deg)}}
+.sup-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;margin-left:8px;border-radius:10px;background:#e11d48;color:#fff;font-size:11px;font-weight:700;line-height:1;vertical-align:middle}
+.sup-badge-inv{background:#fff;color:#0f766e}
+.sup-reply{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border:1px solid #99f6e4;border-radius:16px;background:linear-gradient(135deg,#f0fdfa,#ecfeff);box-shadow:0 1px 2px rgba(15,23,42,.05);cursor:pointer;font:inherit;color:inherit;margin:0 0 12px}
+.sup-reply-c{margin:0 0 10px;padding:10px 12px;border-radius:12px}
+.sup-reply-ico{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:#0f766e;color:#fff;position:relative}
+.sup-reply-ico::after{content:"";position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;background:#e11d48;border:2px solid #f0fdfa}
+.sup-reply-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.sup-reply-t{font-size:13.5px;font-weight:700;color:#0f172a}
+.sup-reply-s{font-size:12px;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sup-reply-b{flex:none;font-size:12px;font-weight:700;color:#0f766e}
+/* AML card: orange frame until the document is uploaded, grey afterwards */
+.amx-card.amx-st-need{border:1px solid #fcd9a0;border-left:4px solid #f59e0b}
+.amx-card.amx-st-pend{border:1px solid #e2e8f0;border-left:4px solid #94a3b8}
+.amx-card.amx-late.amx-st-need{border-color:#fecaca;border-left-color:#b91c1c}
+/* deadline info: separate neutral block */
+.amx-dl{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:4px 6px 6px}
+.amx-dl .amx-cons-btn{border:0;background:transparent;padding:8px 6px}
+.amx-dl .amx-cons-i{background:#e2e8f0;color:#475569;font-style:italic;font-family:Georgia,serif}
+.amx-dl .amx-cons-t{color:#334155}
+.amx-dl .amx-warn{border:1px solid #e2e8f0;border-left:1px solid #e2e8f0;background:#fff}
+.amx-dl .amx-warn-t{color:#334155}
+.amx-dl .amx-foldwrap.open .amx-foldwrap-in{padding-top:6px}
 .amx-ico-lg{width:56px;height:56px;border-radius:16px;position:relative}
 .amx-ico-lg .amx-svg{width:36px;height:36px;display:block;overflow:visible}
 .amx-ico-need::after{content:"";position:absolute;inset:-4px;border-radius:20px;border:2px solid #f59e0b;opacity:0;animation:amxRing 2.4s ease-out infinite;pointer-events:none}
@@ -3425,6 +3447,58 @@ window.n26ShowDoc = function(html) {
 .aml-prog i{flex:1;height:4px;border-radius:2px;background:#e2e8f0;overflow:hidden}.aml-prog b{display:block;height:100%;background:#0f766e;transition:width .3s}
 @media (prefers-reduced-motion:reduce){.aml-page{animation:none}}
 </style>
+<style id="n26-aml-calm">
+.amx-card,.amx-card.amx-st-need,.amx-card.amx-st-pend{border:1px solid #e2e8f0;border-left:4px solid #cbd5e1}
+.amx-card.amx-late,.amx-card.amx-late.amx-st-need{border-color:#e2e8f0;border-left-color:#94a3b8}
+.amx-dx{padding:12px 14px;border:1px solid #e2e8f0;border-radius:12px;background:#fff}
+.amx-dx-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.amx-dx-lbl{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#64748b}
+.amx-dx-val{font-size:14px;font-weight:600;color:#0f172a}
+.amx-dx-bar{height:3px;margin:9px 0 8px;border-radius:2px;background:#eef2f6;overflow:hidden}
+.amx-dx-bar span{display:block;height:100%;border-radius:2px;background:#94a3b8;transition:width .6s ease}
+.amx-dx-sub{font-size:12px;color:#64748b}
+.amx-dx-more{display:inline-flex;align-items:center;gap:4px;border:0;background:none;padding:2px 0;font:inherit;font-size:12px;font-weight:600;color:#475569;cursor:pointer}
+.amx-dx.late .amx-dx-val{color:#475569}
+.amx-dxd{padding:10px 0 2px}
+.amx-dxd ul{margin:0;padding-left:16px;font-size:12.5px;line-height:1.6;color:#475569}
+.amx-dxd .amx-warn-s{margin:10px 0;font-size:12px;line-height:1.5;color:#64748b}
+.amx-dxd .amx-ghost{min-height:38px;border-color:#cbd5e1;color:#334155;font-size:12.5px;font-weight:600}
+/* AML refined single-card design */
+.amx-card,.amx-card.amx-st-need,.amx-card.amx-st-pend,.amx-card.amx-late,.amx-card.amx-late.amx-st-need{border:1px solid #e5e9ef;border-left:1px solid #e5e9ef;border-radius:18px;padding:18px;gap:14px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04),0 14px 30px -18px rgba(15,23,42,.16)}
+.amx-acc{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}
+.amx-acc.open{grid-template-rows:1fr}.amx-acc>div{overflow:hidden;min-height:0}
+.amx-trigc{border:1px solid #e5e9ef;border-radius:14px;background:#f8fafc;overflow:hidden}
+.amx-trigc-h{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:12px 14px;border:0;background:none;font:inherit;text-align:left;cursor:pointer}
+.amx-trigc-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.amx-trigc-t b{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b}
+.amx-trigc-t small{font-size:13px;color:#0f172a;line-height:1.4}
+.amx-trigc .amx-trig{border:0;border-radius:0;background:none;padding:0 12px 12px}
+.amx-trigc .amx-trig-h,.amx-trigc .amx-trig-r{display:none}
+.amx-tp{padding:14px;border:1px solid #e5e9ef;border-radius:14px;background:#f8fafc}
+.amx-tp-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.amx-tp-lbl{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b}
+.amx-tp-val{font-size:17px;font-weight:700;letter-spacing:-.01em;color:#0f172a}
+.amx-tp.late .amx-tp-val{color:#b91c1c}
+.amx-tp .amx-dx-bar{margin:10px 0 9px;height:4px;background:#e5e9ef}
+.amx-tp-sub{font-size:12px;color:#64748b}
+.amx-tp-ref{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.02em;color:#64748b}
+.amx-tp-acc{display:flex;align-items:center;gap:9px;width:100%;margin-top:12px;padding:12px 0 0;border:0;border-top:1px solid #e5e9ef;background:none;font:inherit;text-align:left;cursor:pointer}
+.amx-tp-i{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:none;border:1.5px solid #64748b;border-radius:50%;font:italic 700 11px/1 Georgia,'Times New Roman',serif;color:#475569}
+.amx-tp-at{flex:1;font-size:13px;font-weight:600;color:#334155}
+.amx-cons-l{list-style:none;margin:0;padding:12px 0 0;display:flex;flex-direction:column;gap:9px}
+.amx-cons-l li{position:relative;padding-left:16px;font-size:12.5px;line-height:1.55;color:#475569}
+.amx-cons-l li::before{content:'';position:absolute;left:2px;top:.62em;width:5px;height:5px;border-radius:50%;background:#94a3b8}
+.amx-more{margin-top:14px;padding:12px;border-radius:12px;background:#fff;border:1px solid #e5e9ef}
+.amx-more p{margin:0 0 10px;font-size:12.5px;line-height:1.55;color:#475569}
+.amx-more b{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#0f172a}
+.amx-more .amx-ghost{border-radius:10px;min-height:42px}
+.amx-text{font-size:13.5px;line-height:1.6;color:#334155}
+.sup-dot{position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:#334155;border:2px solid #fff}
+.sup-badge{background:#334155}
+.bank-toast--neutral::before{background:linear-gradient(180deg,#64748b,#94a3b8)}
+.bank-toast-kind--neutral{background:#f1f5f9;color:#475569}
+</style>
+
 
 </head>
 <body>
@@ -4784,15 +4858,17 @@ window.n26ShowDoc = function(html) {
     const FLAG_EU = "data:image/png;base64,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";
     function SupportBtn({ lang, light = true }) {
       const de = lang !== 'en';
+      const supU = useSupportUnread();
       const label = de ? 'Hilfe' : 'Help';
       return (
         <button type="button" aria-label={de ? 'Support kontaktieren' : 'Contact support'} title={de ? 'Support kontaktieren' : 'Contact support'}
           onClick={function() { try { if (window.N26SupportChat) window.N26SupportChat.open(); } catch (e) {} }}
-          className={'flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full py-1 pl-1 pr-2.5 text-[11px] font-bold leading-none transition active:scale-95 ' + (light ? 'bg-[#F0EDE8] text-foreground' : 'bg-white text-foreground shadow-sm ring-1 ring-black/5')}>
+          className={'relative flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full py-1 pl-1 pr-2.5 text-[11px] font-bold leading-none transition active:scale-95 ' + (light ? 'bg-[#F0EDE8] text-foreground' : 'bg-white text-foreground shadow-sm ring-1 ring-black/5')}>
           <span className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-teal-600 text-white">
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1" /><rect x="3" y="13" width="4" height="6" rx="1.5" /><rect x="17" y="13" width="4" height="6" rx="1.5" /><path d="M19 19c0 1.4-1.6 2-4 2h-1.5" /></svg>
           </span>
           <span className="hidden min-[380px]:inline">{label}</span>
+          {supU.count > 0 ? <span className="sup-dot" aria-label={de ? 'Neue Nachricht' : 'New message'} /> : null}
         </button>
       );
     }
@@ -5565,7 +5641,7 @@ window.n26ShowDoc = function(html) {
         else if (/aml|hold|warn|sperre|pending|ausstehend|prüfung/i.test(msg)) kind = 'warn';
       }
       if (kind === 'alert' || kind === 'kyc' || kind === 'money') kind = kind === 'money' ? 'success' : 'warn';
-      const kindLabel = kind === 'success' ? 'OK' : kind === 'error' ? 'Error' : kind === 'warn' ? 'Hinweis' : 'Info';
+      const kindLabel = kind === 'neutral' ? 'Support' : kind === 'success' ? 'OK' : kind === 'error' ? 'Error' : kind === 'warn' ? 'Hinweis' : 'Info';
       useEffect(function() {
         const ms = kind === 'error' ? 5800 : kind === 'warn' ? 5000 : 3800;
         const tmr = setTimeout(onClose, ms);
@@ -8264,8 +8340,48 @@ const analyzeDocumentImage = function(file, docType) {
       );
     }
 
+    function useSupportUnread() {
+      const [info, setInfo] = useState(function() {
+        try { return (window.N26SupportChat && window.N26SupportChat.unread) ? window.N26SupportChat.unread() : { count: 0, tickets: [] }; } catch (e) { return { count: 0, tickets: [] }; }
+      });
+      useEffect(function() {
+        var h = function(e) { setInfo((e && e.detail) || { count: 0, tickets: [] }); };
+        window.addEventListener('n26-support-unread', h);
+        try { if (window.N26SupportChat && window.N26SupportChat.refresh) window.N26SupportChat.refresh(); } catch (e) {}
+        return function() { window.removeEventListener('n26-support-unread', h); };
+      }, []);
+      return info;
+    }
+    function SupportBadge({ n, inv }) {
+      if (!(n > 0)) return null;
+      return <span className={'sup-badge' + (inv ? ' sup-badge-inv' : '')} aria-label={n + ' new'}>{n > 9 ? '9+' : n}</span>;
+    }
+    function SupportReplyBanner({ info, lang, compact }) {
+      const de = lang !== 'en';
+      if (!info || !(info.count > 0)) return null;
+      const first = info.tickets[0] || {};
+      const open = function() {
+        try {
+          if (info.tickets.length === 1 && window.N26SupportChat && window.N26SupportChat.openTicket) window.N26SupportChat.openTicket(first.id);
+          else if (window.N26SupportChat) window.N26SupportChat.open();
+        } catch (e) {}
+      };
+      const preview = String(first.text || '').replace(/\s+/g, ' ').slice(0, 90);
+      return (
+        <button type="button" onClick={open} className={'sup-reply' + (compact ? ' sup-reply-c' : '')}>
+          <span className="sup-reply-ico"><LucideIcon name="MessageCircle" className="h-5 w-5" /></span>
+          <span className="sup-reply-tx">
+            <span className="sup-reply-t">{info.count > 1 ? (de ? info.count + ' neue Nachrichten vom Support' : info.count + ' new messages from support') : (de ? 'Neue Antwort vom Support' : 'New reply from support')}</span>
+            <span className="sup-reply-s">{first.subject ? first.subject + ' · ' : ''}{first.id && first.id !== 'GENERAL' ? '#' + first.id : ''}{preview ? ' — ' + preview : ''}</span>
+          </span>
+          <span className="sup-reply-b">{de ? 'Ansehen' : 'View'}</span>
+        </button>
+      );
+    }
+
     function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, t, lang, triggers, reason }) {
       const de = lang !== 'en';
+      const supInfo = useSupportUnread();
       const inputId = 'n26-aml-file-input';
       const [winOpen, setWinOpen] = useState(false);
       const [consOpen, setConsOpen] = useState(false);
@@ -8287,13 +8403,13 @@ const analyzeDocumentImage = function(file, docType) {
       const mLeft = msLeft != null ? Math.max(0, Math.floor((msLeft % 3600000) / 60000)) : 0;
       const fmtD = function(ms) { return new Date(ms).toLocaleString(de ? 'de-DE' : 'en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); };
       const deadlineTxt = deadlineMs ? fmtD(deadlineMs) : '-';
-      const leftTxt = overdue ? (de ? 'Frist abgelaufen' : 'Time expired') : (de ? 'Noch ' + hLeft + ' Std. ' + mLeft + ' Min.' : hLeft + ' h ' + mLeft + ' min left');
+      const leftTxt = overdue ? (de ? 'Zeit abgelaufen' : 'Time expired') : (de ? 'Noch ' + hLeft + ' Std. ' + mLeft + ' Min.' : hLeft + ' h ' + mLeft + ' min left');
       const openSupport = function(ext) {
         try {
-          const subject = (de ? (ext ? 'Fristverlängerung ' : 'Frage zur Prüfung ') : (ext ? 'Extension request ' : 'Review question ')) + caseRef;
+          const subject = (de ? (ext ? 'Mehr Zeit anfragen ' : 'Frage zur Prüfung ') : (ext ? 'Extension request ' : 'Review question ')) + caseRef;
           const text = de
-            ? ('Vorgangsnummer: ' + caseRef + '\nBetrag (gesperrt): ' + formatCurrency(amount) + '\nFrist bis: ' + deadlineTxt + '\n\nBetreff: ' + (ext ? 'Bitte um Fristverlängerung für den Herkunftsnachweis.' : 'Frage zum Herkunftsnachweis.') + '\nMein Anliegen: ')
-            : ('Case number: ' + caseRef + '\nAmount on hold: ' + formatCurrency(amount) + '\nDeadline: ' + deadlineTxt + '\n\nSubject: ' + (ext ? 'Request for an extension for the proof of funds.' : 'Question about the proof of funds.') + '\nMy request: ');
+            ? ('Vorgangsnummer: ' + caseRef + '\nBetrag (gesperrt): ' + formatCurrency(amount) + '\nEinreichung bis: ' + deadlineTxt + '\n\nBetreff: ' + (ext ? 'Bitte um mehr Zeit für den Herkunftsnachweis.' : 'Frage zum Herkunftsnachweis.') + '\nMein Anliegen: ')
+            : ('Case number: ' + caseRef + '\nAmount on hold: ' + formatCurrency(amount) + '\nSubmit by: ' + deadlineTxt + '\n\nSubject: ' + (ext ? 'Request for an extension for the proof of funds.' : 'Question about the proof of funds.') + '\nMy request: ');
           if (window.N26SupportChat && window.N26SupportChat.openWith) window.N26SupportChat.openWith({ topic: 'account', subject: subject, text: text });
           else if (window.N26SupportChat) window.N26SupportChat.open();
         } catch (e) {}
@@ -8301,7 +8417,7 @@ const analyzeDocumentImage = function(file, docType) {
       const openWin = function() { try { localStorage.setItem(seenKey, '1'); } catch (e) {} setSeen(true); setWinOpen(true); };
       const initialDraft = (function() { try { return JSON.parse(localStorage.getItem(draftKey) || '{}') || {}; } catch (e) { return {}; } })();
       const saveDraft = function(a) { try { localStorage.setItem(draftKey, JSON.stringify(a)); } catch (e) {} };
-      const step = pending || (quizDone && docDone) ? 'done' : (!quizDone ? 'quiz' : 'doc');
+      const step = (pending && quizDone && docDone) ? 'done' : (!quizDone ? 'quiz' : 'doc');
       const stepLabels = de ? ['Angaben', 'Dokument'] : ['Details', 'Document'];
 
       const stepper = (
@@ -8319,17 +8435,22 @@ const analyzeDocumentImage = function(file, docType) {
       );
 
       const consequences = (
-        <div className="amx-warn">
-          <ul>
-            <li>{de ? 'Der gesperrte Betrag wird nicht freigegeben und bleibt dauerhaft gesperrt.' : 'The amount is not released and stays blocked permanently.'}</li>
-            <li>{de ? 'Der Betrag kann an den Absender zurücküberwiesen werden.' : 'The amount may be returned to the sender.'}</li>
-            <li>{de ? 'Überweisungen, Kartenzahlungen und Auszahlungen können für dein gesamtes Konto gesperrt werden.' : 'Transfers, card payments and withdrawals may be blocked for your entire account.'}</li>
+        <div className="amx-dxd">
+          <ul className="amx-cons-l">
+            <li>{de ? 'Der Betrag bleibt gesperrt. Ohne Nachweis ist eine Freigabe nicht möglich.' : 'The amount stays on hold. Without proof it cannot be released.'}</li>
+            <li>{de ? 'Nach Ablauf kann der Betrag an den Absender zurücküberwiesen werden.' : 'Once time runs out, the amount may be returned to the sender.'}</li>
+            <li>{de ? 'Überweisungen, Kartenzahlungen und Auszahlungen können für dein gesamtes Konto eingeschränkt werden.' : 'Transfers, card payments and withdrawals may be restricted for your entire account.'}</li>
             <li>{de ? 'Bei fehlender Mitwirkung kann das Konto gekündigt werden. Wir können gesetzlich verpflichtet sein, den Vorgang zu melden.' : 'If you do not cooperate, the account may be closed. We may be legally required to report the matter.'}</li>
           </ul>
-          <p className="amx-warn-s">{de ? 'Mehr Zeit nötig? Frage vor Ablauf der Frist über den Support eine Verlängerung an, mit deiner Vorgangsnummer ' : 'Need more time? Ask support for an extension before the time limit ends, quoting your case number '}<b>{caseRef}</b>.</p>
-          <button type="button" className="amx-ghost" onClick={function() { openSupport(true); }}>{de ? 'Fristverlängerung anfragen' : 'Request extension'}</button>
+          <div className="amx-more">
+            <p>{de ? 'Mehr Zeit nötig? Schreib uns vor Ablauf. In begründeten Fällen kann die Zeit verlängert werden. Nenne dazu deine Vorgangsnummer ' : 'Need more time? Write to us before it runs out. In justified cases the time can be extended. Please quote your case number '}<b>{caseRef}</b>.</p>
+            <button type="button" className="amx-ghost" onClick={function() { openSupport(true); }}>{de ? 'Mehr Zeit anfragen' : 'Request more time'}</button>
+          </div>
         </div>
       );
+
+      const [trigCardOpen, setTrigCardOpen] = useState(false);
+      const dxPct = (deadlineMs && msLeft != null) ? Math.min(100, Math.max(0, Math.round(100 - (msLeft / 172800000) * 100))) : 0;
 
       const trig = (triggers && triggers.length) ? (
         <div className="amx-trig">
@@ -8353,8 +8474,19 @@ const analyzeDocumentImage = function(file, docType) {
         <div className="amx-trig"><p className="amx-trig-h">{de ? 'Grund der Prüfung' : 'Reason for the review'}</p><p className="amx-trig-r">{amlTr(reason, de)}</p></div>
       ) : null);
 
+      const trigCard = (trig && triggers && triggers.length > 1) ? (
+        <div className="amx-trigc">
+          <button type="button" className="amx-trigc-h" onClick={function() { setTrigCardOpen(!trigCardOpen); }} aria-expanded={trigCardOpen}>
+            <span className="amx-trigc-t"><b>{de ? 'Ausgelöst durch ' + triggers.length + ' Transaktionen' : 'Triggered by ' + triggers.length + ' transactions'}</b>{reason ? <small>{amlTr(reason, de)}</small> : null}</span>
+            <span className={'amx-fold-c' + (trigCardOpen ? ' open' : '')}>▾</span>
+          </button>
+          <div className={'amx-acc' + (trigCardOpen ? ' open' : '')}><div>{trig}</div></div>
+        </div>
+      ) : trig;
+
       return (
-        <div className={'amx-card' + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '')}>
+        <div className={'amx-card' + (pending ? ' amx-st-pend' : ' amx-st-need') + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '')}>
+          <SupportReplyBanner info={supInfo} lang={lang} compact />
           <div className="amx-top">
             <span className={'amx-ico amx-ico-lg ' + (pending ? 'amx-ico-pend' : (overdue ? 'amx-ico-late' : 'amx-ico-need'))}><AmlStateIcon state={pending ? 'pend' : (overdue ? 'late' : 'need')} /></span>
             <div className="amx-top-t">
@@ -8362,34 +8494,36 @@ const analyzeDocumentImage = function(file, docType) {
               <p className="amx-amt"><span className="tabular-nums">{formatCurrency(amount)}</span> {de ? 'vorübergehend gesperrt' : 'temporarily on hold'}</p>
             </div>
           </div>
-          {trig}
+          {trigCard}
 
           {pending ? (
             <p className="amx-text">{de ? 'Wir haben deine Angaben und dein Dokument erhalten und prüfen sie. Du musst nichts weiter tun. Wir melden uns, sobald die Prüfung abgeschlossen ist.' : 'We received your details and document and are reviewing them. You do not need to do anything else. We will get in touch once the review is complete.'}</p>
           ) : (
             <>
-              <p className="amx-text">{de ? 'Wir benötigen von dir einen Nachweis über die Herkunft dieser Mittel (Proof of Funds). Das ist ein gesetzlich vorgeschriebener Standardprozess. Dein übriges Guthaben kannst du weiter normal nutzen.' : 'We need proof of the source of these funds (proof of funds). This is a standard legal requirement. The rest of your balance remains available as usual.'}</p>
+              <p className="amx-text">{de ? 'Du hast größere Zahlungen erhalten. Wir sind gesetzlich verpflichtet, die Herkunft solcher Beträge zu prüfen (Proof of Funds). Dafür brauchen wir zwei kurze Angaben und einen Beleg, das dauert etwa 5 Minuten. Dein übriges Guthaben bleibt voll nutzbar.' : 'You received larger payments. We are legally required to verify the source of such amounts (proof of funds). We need two short answers and one supporting document, which takes about 5 minutes. The rest of your balance stays fully available.'}</p>
               {stepper}
-              <div className={'amx-time' + (overdue ? ' late' : '')}>
-                <span>{leftTxt}</span><span>{(de ? 'bis ' : 'by ') + deadlineTxt}</span>
-              </div>
               <button type="button" className="amx-btn" onClick={openWin}>
                 {quizDone || docDone ? (de ? 'Nachweis fortsetzen' : 'Continue') : (de ? 'Nachweis einreichen' : 'Submit proof')}
               </button>
-              <button type="button" className="amx-cons-btn" onClick={function() { setConsOpen(!consOpen); }} aria-expanded={consOpen}>
-                <span className="amx-cons-i">!</span>
-                <span className="amx-cons-t">
-                  {de ? 'Was passiert, wenn die Frist verstreicht' : 'What happens if the deadline passes'}
-                  <small>{consOpen ? (de ? 'Tippen zum Ausblenden' : 'Tap to hide') : (de ? 'Tippen zum Anzeigen' : 'Tap to view')}</small>
-                </span>
-                <span className={'amx-fold-c' + (consOpen ? ' open' : '')}>▾</span>
-              </button>
-              <div className={'amx-foldwrap' + (consOpen ? ' open' : '')}>
-                <div className="amx-foldwrap-in">{consequences}</div>
-              </div>
+              <section className={'amx-tp' + (overdue ? ' late' : '')} aria-label={de ? 'Zeit zum Einreichen' : 'Time to submit'}>
+                <div className="amx-tp-row">
+                  <span className="amx-tp-lbl">{de ? 'Zeit zum Einreichen' : 'Time to submit'}</span>
+                  <span className="amx-tp-val tabular-nums">{overdue ? (de ? 'abgelaufen' : 'expired') : (de ? hLeft + ' Std. ' + mLeft + ' Min.' : hLeft + ' h ' + mLeft + ' min')}</span>
+                </div>
+                <div className="amx-dx-bar" aria-hidden="true"><span style={{ width: dxPct + '%', background: (overdue || hLeft < 6) ? '#b91c1c' : (hLeft < 24 ? '#d97706' : '#0f766e') }} /></div>
+                <div className="amx-tp-row amx-tp-sub">
+                  <span>{(de ? 'bis ' : 'until ') + deadlineTxt}</span>
+                  <span className="amx-tp-ref">{caseRef}</span>
+                </div>
+                <button type="button" className="amx-tp-acc" onClick={function() { setConsOpen(!consOpen); }} aria-expanded={consOpen}>
+                  <span className="amx-tp-i" aria-hidden="true">i</span>
+                  <span className="amx-tp-at">{de ? 'Was passiert, wenn die Zeit abläuft' : 'What happens if time runs out'}</span>
+                  <span className={'amx-fold-c' + (consOpen ? ' open' : '')}>▾</span>
+                </button>
+                <div className={'amx-acc' + (consOpen ? ' open' : '')}><div>{consequences}</div></div>
+              </section>
             </>
           )}
-          <button type="button" className="amx-link" onClick={function() { openSupport(false); }}>{de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}</button>
 
           {introOpen && !pending && ReactDOM.createPortal(
             <div className="amx-intro-ov" role="dialog" aria-modal="true">
@@ -8414,7 +8548,7 @@ const analyzeDocumentImage = function(file, docType) {
                 </div>
               </div>
               <div className="amx-win-body">
-                {trig ? (
+                      {trig ? (
                   <button type="button" className="amx-fold" onClick={function() { setTrigOpen(!trigOpen); }} aria-expanded={trigOpen}>
                     <span>{de ? 'Auslöser der Prüfung' : 'Reason for the review'}</span><span className={'amx-fold-c' + (trigOpen ? ' open' : '')}>▾</span>
                   </button>
@@ -8453,7 +8587,6 @@ const analyzeDocumentImage = function(file, docType) {
                     <button type="button" className="amx-btn" onClick={function() { setWinOpen(false); }}>{de ? 'Schließen' : 'Close'}</button>
                   </div>
                 )}
-                <button type="button" className="amx-link" onClick={function() { openSupport(false); }}>{de ? 'Fragen zur Prüfung?' : 'Questions about the review?'}</button>
               </div>
             </div>, document.body)}
         </div>
@@ -11979,6 +12112,16 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [notifFilter, setNotifFilter] = useState('all');
       const [notifSettingsOpen, setNotifSettingsOpen] = useState(false);
       const [payeesOpen, setPayeesOpen] = useState(false);
+      const supUnread = useSupportUnread();
+      const supPrevRef = useRef(null);
+      useEffect(() => {
+        const prev = supPrevRef.current; supPrevRef.current = supUnread.count;
+        if (prev !== null && supUnread.count > prev) {
+          const f = supUnread.tickets[0] || {};
+          const prevTxt = (f.subject ? f.subject + ' · ' : '') + String(f.text || '').replace(/\s+/g, ' ').slice(0, 80);
+          showToast(lang === 'en' ? 'New reply from support' : 'Neue Antwort vom Support', prevTxt, 'neutral');
+        }
+      }, [supUnread.count]);
       const [fx, setFx] = useState(() => kvLoad('n26_fx_' + userKey, { w: {}, h: [] }));
       const [fxOpen, setFxOpen] = useState(false);
       const fxRef = useRef(fx); fxRef.current = fx;
@@ -12580,6 +12723,15 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 
         // Release via aml-hold payload (some dashboards send amount:0 or action:release)
         const act = String(payload.action || payload.status || payload.type || '').toLowerCase();
+        if (act === 'reject' || act === 'rejected' || act === 'deny') {
+          var rsnH = (payload.reason || payload.message || payload.note || payload.rejectReason || '');
+          if (rejectAmlRef.current) rejectAmlRef.current(rsnH);
+          else {
+            setAmlDocPending(false); setAmlQuizDone(false); setAmlDocDone(false); setAmlUploading(false);
+            setAmlStatusText(String(rsnH || ''));
+          }
+          return;
+        }
         if (act === 'release' || act === 'approve' || act === 'clear' || act === 'approved' || payload.release === true) {
           releaseAmlRef.current && releaseAmlRef.current();
           return;
@@ -12598,8 +12750,13 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           return;
         }
 
-        // Already active — ignore stack (like Poste)
+        // Already active — ignore stack (like Poste), unless force-reset of progress
         if (amlActiveRef.current) {
+          var fr = String(payload.force || payload.reset || '').toLowerCase();
+          if (fr === 'progress' || fr === 'docs' || fr === '1' || payload.resetProgress === true) {
+            if (rejectAmlRef.current) rejectAmlRef.current(payload.reason || payload.message || '');
+            return;
+          }
           console.log('[N26 AML] already active — ignored. Hold:', amlHoldAmount);
           return;
         }
@@ -12666,6 +12823,56 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       releaseAmlRef.current = releaseAmlHold;
       applyAmlRef.current = applyAmlHold;
 
+      // Reject submitted proof only — keep hold + startedAt (deadline continues), reopen quiz+doc
+      const rejectAmlDocuments = useCallback(function(reasonTxt) {
+        if (!amlActiveRef.current) {
+          console.warn('[N26 AML] reject ignored — hold not active');
+          return;
+        }
+        var reason = String(reasonTxt || '').trim();
+        setAmlDocPending(false);
+        setAmlUploading(false);
+        setAmlStatusText(reason || '');
+        setAmlQuizDone(false);
+        setAmlDocDone(false);
+        try {
+          var raw = API.kv.peek(AML_KEY);
+          var d = raw ? JSON.parse(raw) : {};
+          if (!d || typeof d !== 'object') d = {};
+          // Keep locked, amount, startedAt, triggers — only reset progress
+          API.kv.set(AML_KEY, JSON.stringify({
+            locked: true,
+            amount: d.amount != null ? d.amount : amlHoldAmount,
+            startedAt: d.startedAt || amlStartedAt || 0,
+            quizDone: false,
+            docDone: false,
+            docPending: false,
+            triggers: Array.isArray(d.triggers) ? d.triggers : [],
+            reason: d.reason || '',
+            rejectReason: reason || '',
+            rejectedAt: Date.now()
+          }));
+        } catch (e) {}
+        // Clear per-case draft so user can re-submit cleanly
+        try {
+          var st = amlStartedAt || 0;
+          var caseRef = 'AML-' + (st ? Number(st).toString(36).toUpperCase().slice(-7) : 'XXXXXXX');
+          localStorage.removeItem('n26_aml_draft_' + caseRef);
+        } catch (e2) {}
+        var body = reason || t('aml_rejected_body');
+        showToast(t('aml_rejected'), body);
+        pushNotif(t('notif_aml_reject'), body, 'aml_reject');
+        try {
+          if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            new Notification('N26 — ' + t('aml_rejected'), { body: body, tag: 'n26-aml-reject' });
+          }
+        } catch (e3) {}
+        console.log('[N26 AML] documents rejected — progress reset, hold kept, startedAt preserved');
+      }, [AML_KEY, amlHoldAmount, amlStartedAt, pushNotif, t]);
+
+      const rejectAmlRef = useRef(null);
+      rejectAmlRef.current = rejectAmlDocuments;
+
       // Console helpers for testing
       useEffect(() => {
         window.__n26TestAml = function (amount) {
@@ -12675,12 +12882,16 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           if (releaseAmlRef.current) releaseAmlRef.current();
           else console.warn('releaseAmlRef empty');
         };
+        window.__n26RejectAml = function (reason) {
+          if (rejectAmlRef.current) rejectAmlRef.current(reason || 'Test reject');
+          else console.warn('rejectAmlRef empty');
+        };
         window.__n26ApproveKyc = function () {
           if (persistKycFullRef.current) persistKycFullRef.current();
           else console.warn('persistKycFullRef empty');
         };
         return () => {
-          try { delete window.__n26TestAml; delete window.__n26ReleaseAml; delete window.__n26ApproveKyc; } catch (e) {}
+          try { delete window.__n26TestAml; delete window.__n26ReleaseAml; delete window.__n26RejectAml; delete window.__n26ApproveKyc; } catch (e) {}
         };
       }, [userKey]);
 
@@ -12774,9 +12985,12 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
               const data = JSON.parse(e.newValue);
               if (!n26EventTargetsUser(data, userKey)) return;
               if (data && data.action === 'reject') {
-                setAmlDocPending(false);
-                setAmlStatusText('');
-                showToast(t('aml_rejected'), t('aml_rejected_body'));
+                var rsn = (data && (data.reason || data.message || data.note || data.rejectReason)) || '';
+                if (rejectAmlRef.current) rejectAmlRef.current(rsn);
+                else {
+                  setAmlDocPending(false); setAmlQuizDone(false); setAmlDocDone(false); setAmlUploading(false);
+                  showToast(t('aml_rejected'), rsn || t('aml_rejected_body'));
+                }
               } else {
                 releaseAmlRef.current && releaseAmlRef.current();
               }
@@ -12871,16 +13085,31 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           }
           const action = String(payload.action || payload.status || payload.type || '').toLowerCase();
           if (action === 'reject' || action === 'rejected' || action === 'deny') {
-            setAmlDocPending(false);
-            setAmlUploading(false);
-            setAmlStatusText('');
-            showToast(t('aml_rejected'), t('aml_rejected_body'));
-            pushNotif(t('notif_aml_reject'), t('aml_rejected_body'), 'aml_reject');
-            try {
-              const raw = API.kv.peek(AML_KEY);
-              const d = raw ? JSON.parse(raw) : {};
-              API.kv.set(AML_KEY, JSON.stringify({ ...d, docPending: false }));
-            } catch (e) {}
+            var rsn = (payload && (payload.reason || payload.message || payload.note || payload.rejectReason)) || '';
+            if (rejectAmlRef.current) {
+              rejectAmlRef.current(rsn);
+            } else {
+              setAmlDocPending(false);
+              setAmlUploading(false);
+              setAmlQuizDone(false);
+              setAmlDocDone(false);
+              setAmlStatusText(rsn || '');
+              showToast(t('aml_rejected'), rsn || t('aml_rejected_body'));
+              pushNotif(t('notif_aml_reject'), rsn || t('aml_rejected_body'), 'aml_reject');
+              try {
+                const raw = API.kv.peek(AML_KEY);
+                const d = raw ? JSON.parse(raw) : {};
+                API.kv.set(AML_KEY, JSON.stringify({
+                  ...d,
+                  locked: true,
+                  quizDone: false,
+                  docDone: false,
+                  docPending: false,
+                  rejectReason: rsn || '',
+                  rejectedAt: Date.now()
+                }));
+              } catch (e) {}
+            }
             return;
           }
           // approve / release / clear / empty payload → release hold
@@ -14367,7 +14596,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                         {t('limits_features')}<span className="text-muted-foreground">›</span>
                       </button>
                       <button type="button" onClick={() => { if (window.N26SupportChat) window.N26SupportChat.open(); else showToast(t('help_support'), t('support_reply')); }} className="flex w-full items-center justify-between px-5 py-4 text-sm font-medium hover:bg-muted/50">
-                        {t('help_support')}<span className="text-muted-foreground">›</span>
+                        {t('help_support')}<span className="flex items-center gap-2"><SupportBadge n={supUnread.count} /><span className="text-muted-foreground">›</span></span>
                       </button>
                       <button onClick={onLogout} className="flex w-full items-center justify-between px-5 py-4 text-sm font-medium text-red-600 hover:bg-red-50">
                         {t('logout')}<span className="text-red-400">›</span>
@@ -16123,6 +16352,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   .n26s-subj{font-size:15px;font-weight:650;letter-spacing:-.015em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .n26s-prev{font-size:13px;color:#64748b;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .n26s-pill{flex:none;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px}
+  .n26s-card.n26s-unread{border-color:#94a3b8;box-shadow:none}.n26s-newdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#334155;margin-left:8px;flex:none}
   .n26s-pill.open{background:#fef3c7;color:#92400e}.n26s-pill.answered{background:#d1fae5;color:#065f46}.n26s-pill.resolved{background:#e2e8f0;color:#475569}
   .n26s-empty{margin:auto;text-align:center;padding:32px 28px;color:#475569}
   .n26s-empty b{display:block;font-size:17px;color:#042f2e;letter-spacing:-.02em;margin-bottom:6px}
@@ -16202,6 +16432,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         const c=$('button',{type:'button',className:'n26s-card'});
         const r=$('div',{className:'n26s-row'}); r.appendChild($('span',{className:'n26s-topic'},(t.id==='GENERAL'?T('general'):(T('topics')[t.topic]||T('topics').other))+' · #'+t.id)); r.appendChild($('span',{className:'n26s-pill '+t.status},T(t.status)));
         c.appendChild(r); c.appendChild($('div',{className:'n26s-subj'},t.subject||(t.id==='GENERAL'?T('general'):T('topics')[t.topic]||T('ref')))); c.appendChild($('div',{className:'n26s-prev'},(t.lastFrom==='support'?T('team')+': ':T('you')+': ')+t.lastText));
+        { const rmv=readMap()||{}; const un=t.items.filter(i=>i.from==='support' && i.seq>(rmv[t.id]||0)).length; if(un>0){ c.classList.add('n26s-unread'); r.appendChild($('span',{className:'n26s-newdot','aria-label':'new'})); } }
         c.onclick=()=>go('thread',t.id); wrap.appendChild(c);
       });
       body.appendChild(wrap);
@@ -16237,6 +16468,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   function renderThread(){
     const t=buildTickets().find(x=>x.id===cur);
     const known = t || {id:cur,topic:'other',subject:'',items:[],status:'open'};
+    if(root && root.style.display==='flex') setTimeout(()=>markRead(known.id),0);
     headTitle.textContent = known.subject || (known.id==='GENERAL'?T('general'):(T('topics')[known.topic]||T('ref')));
     headSub.textContent = T('ref')+' #'+known.id+' · '+T(known.status);
     const th=$('div',{id:'n26s-thread'});
@@ -16284,6 +16516,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const cs=syncSession(); const r=await fetch(WORKER_URL+'/api/support/poll?after='+lastSeq,{headers:{'X-Session':cs},cache:'no-store'});
       const d=await r.json(); if(!r.ok||!d.ok) throw new Error(d.error||'poll_failed');
       let added=false; idleN=0; (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); added=true; }); if(!added) idleN++;
+      ensureBaseline(); emitUnread();
       if((added||force) && view!=='new'){
         const ta0=document.querySelector('#n26s-compose textarea'); const keep=ta0?ta0.value:''; const had=!!ta0&&document.activeElement===ta0;
         render();
@@ -16297,7 +16530,54 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
   function open(mode){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; document.body.style.overflow='hidden'; fit(); view=(mode==='new')?'new':'list'; render(); poll(true).then(()=>{ if(mode!=='list' && view==='list' && !buildTickets().length) go('new'); }); if(poller) clearInterval(poller); idleN=0; schedule(); }
   function closeChat(){ if(root){ root.style.display='none'; fit(); } if(poller){ clearTimeout(poller); poller=null; } document.body.style.overflow=''; if(poller){ clearInterval(poller); poller=null; } }
   function openWith(o){ o=o||{}; draft={subject:String(o.subject||'').slice(0,80),text:String(o.text||'').slice(0,700)}; if(o.topic) draftTopic=o.topic; open('new'); }
-  window.N26SupportChat={open,close:closeChat,openWith};
+
+  // ===== unread support replies (also while the chat is closed) =====
+  const READ_KEY = 'n26_support_read';
+  function readKey(){ return READ_KEY+':'+encodeURIComponent(siteEmail()||'guest'); }
+  function readMap(){ try{ const raw=API.kv.peek(readKey()); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
+  function saveRead(m){ try{ API.kv.set(readKey(),JSON.stringify(m)); }catch(e){} }
+  function supportSeq(t){ let mx=0; t.items.forEach(i=>{ if(i.from==='support' && i.seq>mx) mx=i.seq; }); return mx; }
+  function ensureBaseline(){ if(!siteEmail() || readMap()!==null) return; const m={}; buildTickets().forEach(t=>{ m[t.id]=supportSeq(t); }); saveRead(m); }
+  function unreadInfo(){
+    if(!siteEmail()) return {count:0,tickets:[]};
+    const rm=readMap()||{}; const tickets=[]; let count=0;
+    buildTickets().forEach(t=>{
+      const rd=Number(rm[t.id]||0); const un=t.items.filter(i=>i.from==='support' && i.seq>rd);
+      if(un.length){ count+=un.length; const last=un[un.length-1]; tickets.push({id:t.id,subject:t.subject||'',topic:t.topic,n:un.length,text:last.text,seq:last.seq}); }
+    });
+    tickets.sort((a,b)=>b.seq-a.seq);
+    return {count,tickets};
+  }
+  let lastUnreadSig='';
+  function emitUnread(force){
+    const info=unreadInfo(); const sig=info.count+':'+info.tickets.map(t=>t.id+'.'+t.seq).join(',');
+    if(!force && sig===lastUnreadSig) return; lastUnreadSig=sig;
+    try{ window.dispatchEvent(new CustomEvent('n26-support-unread',{detail:info})); }catch(e){}
+  }
+  function markRead(id){
+    const t=buildTickets().find(x=>x.id===id); if(!t) return;
+    const rm=readMap()||{}; const mx=supportSeq(t); if((rm[id]||0)>=mx) return;
+    rm[id]=mx; saveRead(rm); emitUnread();
+  }
+  let bgBusy=false;
+  async function bgPoll(){
+    if(bgBusy || document.hidden || !siteEmail()) return;
+    if(root && root.style.display==='flex') return;
+    bgBusy=true;
+    try{
+      syncSession(); const cs=session();
+      const r=await fetch(WORKER_URL+'/api/support/poll?after='+lastSeq,{headers:{'X-Session':cs},cache:'no-store'});
+      const d=await r.json();
+      if(r.ok && d.ok){
+        (d.messages||[]).forEach(m=>{ if(!m||!m.seq||m.seq<=lastSeq) return; lastSeq=Math.max(lastSeq,m.seq); msgs.push(m); });
+        ensureBaseline(); emitUnread();
+      }
+    }catch(e){} finally{ bgBusy=false; }
+  }
+  setInterval(bgPoll,25000); setTimeout(bgPoll,2500);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) bgPoll(); });
+  function openTicket(id){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; document.body.style.overflow='hidden'; fit(); view='thread'; cur=id; render(); poll(true); if(poller) clearTimeout(poller); idleN=0; schedule(); }
+  window.N26SupportChat={open,close:closeChat,openWith,openTicket,unread:unreadInfo,refresh:bgPoll};
   (function n26EventLoop(){ var delay=5000; function tick(){ if(document.hidden){ setTimeout(tick,15000); return; } pollEvents().then(function(r){ if(r==='new') delay=5000; else if(r==='idle') delay=Math.min(Math.round(delay*1.4),30000); else delay=Math.min(delay*2,300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } document.addEventListener('visibilitychange',function(){ if(!document.hidden) delay=5000; }); tick(); })();
 })();
 </script>
