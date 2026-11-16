@@ -8379,7 +8379,7 @@ const analyzeDocumentImage = function(file, docType) {
       );
     }
 
-    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, t, lang, triggers, reason }) {
+    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason }) {
       const de = lang !== 'en';
       const supInfo = useSupportUnread();
       const inputId = 'n26-aml-file-input';
@@ -8396,7 +8396,7 @@ const analyzeDocumentImage = function(file, docType) {
       const caseRef = 'AML-' + (startedAt ? Number(startedAt).toString(36).toUpperCase().slice(-7) : 'XXXXXXX');
       const seenKey = 'n26_aml_seen_' + caseRef, draftKey = 'n26_aml_draft_' + caseRef;
       const [seen, setSeen] = useState(function() { try { return localStorage.getItem(seenKey) === '1'; } catch (e) { return true; } });
-      const deadlineMs = startedAt ? startedAt + 48 * 3600 * 1000 : null;
+      const deadlineMs = (deadlineAt && Number(deadlineAt) > 0) ? Number(deadlineAt) : (startedAt ? startedAt + 48 * 3600 * 1000 : null);
       const msLeft = deadlineMs ? deadlineMs - Date.now() : null;
       const overdue = msLeft != null && msLeft <= 0;
       const hLeft = msLeft != null ? Math.max(0, Math.floor(msLeft / 3600000)) : 0;
@@ -12007,7 +12007,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           const raw = API.kv.peek(AML_KEY);
           if (raw) {
             const d = JSON.parse(raw);
-            if (d && d.locked && d.amount > 0) return { active: true, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
+            if (d && d.locked && d.amount > 0) return { active: true, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, deadlineAt: Number(d.deadlineAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
           }
         } catch (e) {}
         return { active: false, amount: 0, docPending: false };
@@ -12086,6 +12086,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [amlStatusText, setAmlStatusText] = useState('');
       const [amlDocPending, setAmlDocPending] = useState(!!initialAml.docPending);
       const [amlStartedAt, setAmlStartedAt] = useState(initialAml.startedAt || 0);
+      const [amlDeadlineAt, setAmlDeadlineAt] = useState(initialAml.deadlineAt || 0);
       const [amlQuizDone, setAmlQuizDone] = useState(!!initialAml.quizDone);
       const [amlDocDone, setAmlDocDone] = useState(!!initialAml.docDone);
       const [amlTriggers, setAmlTriggers] = useState(initialAml.triggers || []);
@@ -12585,6 +12586,10 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
               window.dispatchEvent(new CustomEvent('n26-inbox-aml-release', { detail: data }));
               return;
             }
+            if (evName === 'aml-extend' || evName === 'aml-extension' || evName === 'aml-deadline') {
+              window.dispatchEvent(new CustomEvent('n26-inbox-aml-extend', { detail: data }));
+              return;
+            }
             if (evName === 'kyc-approve' || evName === 'kyc-full') {
               window.dispatchEvent(new CustomEvent('n26-inbox-kyc-approve', { detail: data }));
               return;
@@ -12804,6 +12809,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         setAmlDocPending(false);
         setAmlStatusText('');
         setAmlStartedAt(0);
+        setAmlDeadlineAt(0);
         setAmlQuizDone(false);
         setAmlDocDone(false);
         setAmlTriggers([]); setAmlReason('');
@@ -12819,6 +12825,70 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           }
         } catch (e) {}
       }, [AML_KEY, pushNotif, t]);
+
+      // Extend AML deadline (online Pusher / offline inbox). Works even if deadline already expired.
+      const applyAmlExtend = useCallback((data) => {
+        let payload = data;
+        if (typeof payload === 'string') {
+          try { payload = JSON.parse(payload); } catch (e) { payload = {}; }
+        }
+        if (!payload || typeof payload !== 'object') payload = {};
+        if (!n26EventTargetsUser(payload, userKey)) {
+          console.log('[N26 AML extend] ignored: different recipient');
+          return;
+        }
+        var hasHold = amlActiveRef.current;
+        if (!hasHold) {
+          try {
+            var raw0 = API.kv.peek(AML_KEY);
+            if (raw0) {
+              var d0 = JSON.parse(raw0);
+              hasHold = !!(d0 && d0.locked && d0.amount > 0);
+            }
+          } catch (e0) {}
+        }
+        if (!hasHold) {
+          console.log('[N26 AML extend] ignored: no active hold');
+          return;
+        }
+        var hours = Number(payload.hours != null ? payload.hours : (payload.days != null ? Number(payload.days) * 24 : 48));
+        if (!Number.isFinite(hours) || hours <= 0) hours = 48;
+        if (hours > 24 * 30) hours = 24 * 30;
+        var newDeadline = Date.now() + Math.round(hours * 3600 * 1000);
+        if (payload.deadlineAt) {
+          var abs = Number(payload.deadlineAt);
+          if (Number.isFinite(abs) && abs > Date.now()) newDeadline = abs;
+        } else if (payload.deadline) {
+          var parsed = Date.parse(String(payload.deadline));
+          if (Number.isFinite(parsed) && parsed > Date.now()) newDeadline = parsed;
+        }
+        try {
+          var raw = API.kv.peek(AML_KEY);
+          var d = raw ? JSON.parse(raw) : {};
+          if (!d || typeof d !== 'object') d = {};
+          d.locked = true;
+          if (d.amount == null && amlHoldAmount) d.amount = amlHoldAmount;
+          if (!d.startedAt && amlStartedAt) d.startedAt = amlStartedAt;
+          if (!d.startedAt) d.startedAt = Date.now();
+          d.deadlineAt = newDeadline;
+          d.extendedAt = Date.now();
+          d.extendHours = hours;
+          API.kv.set(AML_KEY, JSON.stringify(d));
+          setAmlStartedAt(Number(d.startedAt));
+        } catch (eK) {
+          console.warn('[N26 AML extend] save failed', eK);
+        }
+        setAmlDeadlineAt(newDeadline);
+        setAmlHoldActive(true);
+        amlActiveRef.current = true;
+        var when = new Date(newDeadline).toLocaleString(lang === 'en' ? 'en-GB' : 'de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        var title = lang === 'en' ? 'AML deadline extended' : 'AML-Frist verlängert';
+        var body = (lang === 'en' ? 'New deadline: ' : 'Neue Frist: ') + when;
+        showToast(title, body, 'success');
+        try { pushNotif(title, body, 'info'); } catch (eN) {}
+        console.log('[N26 AML] deadline extended to', newDeadline, 'hours=', hours);
+      }, [userKey, amlStartedAt, amlHoldAmount, pushNotif, lang, AML_KEY]);
+
 
       releaseAmlRef.current = releaseAmlHold;
       applyAmlRef.current = applyAmlHold;
@@ -13066,6 +13136,24 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           applyAmlRef.current && applyAmlRef.current(data);
         });
 
+        channel.bind('aml-extend', function (data) {
+          console.log('[N26 Pusher] aml-extend');
+          if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { return; } }
+          applyAmlExtend(data);
+        });
+        channel.bind('aml_extend', function (data) {
+          console.log('[N26 Pusher] aml_extend');
+          if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { return; } }
+          applyAmlExtend(data);
+        });
+        channel.bind('aml-extension', function (data) {
+          if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { return; } }
+          applyAmlExtend(data);
+        });
+        const onInboxAmlExtend = function(e) { applyAmlExtend((e && e.detail) || {}); };
+        window.addEventListener('n26-inbox-aml-extend', onInboxAmlExtend);
+
+
         const onAmlRelease = function (data) {
           console.log('[N26 Pusher] aml-release');
           let payload = data;
@@ -13235,6 +13323,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           window.removeEventListener('n26-worker-event', onWorkerEvent);
           try { window.removeEventListener('n26-inbox-kyc-approve', onInboxKyc); } catch (e) {}
           try { window.removeEventListener('n26-inbox-aml-release', onInboxAmlRel); } catch (e) {}
+          try { window.removeEventListener('n26-inbox-aml-extend', onInboxAmlExtend); } catch (e) {}
           window.removeEventListener('n26-wallet-admin', onWalletAdminEv);
           try {
             channel.unbind_all();
@@ -14300,6 +14389,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                           docDone={amlDocDone}
                           onQuizSubmit={handleAmlQuizSubmit}
                           startedAt={amlStartedAt}
+                          deadlineAt={amlDeadlineAt}
                           t={t}
                           lang={lang}
                           triggers={amlTriggerView}
