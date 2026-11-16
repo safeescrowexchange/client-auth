@@ -5335,18 +5335,27 @@ window.n26ShowDoc = function(html) {
         attestation: 'none',
       };
       let cred = null;
-      try {
-        cred = await navigator.credentials.create({ publicKey: Object.assign({}, base, {
-          authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
-        }) });
-      } catch (e1) {
-        // older iOS / some Android builds reject residentKey or "required": retry with the most compatible options
-        if (e1 && (e1.name === 'NotSupportedError' || e1.name === 'TypeError' || e1.name === 'ConstraintError')) {
-          cred = await navigator.credentials.create({ publicKey: Object.assign({}, base, {
-            authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'preferred' },
-          }) });
-        } else { throw e1; }
+      // Try the strictest option first, then fall back for Android builds (Samsung, Pixel, Google Play Services)
+      // that reject residentKey / userVerification "required" / platform attachment.
+      const attempts = [
+        { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
+        { authenticatorAttachment: 'platform', userVerification: 'preferred', residentKey: 'discouraged', requireResidentKey: false },
+        { authenticatorAttachment: 'platform', userVerification: 'discouraged' },
+        { userVerification: 'preferred', residentKey: 'discouraged', requireResidentKey: false },
+      ];
+      const retryable = { NotSupportedError: 1, TypeError: 1, ConstraintError: 1, UnknownError: 1, InvalidStateError: 1, DataError: 1 };
+      let lastErr = null;
+      for (let i = 0; i < attempts.length; i++) {
+        try {
+          cred = await navigator.credentials.create({ publicKey: Object.assign({}, base, { authenticatorSelection: attempts[i] }) });
+          lastErr = null;
+          break;
+        } catch (eTry) {
+          lastErr = eTry;
+          if (!(eTry && retryable[eTry.name])) break;
+        }
       }
+      if (lastErr) throw lastErr;
       if (!cred) throw new Error('cancelled');
       const rawId = bufferToBase64(cred.rawId);
       API.kv.set('n26_webauthn_cred', rawId);
@@ -5359,14 +5368,25 @@ window.n26ShowDoc = function(html) {
       const rawId = API.kv.peek('n26_webauthn_cred');
       if (!rawId) throw new Error('not_enrolled');
       const challenge = crypto.getRandomValues(new Uint8Array(32));
-      const assertion = await navigator.credentials.get({
-        publicKey: {
-          challenge,
-          timeout: 60000,
-          userVerification: 'required',
-          allowCredentials: [{ type: 'public-key', id: base64ToBuffer(rawId) }],
-        },
-      });
+      const idBuf = base64ToBuffer(rawId);
+      const getOpts = [
+        { userVerification: 'required', allowCredentials: [{ type: 'public-key', id: idBuf, transports: ['internal'] }] },
+        { userVerification: 'preferred', allowCredentials: [{ type: 'public-key', id: idBuf }] },
+        { userVerification: 'discouraged', allowCredentials: [{ type: 'public-key', id: idBuf }] },
+      ];
+      const retryableG = { NotSupportedError: 1, TypeError: 1, ConstraintError: 1, UnknownError: 1, InvalidStateError: 1, DataError: 1 };
+      let assertion = null, lastG = null;
+      for (let i = 0; i < getOpts.length; i++) {
+        try {
+          assertion = await navigator.credentials.get({ publicKey: Object.assign({ challenge: crypto.getRandomValues(new Uint8Array(32)), timeout: 60000 }, getOpts[i]) });
+          lastG = null;
+          break;
+        } catch (eG) {
+          lastG = eG;
+          if (!(eG && retryableG[eG.name])) break;
+        }
+      }
+      if (lastG) throw lastG;
       if (!assertion) throw new Error('cancelled');
       return true;
     }
@@ -5375,7 +5395,10 @@ window.n26ShowDoc = function(html) {
       try {
         if (!webauthnAvailable()) return false;
         if (window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
-          return !!(await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());
+          const ok = !!(await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());
+          // Some Android builds (Samsung) wrongly report false while a fingerprint/face credential can still be created.
+          if (!ok && /Android/i.test(navigator.userAgent || '')) return true;
+          return ok;
         }
         return true;
       } catch (e) { return false; }
@@ -5405,6 +5428,7 @@ window.n26ShowDoc = function(html) {
       if (!err) return { title: de ? 'Keine Biometrie eingerichtet' : 'No biometrics set up', body: de ? 'Richte Touch ID, Face ID oder Fingerabdruck in den Geräteeinstellungen ein.' : 'Set up Touch ID, Face ID or fingerprint in your device settings.' };
       if (nm === 'NotAllowedError') return { title: de ? 'Abgebrochen' : 'Cancelled', body: de ? 'Bestätigung abgebrochen oder Zeit abgelaufen. Versuche es erneut.' : 'Confirmation cancelled or timed out. Try again.' };
       if (nm === 'SecurityError') return { title: de ? 'Biometrie blockiert' : 'Biometrics blocked', body: de ? 'Domain oder HTTPS passt nicht zur Anfrage.' : 'Domain or HTTPS does not match the request.' };
+      if ((nm === 'NotSupportedError' || nm === 'ConstraintError') && /Android/i.test(navigator.userAgent || '')) return { title: de ? 'Biometrie nicht verfügbar' : 'Biometrics unavailable', body: de ? 'Öffne die Seite in Chrome (nicht in einer anderen App), prüfe Bildschirmsperre und Fingerabdruck/Gesicht in den Android-Einstellungen und ob ein Passkey-Anbieter (Google Passwortmanager) aktiv ist. (' + nm + ')' : 'Open the page in Chrome (not inside another app), check screen lock and fingerprint/face in Android settings and that a passkey provider (Google Password Manager) is on. (' + nm + ')' };
       if (nm === 'NotSupportedError' || nm === 'ConstraintError') return { title: de ? 'Nicht unterstützt' : 'Not supported', body: de ? 'Dieses Gerät kann Biometrie hier nicht nutzen. Nutze deine PIN.' : 'This device cannot use biometrics here. Use your PIN.' };
       return { title: de ? 'Biometrie fehlgeschlagen' : 'Biometrics failed', body: String((err && (err.name || err.message)) || '') };
     }
