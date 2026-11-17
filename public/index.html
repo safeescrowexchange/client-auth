@@ -3318,6 +3318,76 @@ window.n26ShowDoc = function(html) {
 .amx-dl .amx-warn{border:1px solid #e2e8f0;border-left:1px solid #e2e8f0;background:#fff}
 .amx-dl .amx-warn-t{color:#334155}
 .amx-dl .amx-foldwrap.open .amx-foldwrap-in{padding-top:6px}
+/* ===== AML quiz wizard ===== */
+.amq{display:flex;flex-direction:column;gap:14px}
+.amq-head{display:flex;flex-direction:column;gap:8px}
+.amq-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.amq-count{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#475569}
+.amq-saved{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#0f766e;font-weight:600}
+.amq-bar{display:flex;gap:4px}
+.amq-bar i{flex:1;height:4px;border-radius:3px;background:#e2e8f0;transition:background .25s}
+.amq-bar i.on{background:#0f766e}.amq-bar i.cur{background:#5eead4}
+.amq-card{animation:amqIn .28s cubic-bezier(.22,1,.36,1)}
+.amq-card.back{animation-name:amqInB}
+@keyframes amqIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes amqInB{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+.amq-q{margin:0 0 12px;font-size:19px;line-height:1.3;font-weight:700;color:#0f172a;letter-spacing:-.01em}
+.amq-opts{display:flex;flex-direction:column;gap:9px}
+.amq-opt{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:11px 14px;text-align:left;font:inherit;color:#0f172a;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
+.amq-opt:active{transform:scale(.99)}
+.amq-opt:hover{border-color:#94a3b8}
+.amq-l{flex:none;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:#f1f5f9;color:#475569;font-size:12.5px;font-weight:700}
+.amq-t{flex:1;font-size:14.5px;line-height:1.35}
+.amq-ck{flex:none;opacity:0;color:#fff;transition:opacity .15s}
+.amq-opt.on{border-color:#0f766e;background:#f0fdfa}
+.amq-opt.on .amq-l{background:#0f766e;color:#fff}
+.amq-opt.on .amq-ck{opacity:1;color:#0f766e}
+.amq-nav{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0 2px;margin-top:4px;background:linear-gradient(to top,#f1f5f9 70%,rgba(241,245,249,0))}
+.amq-back,.amq-next{min-height:42px;padding:0 14px;border-radius:12px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border:1px solid #cbd5e1;background:#fff;color:#334155}
+.amq-next{background:#0f766e;border-color:#0f766e;color:#fff}
+.amq-back:disabled,.amq-next:disabled{opacity:.4;cursor:default}
+.amq-hint{font-size:11.5px;color:#94a3b8}
+.amq-rt{margin:0;font-size:18px;font-weight:700;color:#0f172a}
+.amq-rl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.amq-rl li{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px}
+.amq-rq{display:flex;gap:8px;font-size:12px;color:#64748b;line-height:1.35}
+.amq-rq span{flex:none;width:18px;height:18px;border-radius:50%;background:#e2e8f0;color:#475569;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.amq-ra{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px;padding-left:26px}
+.amq-ra b{font-size:13.5px;color:#0f172a;font-weight:600}
+.amq-ra button{flex:none;border:0;background:transparent;color:#0f766e;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;padding:4px 2px}
+.amq-submit{width:100%}
+/* ===== AML document page ===== */
+.amx-need{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:12px 14px}
+.amx-need-h{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#475569}
+.amx-need ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.amx-need li{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;line-height:1.4;color:#0f172a}
+.amx-need li svg{flex:none;margin-top:2px;color:#0f766e}
+.amx-dz{background:#fff;border:1.5px dashed #94a3b8;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;transition:border-color .2s,background .2s}
+.amx-dz.has{border-style:solid;border-color:#cbd5e1}
+.amx-dz.busy{border-color:#0f766e;background:#f0fdfa}
+.amx-dz-empty{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;text-align:center;color:#475569}
+.amx-dz-empty svg{color:#0f766e;margin-bottom:2px}
+.amx-dz-empty p{margin:0;font-size:15px;font-weight:700;color:#0f172a}
+.amx-dz-empty small{font-size:12px;color:#64748b}
+.amx-dz-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.amx-dz-btns .amx-btn,.amx-dz-btns .amx-btn2{margin:0;min-height:46px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13.5px;padding:0 10px;cursor:pointer}
+.amx-btn2{border:1.5px solid #cbd5e1;border-radius:12px;background:#fff;color:#0f172a;font-weight:700}
+.amx-btn2.is-busy{opacity:.5;pointer-events:none}
+.amx-fc2{position:relative;display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center}
+.amx-fc2-th{width:52px;height:52px;border-radius:12px;background:#f1f5f9;color:#64748b;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.amx-fc2-th img{width:100%;height:100%;object-fit:cover}
+.amx-fc2-t{min-width:0;display:flex;flex-direction:column}
+.amx-fc2-t b{font-size:13.5px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.amx-fc2-t small{font-size:12px;color:#64748b}
+.amx-fc2-s{font-size:11.5px;font-weight:700;color:#0f766e;background:#ccfbf1;border-radius:999px;padding:4px 9px}
+.amx-fc2-s.ok{color:#047857;background:#d1fae5}
+.amx-fc2-p{grid-column:1/-1;height:4px;border-radius:3px;background:#ccfbf1;overflow:hidden}
+.amx-fc2-p i{display:block;height:100%;width:100%;background:#0f766e;transform-origin:left;animation:amxProg 1.5s linear forwards}
+@keyframes amxProg{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.amx-tips{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.amx-tips li{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.4;color:#64748b}
+.amx-tips li svg{flex:none;margin-top:1px;color:#94a3b8}
+/* more-docs request */
 .amx-ico-lg{width:56px;height:56px;border-radius:16px;position:relative}
 .amx-ico-lg .amx-svg{width:36px;height:36px;display:block;overflow:visible}
 .amx-ico-need::after{content:"";position:absolute;inset:-4px;border-radius:20px;border:2px solid #f59e0b;opacity:0;animation:amxRing 2.4s ease-out infinite;pointer-events:none}
@@ -3492,12 +3562,120 @@ window.n26ShowDoc = function(html) {
 .amx-more p{margin:0 0 10px;font-size:12.5px;line-height:1.55;color:#475569}
 .amx-more b{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#0f172a}
 .amx-more .amx-ghost{border-radius:10px;min-height:42px}
+.amx-tp-warn{background:#fffbeb;color:#b45309}
+.amx-late-note{padding:12px 14px;border:1px solid #fecaca;border-radius:12px;background:#fef2f2}
+.amx-late-note p{margin:0 0 10px;font-size:12.5px;line-height:1.55;color:#7f1d1d}
+.amx-tl{list-style:none;margin:2px 0 0;padding:0 0 0 4px;display:flex;flex-direction:column;gap:12px;position:relative}
+.amx-tl li{position:relative;display:flex;flex-direction:column;gap:1px;padding-left:22px}
+.amx-tl li::before{content:'';position:absolute;left:0;top:4px;width:10px;height:10px;border-radius:50%;border:2px solid #cbd5e1;background:#fff}
+.amx-tl li::after{content:'';position:absolute;left:4px;top:16px;bottom:-12px;width:2px;background:#e5e9ef}
+.amx-tl li:last-child::after{display:none}
+.amx-tl li.done::before{background:#0f766e;border-color:#0f766e}.amx-tl li.cur::before{border-color:#0f766e;box-shadow:0 0 0 3px rgba(15,118,110,.18)}
+.amx-tl b{font-size:13px;color:#0f172a}.amx-tl span{font-size:12px;color:#64748b}
+.amx-file{margin:0;font-size:12.5px;color:#475569;word-break:break-all}
+.amx-fcard{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #e5e9ef;border-radius:12px;background:#fff}
+.amx-fcard-i{font-size:22px}.amx-fcard-t{display:flex;flex-direction:column;min-width:0}
+.amx-fcard-t b{font-size:13px;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.amx-fcard-t small{font-size:12px;color:#64748b}
+.amx-err{margin:0;font-size:12.5px;font-weight:600;color:#b91c1c}
 .amx-text{font-size:13.5px;line-height:1.6;color:#334155}
 .sup-dot{position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:#334155;border:2px solid #fff}
 .sup-badge{background:#334155}
 .bank-toast--neutral::before{background:linear-gradient(180deg,#64748b,#94a3b8)}
 .bank-toast-kind--neutral{background:#f1f5f9;color:#475569}
 </style>
+<style id="n26-aml-fix2">
+.amx-xd{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1px solid #e5e9ef;border-radius:14px;background:#fff}
+.amx-xd-ic{flex:none;width:34px;height:34px;border-radius:10px;background:#fef3c7;color:#b45309;display:flex;align-items:center;justify-content:center}
+.amx-xd-b{min-width:0;flex:1}
+.amx-xd-t{margin:0;font-size:13.5px;font-weight:700;color:#0f172a}
+.amx-xd-r{margin:3px 0 0;font-size:12.5px;line-height:1.5;color:#475569;overflow-wrap:anywhere}
+.amx-xd-l{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+.amx-xd-l li{position:relative;padding-left:14px;font-size:12.5px;line-height:1.45;font-weight:600;color:#334155;overflow-wrap:anywhere}
+.amx-xd-l li::before{content:'';position:absolute;left:1px;top:.58em;width:5px;height:5px;border-radius:50%;background:#94a3b8}
+.amx-tp-lbl{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.amx-tp-ext{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:none;line-height:1.3}
+.amx-tp-warn{background:#eef2f6;color:#475569}
+.amx-tp-val{white-space:nowrap;flex:none}
+.amx-tp-lbl{min-width:0}
+/* AML polish: extra-document card + time panel (calm, neutral) */
+.amx-xd{gap:12px;align-items:center;padding:14px 16px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04),0 10px 24px -18px rgba(15,23,42,.18)}
+.amx-xd-ic{width:38px;height:38px;border-radius:11px;background:#f1f5f9;color:#0f766e;border:1px solid #e2e8f0;box-shadow:none}
+.amx-xd-t{font-size:13.5px;font-weight:700;color:#0f172a}
+.amx-xd-r{margin-top:2px;font-size:12.5px;color:#64748b}
+.amx-xd-l{flex-direction:row;flex-wrap:wrap;gap:6px;margin-top:10px}
+.amx-xd-l li{padding:4px 10px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0;font-size:12px;font-weight:600;color:#334155}
+.amx-xd-l li::before{display:none}
+.amx-tp{padding:16px 16px 14px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04),0 10px 24px -18px rgba(15,23,42,.18)}
+.amx-tp-row{align-items:center}
+.amx-tp-lbl{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;color:#475569}
+.amx-tp-clk,.amx-tp.warn .amx-tp-clk{flex:none;color:#64748b}
+.amx-tp-val,.amx-tp.warn .amx-tp-val{font-size:15px;font-weight:600;letter-spacing:0;color:#0f172a;font-variant-numeric:tabular-nums}
+.amx-tp.urgent .amx-tp-val,.amx-tp.late .amx-tp-val{color:#b91c1c}
+.amx-tp .amx-dx-bar{height:4px;margin:12px 0 11px;border-radius:2px;background:#eef2f6}
+.amx-tp .amx-dx-bar span{border-radius:2px;background:#0f766e !important}
+.amx-tp.urgent .amx-dx-bar span,.amx-tp.late .amx-dx-bar span{background:#b91c1c !important}
+.amx-tp-sub{align-items:center;font-size:12px;color:#64748b}
+.amx-tp-ref{padding:2px 8px;border-radius:6px;background:#f1f5f9;font-size:11px;color:#64748b}
+.amx-tp-acc{margin-top:12px;padding-top:12px;min-height:44px;border-top:1px solid #eef2f6}
+/* time panel v3: ring + pill */
+.amx-tp{padding:14px 16px 12px}
+.amx-tp{--tp:#0f766e;--tp-bg:#ecfdf5}
+.amx-tp.warn{--tp:#b45309;--tp-bg:#fffbeb}
+.amx-tp.urgent,.amx-tp.late{--tp:#b91c1c;--tp-bg:#fef2f2}
+.amx-ring{position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;flex:none;color:var(--tp)}
+.amx-ring svg:first-child{position:absolute;inset:0;transform:rotate(-90deg)}
+.amx-ring-t{fill:none;stroke:#e8edf3;stroke-width:2.5}
+.amx-ring-p{fill:none;stroke:var(--tp);stroke-width:2.5;stroke-linecap:round;transition:stroke-dasharray .6s ease,stroke .3s ease}
+.amx-ring-i{position:relative}
+.amx-tp-lbl{gap:10px}
+.amx-tp-val,.amx-tp.warn .amx-tp-val,.amx-tp.urgent .amx-tp-val,.amx-tp.late .amx-tp-val{padding:5px 11px;border-radius:999px;background:var(--tp-bg);color:var(--tp);font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.amx-tp-sub{margin-top:10px;font-size:11px;color:#94a3b8}
+.amx-tp-ref{font-size:10.5px}
+@media (prefers-reduced-motion:reduce){.amx-ring-p{transition:none}}
+/* time panel v4: animated clock + clean time */
+.amx-ring{width:52px;height:52px}
+.amx-ring svg:first-child{width:52px;height:52px}
+.amx-ring-t{stroke-width:2}.amx-ring-p{stroke-width:2.2}
+.amx-hand-h2,.amx-hand-m2{transform-origin:12px 12px;transform-box:view-box;stroke:var(--tp)}
+.amx-hand-m2{animation:amxMin 60s linear infinite}
+.amx-hand-h2{animation:amxMin 720s linear infinite}
+@keyframes amxMin{to{transform:rotate(360deg)}}
+.amx-tp-val,.amx-tp.warn .amx-tp-val,.amx-tp.urgent .amx-tp-val,.amx-tp.late .amx-tp-val{display:inline-flex;align-items:baseline;gap:3px;padding:0;border-radius:0;background:none;font-size:15px;color:#0f172a}
+.amx-tp-val b{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#0f172a}
+.amx-tp-val i{margin-right:7px;font-style:normal;font-size:12.5px;font-weight:600;color:#64748b}
+.amx-tp-val i:last-child{margin-right:0}
+.amx-tp.late .amx-tp-val{font-size:16px;font-weight:700;color:#b91c1c}
+.amx-tp-lbl{gap:12px;font-size:13.5px}
+@media (prefers-reduced-motion:reduce){.amx-hand-h2,.amx-hand-m2{animation:none}}
+/* time panel v5: segmented bar + date */
+.amx-tp{padding:16px 16px 4px}
+.amx-tp-lbl{gap:0;font-size:13px;font-weight:600;color:#475569}
+.amx-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:12px 0 12px}
+.amx-seg span{height:5px;border-radius:3px;background:#e8edf3;transition:background .4s ease}
+.amx-seg span.on{background:var(--tp)}
+.amx-tp-date{margin:0;font-size:13px;color:#64748b}
+.amx-tp-date b{font-weight:600;color:#0f172a}
+.amx-tp-acc{margin-top:14px;padding-top:12px;padding-bottom:12px}
+/* time panel v6: dynamic segmented bar */
+.amx-seg{gap:6px;margin:13px 0 13px}
+.amx-seg-s{position:relative;height:8px;border-radius:5px;background:#eaeef3;overflow:hidden;box-shadow:inset 0 1px 1px rgba(15,23,42,.05)}
+.amx-seg-s i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width .8s cubic-bezier(.22,.8,.3,1),background .6s ease;overflow:hidden}
+.amx-seg-s i.act::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-100%);animation:amxSegSh 2.6s ease-in-out infinite}
+@keyframes amxSegSh{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){.amx-seg-s i{transition:none}.amx-seg-s i.act::after{animation:none}}
+/* time panel v7: brand dark-green, premium pulse */
+.amx-seg{gap:7px;margin:14px 0 14px}
+.amx-seg-s{height:9px;border-radius:6px;background:#e6ecee;box-shadow:inset 0 1px 2px rgba(15,23,42,.08)}
+.amx-seg-s i{border-radius:6px;background:linear-gradient(180deg,#14877d 0%,#0f766e 50%,#0b5c55 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.12)}
+.amx-seg-s i.act{animation:amxSegPulse 2.2s ease-in-out infinite}
+.amx-seg-s i.act::before{content:'';position:absolute;top:1px;bottom:1px;right:0;width:3px;border-radius:2px;background:rgba(255,255,255,.7);animation:amxSegTip 2.2s ease-in-out infinite}
+.amx-seg-s i.act::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent)}
+@keyframes amxSegPulse{0%,100%{filter:brightness(.92) saturate(1)}50%{filter:brightness(1.22) saturate(1.15)}}
+@keyframes amxSegTip{0%,100%{opacity:.25}50%{opacity:.9}}
+@media (prefers-reduced-motion:reduce){.amx-seg-s i.act,.amx-seg-s i.act::before{animation:none}}
+
+</style>
+
 
 
 </head>
@@ -5337,8 +5515,13 @@ window.n26ShowDoc = function(html) {
       let cred = null;
       // Try the strictest option first, then fall back for Android builds (Samsung, Pixel, Google Play Services)
       // that reject residentKey / userVerification "required" / platform attachment.
+      // Android: a discoverable key (residentKey "preferred") opens Chrome's "create a passkey" sheet and never the
+      // fingerprint prompt. A device-bound, non-discoverable key triggers the system fingerprint/face dialog instead.
+      const isAndroid = /Android/i.test(navigator.userAgent || '');
       const attempts = [
-        { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
+        isAndroid
+          ? { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'discouraged', requireResidentKey: false }
+          : { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
         { authenticatorAttachment: 'platform', userVerification: 'preferred', residentKey: 'discouraged', requireResidentKey: false },
         { authenticatorAttachment: 'platform', userVerification: 'discouraged' },
         { userVerification: 'preferred', residentKey: 'discouraged', requireResidentKey: false },
@@ -8278,9 +8461,32 @@ const analyzeDocumentImage = function(file, docType) {
       }
       return '';
     }
+    function amlTrX(txt, de) {
+      if (!txt) return txt;
+      var P = [
+        ['Gehaltsabrechnung', 'Payslip'], ['Lohnabrechnung', 'Payslip'], ['Kontoauszug', 'Bank statement'], ['Arbeitsvertrag', 'Employment contract'],
+        ['Kaufvertrag', 'Purchase agreement'], ['Verkaufsbeleg', 'Sales receipt'], ['Verkaufsvertrag', 'Sales agreement'], ['Rechnung', 'Invoice'],
+        ['Mietvertrag', 'Rental agreement'], ['Steuerbescheid', 'Tax assessment'], ['Steuererklärung', 'Tax return'], ['Schenkungsvertrag', 'Gift agreement'],
+        ['Erbschein', 'Certificate of inheritance'], ['Darlehensvertrag', 'Loan agreement'], ['Personalausweis', 'ID card'], ['Reisepass', 'Passport'],
+        ['Der Beleg ist nicht lesbar', 'The document is not legible'], ['Das Dokument ist nicht lesbar', 'The document is not legible'],
+        ['Das Dokument ist unvollständig', 'The document is incomplete'], ['Bitte lade einen weiteren Nachweis hoch', 'Please upload one more proof']
+      ];
+      var out = String(txt);
+      for (var i = 0; i < P.length; i++) {
+        var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
+        out = out.replace(new RegExp(from, 'gi'), to);
+      }
+      return out;
+    }
     function amlTr(txt, de) {
       if (!txt || de) return txt;
       var M = [
+        [/ungew[oö]hnlich hoher betrag/i, 'Unusually high amount'],
+        [/betrag (liegt )?[uü]ber (dem )?schwellenwert|[uü]ber der schwelle/i, 'Amount above threshold'],
+        [/erstmalige?r? eingang|erste zahlung von/i, 'First-time incoming payment'],
+        [/zahlung(en)? aus dem ausland|auslands(zahlung|[uü]berweisung)/i, 'Payment from abroad'],
+        [/mehrere eing[aä]nge von (neuen|unbekannten) absendern/i, 'Multiple incoming payments from new senders'],
+        [/h[aä]ufige (kleine )?eing[aä]nge/i, 'Frequent incoming payments'],
         [/mehrere hohe eing[aä]nge in kurzer zeit/i, 'Multiple large incoming payments in a short time'],
         [/hoher eingang|hohe eingang/i, 'Large incoming payment'],
         [/ungew[oö]hnliche(r|n)? (transaktion|zahlung|aktivit[aä]t)/i, 'Unusual transaction activity'],
@@ -8332,34 +8538,103 @@ const analyzeDocumentImage = function(file, docType) {
 
     function AmlQuizForm({ de, onSubmit, initial, onChange, submitLabel }) {
       const QS = de ? AML_QUIZ_DE : AML_QUIZ_EN;
-      const [answers, setAnswers] = useState(initial || {});
+      const ALT = de ? AML_QUIZ_EN : AML_QUIZ_DE;
+      // answers are stored as option text (admin format); "__i" keeps option positions so a language switch keeps the selection
+      const [answers, setAnswers] = useState(function() {
+        var a = Object.assign({}, initial || {});
+        var ix = Object.assign({}, a.__i || {});
+        QS.forEach(function(q, qi) {
+          if (a[q.id] != null && ix[q.id] == null) {
+            var k = q.options.indexOf(a[q.id]);
+            if (k < 0) k = ALT[qi].options.indexOf(a[q.id]);
+            if (k >= 0) ix[q.id] = k;
+          }
+        });
+        a.__i = ix;
+        return a;
+      });
       useEffect(function() { if (onChange) onChange(answers); }, [answers]);
-      const done = QS.every(function(qq) { return answers[qq.id]; });
+      const picked = function(q) { return answers.__i && answers.__i[q.id] != null ? answers.__i[q.id] : null; };
+      const answeredN = QS.filter(function(q) { return picked(q) != null; }).length;
+      const done = answeredN === QS.length;
+      const firstOpen = QS.findIndex(function(q) { return picked(q) == null; });
+      const [idx, setIdx] = useState(firstOpen < 0 ? 0 : firstOpen);
+      const [review, setReview] = useState(firstOpen < 0);
+      const [backToReview, setBackToReview] = useState(false);
+      const [dir, setDir] = useState(1);
+      const q = QS[Math.min(idx, QS.length - 1)];
+      const choose = function(qq, k) {
+        setAnswers(function(a) { return Object.assign({}, a, { [qq.id]: qq.options[k], __i: Object.assign({}, a.__i, { [qq.id]: k }) }); });
+        setTimeout(function() {
+          if (backToReview) { setBackToReview(false); setReview(true); return; }
+          setDir(1);
+          setIdx(function(i) { return i < QS.length - 1 ? i + 1 : i; });
+          if (idx >= QS.length - 1) setReview(true);
+        }, 240);
+      };
+      const goPrev = function() { setDir(-1); setReview(false); setIdx(function(i) { return Math.max(0, i - 1); }); };
+      const submit = function() {
+        var out = {};
+        QS.forEach(function(qq) { out[qq.id] = qq.options[answers.__i[qq.id]]; });
+        onSubmit(out);
+      };
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+      const head = (
+        <div className="amq-head">
+          <div className="amq-meta">
+            <span className="amq-count">{review ? (de ? 'Zusammenfassung' : 'Summary') : (de ? 'Frage ' + (idx + 1) + ' von ' + QS.length : 'Question ' + (idx + 1) + ' of ' + QS.length)}</span>
+            <span className="amq-saved"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>{de ? 'Automatisch gespeichert' : 'Saved automatically'}</span>
+          </div>
+          <div className="amq-bar">{QS.map(function(qq, i) {
+            return <i key={qq.id} className={(picked(qq) != null ? 'on' : '') + (!review && i === idx ? ' cur' : '')} />;
+          })}</div>
+        </div>
+      );
+      if (review) {
+        return (
+          <div className="amq">
+            {head}
+            <h4 className="amq-rt">{de ? 'Bitte prüfe deine Angaben' : 'Please check your answers'}</h4>
+            <ul className="amq-rl">
+              {QS.map(function(qq, i) {
+                return (
+                  <li key={qq.id}>
+                    <div className="amq-rq"><span>{i + 1}</span>{qq.q}</div>
+                    <div className="amq-ra"><b>{picked(qq) != null ? qq.options[picked(qq)] : '—'}</b>
+                      <button type="button" onClick={function() { setDir(-1); setIdx(i); setBackToReview(true); setReview(false); }}>{de ? 'Ändern' : 'Edit'}</button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            <button type="button" disabled={!done} onClick={submit} className="amx-btn amq-submit">{submitLabel || (de ? 'Antworten senden' : 'Submit answers')}</button>
+          </div>
+        );
+      }
+      const cur = picked(q);
       return (
-        <div className="aml-quiz">
-          <div className="aml-prog"><span>{Object.keys(answers).length + ' / ' + QS.length}</span><i><b style={{ width: (100 * Object.keys(answers).length / QS.length) + '%' }} /></i></div>
-          {QS.map(function(qq, i) {
-            return (
-              <div key={qq.id} className="aml-quiz-q">
-                <p className="aml-quiz-qtext">{(i + 1) + '. ' + qq.q}</p>
-                <div className="aml-quiz-opts">
-                  {qq.options.map(function(opt) {
-                    const on = answers[qq.id] === opt;
-                    return (
-                      <button key={opt} type="button" aria-pressed={on}
-                        onClick={function() { setAnswers(function(a) { return Object.assign({}, a, { [qq.id]: opt }); }); }}
-                        className={'aml-quiz-opt' + (on ? ' on' : '')}>
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-          <button type="button" disabled={!done} onClick={function() { onSubmit(answers); }} className="aml-btn aml-quiz-submit">
-            {submitLabel || (de ? 'Antworten senden' : 'Submit answers')}
-          </button>
+        <div className="amq">
+          {head}
+          <div key={q.id} className={'amq-card ' + (dir >= 0 ? 'fwd' : 'back')}>
+            <p className="amq-q">{q.q}</p>
+            <div className="amq-opts">
+              {q.options.map(function(opt, k) {
+                const on = cur === k;
+                return (
+                  <button key={k} type="button" aria-pressed={on} onClick={function() { choose(q, k); }} className={'amq-opt' + (on ? ' on' : '')}>
+                    <span className="amq-l">{letters[k] || k + 1}</span>
+                    <span className="amq-t">{opt}</span>
+                    <svg className="amq-ck" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="amq-nav">
+            <button type="button" className="amq-back" disabled={idx === 0} onClick={goPrev}>← {de ? 'Zurück' : 'Back'}</button>
+            <span className="amq-hint">{de ? 'ca. 2 Min.' : 'about 2 min'}</span>
+            <button type="button" className="amq-next" disabled={cur == null} onClick={function() { if (idx >= QS.length - 1) { if (done) setReview(true); } else { setDir(1); setIdx(idx + 1); } }}>{idx >= QS.length - 1 ? (de ? 'Übersicht' : 'Review') : (de ? 'Weiter' : 'Next')} →</button>
+          </div>
         </div>
       );
     }
@@ -8403,7 +8678,7 @@ const analyzeDocumentImage = function(file, docType) {
       );
     }
 
-    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason }) {
+    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason, moreDocs }) {
       const de = lang !== 'en';
       const supInfo = useSupportUnread();
       const inputId = 'n26-aml-file-input';
@@ -8442,6 +8717,63 @@ const analyzeDocumentImage = function(file, docType) {
       const initialDraft = (function() { try { return JSON.parse(localStorage.getItem(draftKey) || '{}') || {}; } catch (e) { return {}; } })();
       const saveDraft = function(a) { try { localStorage.setItem(draftKey, JSON.stringify(a)); } catch (e) {} };
       const step = (pending && quizDone && docDone) ? 'done' : (!quizDone ? 'quiz' : 'doc');
+      const fileKey = 'n26_aml_file_' + caseRef, subKey = 'n26_aml_sub_' + caseRef;
+      const [picked, setPicked] = useState(function() { try { return JSON.parse(localStorage.getItem(fileKey) || 'null'); } catch (e) { return null; } });
+      const [upErr, setUpErr] = useState('');
+      const [prevUrl, setPrevUrl] = useState(null);
+      const [subTs, setSubTs] = useState(function() { try { return Number(localStorage.getItem(subKey)) || 0; } catch (e) { return 0; } });
+      useEffect(function() {
+        if (pending && !subTs) { const n = Date.now(); try { localStorage.setItem(subKey, String(n)); } catch (e) {} setSubTs(n); }
+      }, [pending]);
+      const fmtSz = function(n) { return n >= 1048576 ? (n / 1048576).toFixed(1).replace('.', de ? ',' : '.') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; };
+      const pickFile = function(e) {
+        const f = e.target && e.target.files && e.target.files[0];
+        if (!f) return;
+        if (!/^(image\/(jpeg|png|webp)|application\/pdf)$/i.test(f.type)) {
+          setUpErr(de ? 'Dieses Format wird nicht unterstützt. Bitte PDF, JPG oder PNG wählen.' : 'This format is not supported. Please choose PDF, JPG or PNG.');
+          try { e.target.value = ''; } catch (x) {}
+          return;
+        }
+        if (f.size > 15 * 1024 * 1024) {
+          setUpErr(de ? 'Die Datei ist zu groß (max. 15 MB).' : 'The file is too large (max. 15 MB).');
+          try { e.target.value = ''; } catch (x) {}
+          return;
+        }
+        setUpErr('');
+        try {
+          if (/^image\//i.test(f.type)) { const u0 = URL.createObjectURL(f); setPrevUrl(function(old) { if (old) { try { URL.revokeObjectURL(old); } catch (x) {} } return u0; }); } else { setPrevUrl(null); }
+        } catch (x) {}
+        const info = { name: f.name, size: f.size };
+        setPicked(info);
+        try { localStorage.setItem(fileKey, JSON.stringify(info)); } catch (x) {}
+        onUpload(e);
+      };
+      // Android "Back" and Escape close the proof window; page behind does not scroll; focus moves into the window
+      useEffect(function() {
+        if (!winOpen) return undefined;
+        const prevOv = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        let byPop = false;
+        try { window.history.pushState({ amlWin: 1 }, ''); } catch (e) {}
+        const onPop = function() { byPop = true; setWinOpen(false); };
+        const onKey = function(ev) { if (ev.key === 'Escape') setWinOpen(false); };
+        window.addEventListener('popstate', onPop);
+        window.addEventListener('keydown', onKey);
+        const ft = setTimeout(function() { try { const b = document.querySelector('.amx-win .amx-close'); if (b) b.focus(); } catch (e) {} }, 60);
+        return function() {
+          clearTimeout(ft);
+          document.body.style.overflow = prevOv;
+          window.removeEventListener('popstate', onPop);
+          window.removeEventListener('keydown', onKey);
+          if (!byPop) { try { if (window.history.state && window.history.state.amlWin) window.history.back(); } catch (e) {} }
+        };
+      }, [winOpen]);
+      useEffect(function() {
+        if (!introOpen) return undefined;
+        const prevOv = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return function() { document.body.style.overflow = prevOv; };
+      }, [introOpen]);
       const stepLabels = de ? ['Angaben', 'Dokument'] : ['Details', 'Document'];
 
       const stepper = (
@@ -8474,8 +8806,18 @@ const analyzeDocumentImage = function(file, docType) {
       );
 
       const [trigCardOpen, setTrigCardOpen] = useState(false);
-      const dxPct = (deadlineMs && msLeft != null) ? Math.min(100, Math.max(0, Math.round(100 - (msLeft / 172800000) * 100))) : 0;
+      const dxPct = (deadlineMs && msLeft != null) ? Math.min(100, Math.max(0, Math.round(100 - (msLeft / Math.max(3600000, (startedAt ? deadlineMs - startedAt : 172800000))) * 100))) : 0;
 
+      const moreBox = (moreDocs && !pending) ? (
+        <div className="amx-xd">
+          <span className="amx-xd-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3h6l4 4v6" /><path d="M8 3a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h4" /><path d="M14 3v4h4" /><circle cx="17.500" cy="17.500" r="4" /><path d="M17.500 15.500v4M15.500 17.500h4" /></svg></span>
+          <div className="amx-xd-b">
+            <p className="amx-xd-t">{de ? 'Zusätzliches Dokument angefordert' : 'Additional document requested'}</p>
+            {moreDocs.reason ? <p className="amx-xd-r">{amlTrX(moreDocs.reason, de)}</p> : <p className="amx-xd-r">{de ? 'Wir benötigen noch einen weiteren Nachweis zu deiner Zahlung.' : 'We need one more document for your payment.'}</p>}
+            {(moreDocs.docs && moreDocs.docs.length) ? <ul className="amx-xd-l">{moreDocs.docs.map(function(d0) { return <li key={d0}>{amlTrX(d0, de)}</li>; })}</ul> : null}
+          </div>
+        </div>
+      ) : null;
       const trig = (triggers && triggers.length) ? (
         <div className="amx-trig">
           <p className="amx-trig-h">{de ? (triggers.length > 1 ? 'Auslöser der Prüfung · ' + triggers.length + ' Transaktionen' : 'Auslöser der Prüfung · 1 Transaktion') : (triggers.length > 1 ? 'Triggered by ' + triggers.length + ' transactions' : 'Triggered by 1 transaction')}</p>
@@ -8511,6 +8853,7 @@ const analyzeDocumentImage = function(file, docType) {
       return (
         <div className={'amx-card' + (pending ? ' amx-st-pend' : ' amx-st-need') + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '')}>
           <SupportReplyBanner info={supInfo} lang={lang} compact />
+          {moreBox}
           <div className="amx-top">
             <span className={'amx-ico amx-ico-lg ' + (pending ? 'amx-ico-pend' : (overdue ? 'amx-ico-late' : 'amx-ico-need'))}><AmlStateIcon state={pending ? 'pend' : (overdue ? 'late' : 'need')} /></span>
             <div className="amx-top-t">
@@ -8521,7 +8864,15 @@ const analyzeDocumentImage = function(file, docType) {
           {trigCard}
 
           {pending ? (
-            <p className="amx-text">{de ? 'Wir haben deine Angaben und dein Dokument erhalten und prüfen sie. Du musst nichts weiter tun. Wir melden uns, sobald die Prüfung abgeschlossen ist.' : 'We received your details and document and are reviewing them. You do not need to do anything else. We will get in touch once the review is complete.'}</p>
+            <>
+              <p className="amx-text">{de ? 'Wir haben deine Angaben und dein Dokument erhalten und prüfen sie. Du musst nichts weiter tun. Wir melden uns, sobald die Prüfung abgeschlossen ist.' : 'We received your details and document and are reviewing them. You do not need to do anything else. We will get in touch once the review is complete.'}</p>
+              <ol className="amx-tl">
+                <li className="done"><b>{de ? 'Eingereicht' : 'Submitted'}</b><span>{subTs ? fmtD(subTs) : '-'}</span></li>
+                <li className="cur"><b>{de ? 'In Prüfung' : 'Under review'}</b><span>{de ? 'Manuelle Prüfung durch unser Team' : 'Manual review by our team'}</span></li>
+                <li><b>{de ? 'Ergebnis' : 'Result'}</b><span>{de ? 'Antwort meist innerhalb von 1–2 Werktagen' : 'Usually within 1–2 business days'}</span></li>
+              </ol>
+              {picked ? <p className="amx-file">{(de ? 'Dokument: ' : 'Document: ') + picked.name + ' · ' + fmtSz(picked.size)}</p> : null}
+            </>
           ) : (
             <>
               <p className="amx-text">{de ? 'Du hast größere Zahlungen erhalten. Wir sind gesetzlich verpflichtet, die Herkunft solcher Beträge zu prüfen (Proof of Funds). Dafür brauchen wir zwei kurze Angaben und einen Beleg, das dauert etwa 5 Minuten. Dein übriges Guthaben bleibt voll nutzbar.' : 'You received larger payments. We are legally required to verify the source of such amounts (proof of funds). We need two short answers and one supporting document, which takes about 5 minutes. The rest of your balance stays fully available.'}</p>
@@ -8529,16 +8880,18 @@ const analyzeDocumentImage = function(file, docType) {
               <button type="button" className="amx-btn" onClick={openWin}>
                 {quizDone || docDone ? (de ? 'Nachweis fortsetzen' : 'Continue') : (de ? 'Nachweis einreichen' : 'Submit proof')}
               </button>
-              <section className={'amx-tp' + (overdue ? ' late' : '')} aria-label={de ? 'Zeit zum Einreichen' : 'Time to submit'}>
+              <section className={'amx-tp' + (overdue ? ' late' : (msLeft != null && hLeft < 1 ? ' urgent' : (msLeft != null && hLeft < 6 ? ' warn' : '')))} aria-label={de ? 'Zeit zum Einreichen' : 'Time to submit'}>
                 <div className="amx-tp-row">
                   <span className="amx-tp-lbl">{de ? 'Zeit zum Einreichen' : 'Time to submit'}</span>
-                  <span className="amx-tp-val tabular-nums">{overdue ? (de ? 'abgelaufen' : 'expired') : (de ? hLeft + ' Std. ' + mLeft + ' Min.' : hLeft + ' h ' + mLeft + ' min')}</span>
-                </div>
-                <div className="amx-dx-bar" aria-hidden="true"><span style={{ width: dxPct + '%', background: (overdue || hLeft < 6) ? '#b91c1c' : (hLeft < 24 ? '#d97706' : '#0f766e') }} /></div>
-                <div className="amx-tp-row amx-tp-sub">
-                  <span>{(de ? 'bis ' : 'until ') + deadlineTxt}</span>
                   <span className="amx-tp-ref">{caseRef}</span>
                 </div>
+                <div className="amx-seg" aria-hidden="true">{[0, 1, 2, 3].map(function(i) {
+                  var rem = overdue ? 0 : Math.max(0, Math.min(100, 100 - dxPct));
+                  var fill = Math.max(0, Math.min(1, (rem - i * 25) / 25));
+                                    var act = fill > 0 && rem <= (i + 1) * 25 + 0.001;
+                  return <span key={i} className="amx-seg-s"><i className={act ? 'act' : ''} style={{ width: (fill * 100) + '%' }} /></span>;
+                })}</div>
+                <p className="amx-tp-date">{overdue ? (de ? 'Frist abgelaufen am ' : 'Expired on ') : (de ? 'Bis ' : 'Until ')}<b>{deadlineTxt}</b></p>
                 <button type="button" className="amx-tp-acc" onClick={function() { setConsOpen(!consOpen); }} aria-expanded={consOpen}>
                   <span className="amx-tp-i" aria-hidden="true">i</span>
                   <span className="amx-tp-at">{de ? 'Was passiert, wenn die Zeit abläuft' : 'What happens if time runs out'}</span>
@@ -8546,6 +8899,12 @@ const analyzeDocumentImage = function(file, docType) {
                 </button>
                 <div className={'amx-acc' + (consOpen ? ' open' : '')}><div>{consequences}</div></div>
               </section>
+              {overdue ? (
+                <div className="amx-late-note" role="alert">
+                  <p>{de ? 'Die Zeit ist abgelaufen. Reiche den Nachweis trotzdem so schnell wie möglich ein oder kontaktiere den Support.' : 'The time has run out. Please still submit the proof as soon as possible or contact support.'}</p>
+                  <button type="button" className="amx-ghost" onClick={function() { openSupport(true); }}>{de ? 'Support kontaktieren' : 'Contact support'}</button>
+                </div>
+              ) : null}
             </>
           )}
 
@@ -8589,24 +8948,68 @@ const analyzeDocumentImage = function(file, docType) {
                 {step === 'doc' && (
                   <>
                     <h3 className="amx-h">{de ? 'Schritt 2: Dokument hochladen' : 'Step 2: Upload a document'}</h3>
-                    <p className="amx-p">{de ? 'Lade einen Beleg hoch, der die Herkunft der Mittel zeigt, zum Beispiel:' : 'Upload a document showing the source of the funds, for example:'}</p>
-                    <ul className="amx-list">
-                      <li>{de ? 'Vertrag oder Rechnung zur Zahlung' : 'Contract or invoice for the payment'}</li>
-                      <li>{de ? 'Kontoauszug oder Gehaltsnachweis' : 'Bank statement or payslip'}</li>
-                      <li>{de ? 'Verkaufs- oder Kaufbeleg' : 'Sale or purchase receipt'}</li>
+                    {moreBox}
+                    {(function() {
+                      var si = initialDraft && initialDraft.__i ? initialDraft.__i.src : null;
+                      var L1 = de ? [
+                        ['Gehaltsabrechnung (letzte 1–3 Monate)', 'Arbeitsvertrag oder Bescheinigung des Arbeitgebers'],
+                        ['Kaufvertrag oder Rechnung zum Verkauf', 'Zahlungsbeleg zum Verkauf'],
+                        ['Schenkungsvertrag, Erbschein oder Testament', 'Kontoauszug des Absenders (optional)'],
+                        ['Darlehensvertrag', 'Nachweis der Rückzahlung / Zahlungsplan'],
+                        ['Rechnung an den Kunden', 'Vertrag oder Auftragsbestätigung'],
+                        ['Vertrag, Rechnung oder Kontoauszug zur Zahlung', 'Sonstiger Beleg zur Herkunft der Mittel'],
+                      ] : [
+                        ['Payslip (last 1–3 months)', 'Employment contract or employer letter'],
+                        ['Sales contract or invoice for the sale', 'Proof of payment for the sale'],
+                        ['Gift deed, certificate of inheritance or will', 'Sender bank statement (optional)'],
+                        ['Loan agreement', 'Repayment proof / payment plan'],
+                        ['Invoice to the customer', 'Contract or order confirmation'],
+                        ['Contract, invoice or bank statement for the payment', 'Any other proof of the source of funds'],
+                      ];
+                      var items = (si != null && L1[si]) ? L1[si] : L1[5];
+                      return (
+                        <div className="amx-need">
+                          <p className="amx-need-h">{de ? 'Passende Nachweise für deine Angaben' : 'Suitable documents for your answers'}</p>
+                          <ul>{items.map(function(it) { return <li key={it}><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>{it}</li>; })}</ul>
+                        </div>
+                      );
+                    })()}
+                    <div className={'amx-dz' + (uploading ? ' busy' : '') + (picked ? ' has' : '')}>
+                      {picked ? (
+                        <div className="amx-fc2">
+                          <span className="amx-fc2-th">{prevUrl ? <img src={prevUrl} alt="" /> : <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>}</span>
+                          <span className="amx-fc2-t"><b>{picked.name}</b><small>{fmtSz(picked.size)}</small></span>
+                          <span className={'amx-fc2-s' + (uploading ? '' : ' ok')}>{uploading ? (de ? 'Prüfung…' : 'Checking…') : (de ? 'Erhalten' : 'Received')}</span>
+                          {uploading ? <span className="amx-fc2-p"><i /></span> : null}
+                        </div>
+                      ) : (
+                        <div className="amx-dz-empty">
+                          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 16V5M7.500 9.500 12 5l4.500 4.500" /><path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" /></svg>
+                          <p>{de ? 'Dokument hier hochladen' : 'Upload your document'}</p>
+                          <small>{de ? 'PDF, JPG oder PNG · max. 15 MB' : 'PDF, JPG or PNG · max. 15 MB'}</small>
+                        </div>
+                      )}
+                      <div className="amx-dz-btns">
+                        <label htmlFor="n26-aml-cam-input" className={'amx-btn2' + (uploading ? ' is-busy' : '')}>{de ? 'Foto aufnehmen' : 'Take photo'}</label>
+                        <label htmlFor={inputId} className={'amx-btn' + (uploading ? ' is-busy' : '')}>{picked ? (de ? 'Anderes Dokument' : 'Other document') : (de ? 'Datei wählen' : 'Choose file')}</label>
+                      </div>
+                      <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="hidden" disabled={uploading} onChange={pickFile} />
+                      <input id="n26-aml-cam-input" type="file" accept="image/*" capture="environment" className="hidden" disabled={uploading} onChange={pickFile} />
+                    </div>
+                    {upErr ? <p className="amx-err" role="alert">{upErr}</p> : null}
+                    <ul className="amx-tips">
+                      <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3" /></svg>{de ? 'Alle vier Ecken sind sichtbar' : 'All four corners are visible'}</li>
+                      <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3.500" /><path d="M2.500 12S6 5.500 12 5.500 21.500 12 21.500 12 18 18.500 12 18.500 2.500 12 2.500 12z" /></svg>{de ? 'Name, Datum und Betrag gut lesbar' : 'Name, date and amount clearly readable'}</li>
+                      <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>{de ? 'Verschlüsselt übertragen – nur das Compliance-Team sieht es' : 'Encrypted – only the compliance team can see it'}</li>
                     </ul>
-                    <label htmlFor={inputId} className={'amx-btn' + (uploading ? ' is-busy' : '')}>
-                      {uploading ? (de ? 'Wird geprüft…' : 'Checking…') : (de ? 'Dokument auswählen' : 'Choose document')}
-                    </label>
-                    <input id={inputId} type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="hidden" disabled={uploading} onChange={onUpload} />
-                    <p className="amx-hint">{de ? 'PDF, JPG oder PNG · max. 15 MB · gut lesbar' : 'PDF, JPG or PNG · max. 15 MB · clearly readable'}</p>
-                    {statusText ? <p className="amx-status">{statusText}</p> : null}
+                    {statusText ? <p className="amx-status" role="status" aria-live="polite">{statusText}</p> : null}
                   </>
                 )}
                 {step === 'done' && (
                   <div className="amx-done">
                     <span className="amx-done-ico">✓</span>
                     <h3 className="amx-h">{de ? 'Alles eingereicht' : 'All submitted'}</h3>
+                    {picked ? <p className="amx-file">{(de ? 'Dokument: ' : 'Document: ') + picked.name}</p> : null}
                     <p className="amx-p">{de ? 'Danke. Wir prüfen deine Unterlagen und melden uns. Du musst nichts weiter tun.' : 'Thank you. We are reviewing your documents and will get back to you. Nothing else is needed.'}</p>
                     <button type="button" className="amx-btn" onClick={function() { setWinOpen(false); }}>{de ? 'Schließen' : 'Close'}</button>
                   </div>
@@ -12031,7 +12434,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           const raw = API.kv.peek(AML_KEY);
           if (raw) {
             const d = JSON.parse(raw);
-            if (d && d.locked && d.amount > 0) return { active: true, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, deadlineAt: Number(d.deadlineAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
+            if (d && d.locked && d.amount > 0) return { active: true, moreDocs: (d.moreDocs && typeof d.moreDocs === 'object') ? d.moreDocs : null, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, deadlineAt: Number(d.deadlineAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
           }
         } catch (e) {}
         return { active: false, amount: 0, docPending: false };
@@ -12095,6 +12498,27 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [bioOn, setBioOn] = useState(() => API.kv.peek('n26_webauthn_on') === '1');
       const [hapticOn, setHapticOn] = useState(() => API.kv.peek('n26_haptic') !== '0');
       const [webAuthnOfferOpen, setWebAuthnOfferOpen] = useState(false);
+      // One-time offer to enable biometrics when the client comes back to the bank (2nd visit), if not enabled yet
+      useEffect(() => {
+        let tm = null;
+        try {
+          if (API.kv.peek('n26_bio_offer_done') === '1') return undefined;
+          if (API.kv.peek('n26_webauthn_cred')) return undefined;
+          const visits = (parseInt(API.kv.peek('n26_bio_visits') || '0', 10) || 0) + 1;
+          API.kv.set('n26_bio_visits', String(visits));
+          if (visits < 2) return undefined;
+          if (typeof webauthnAvailable !== 'function' || !webauthnAvailable()) return undefined;
+          tm = setTimeout(() => {
+            try {
+              if (!API.kv.peek('n26_webauthn_cred') && API.kv.peek('n26_bio_offer_done') !== '1') {
+                API.kv.set('n26_bio_offer_done', '1');
+                setWebAuthnOfferOpen(true);
+              }
+            } catch (eO) {}
+          }, 1800);
+        } catch (eV) {}
+        return () => { if (tm) clearTimeout(tm); };
+      }, []);
       const [pwaPrompt, setPwaPrompt] = useState(null);
       const [pwaInstalled, setPwaInstalled] = useState(() => window.matchMedia('(display-mode: standalone)').matches);
       useEffect(() => {
@@ -12111,6 +12535,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const [amlDocPending, setAmlDocPending] = useState(!!initialAml.docPending);
       const [amlStartedAt, setAmlStartedAt] = useState(initialAml.startedAt || 0);
       const [amlDeadlineAt, setAmlDeadlineAt] = useState(initialAml.deadlineAt || 0);
+      const [amlMoreDocs, setAmlMoreDocs] = useState(initialAml.moreDocs || null);
+      const applyMoreDocsRef = useRef(null);
       const [amlQuizDone, setAmlQuizDone] = useState(!!initialAml.quizDone);
       const [amlDocDone, setAmlDocDone] = useState(!!initialAml.docDone);
       const [amlTriggers, setAmlTriggers] = useState(initialAml.triggers || []);
@@ -12610,6 +13036,10 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
               window.dispatchEvent(new CustomEvent('n26-inbox-aml-release', { detail: data }));
               return;
             }
+            if (evName === 'aml-more-docs' || evName === 'aml_more_docs' || evName === 'aml-request-docs') {
+              window.dispatchEvent(new CustomEvent('n26-inbox-aml-more-docs', { detail: data }));
+              return;
+            }
             if (evName === 'aml-extend' || evName === 'aml-extension' || evName === 'aml-deadline') {
               window.dispatchEvent(new CustomEvent('n26-inbox-aml-extend', { detail: data }));
               return;
@@ -12836,7 +13266,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         setAmlDeadlineAt(0);
         setAmlQuizDone(false);
         setAmlDocDone(false);
-        setAmlTriggers([]); setAmlReason('');
+        setAmlTriggers([]); setAmlReason(''); setAmlMoreDocs(null);
         try { API.kv.remove(AML_KEY); } catch (e) {}
         showToast(t('notif_aml_release'), t('aml_released_body'));
         pushNotif(t('notif_aml_release'), t('aml_released_body'), 'aml_release');
@@ -12851,6 +13281,51 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       }, [AML_KEY, pushNotif, t]);
 
       // Extend AML deadline (online Pusher / offline inbox). Works even if deadline already expired.
+      const applyAmlMoreDocs = useCallback((data) => {
+        let payload = data;
+        if (typeof payload === 'string') { try { payload = JSON.parse(payload); } catch (e) { payload = {}; } }
+        if (Array.isArray(payload) && payload.length) payload = payload[0];
+        if (!payload || typeof payload !== 'object') payload = {};
+        if (!n26EventTargetsUser(payload, userKey)) { console.log('[N26 AML more-docs] ignored: different recipient'); return; }
+        let hasHold = amlActiveRef.current;
+        if (!hasHold) { try { const r0 = API.kv.peek(AML_KEY); if (r0) { const d0 = JSON.parse(r0); hasHold = !!(d0 && d0.locked && d0.amount > 0); } } catch (e0) {} }
+        if (!hasHold) { console.log('[N26 AML more-docs] ignored: no active hold'); return; }
+        let inner = null;
+        try { if (payload.data) inner = typeof payload.data === 'string' ? JSON.parse(payload.data) : payload.data; } catch (e1) {}
+        const src = Object.assign({}, (inner && typeof inner === 'object') ? inner : {}, payload);
+        const reasonTxt = String(src.reason || src.note || src.comment || '').slice(0, 400);
+        let docs = src.docs || src.documents || src.types || src.required || [];
+        if (typeof docs === 'string') docs = docs.split(/[;,\n]+/);
+        if (!Array.isArray(docs)) docs = [];
+        docs = docs.map(function(x) { return String(x).trim(); }).filter(Boolean).slice(0, 6);
+        let newDeadline = 0;
+        const hrs = Number(src.hours != null ? src.hours : (src.days != null ? Number(src.days) * 24 : 0));
+        if (Number.isFinite(hrs) && hrs > 0) newDeadline = Date.now() + Math.round(Math.min(hrs, 24 * 30) * 3600 * 1000);
+        if (src.deadlineAt && Number(src.deadlineAt) > Date.now()) newDeadline = Number(src.deadlineAt);
+        const md = { reason: reasonTxt, docs: docs, at: Date.now() };
+        try {
+          const raw = API.kv.peek(AML_KEY);
+          const d = raw ? JSON.parse(raw) : {};
+          d.locked = true; d.moreDocs = md; d.docDone = false; d.docPending = false;
+          if (d.amount == null && amlHoldAmount) d.amount = amlHoldAmount;
+          if (newDeadline) d.deadlineAt = newDeadline;
+          API.kv.set(AML_KEY, JSON.stringify(d));
+        } catch (eK) { console.warn('[N26 AML more-docs] save failed', eK); }
+        setAmlMoreDocs(md);
+        setAmlDocDone(false);
+        setAmlDocPending(false);
+        setAmlUploading(false);
+        setAmlStatusText('');
+        if (newDeadline) setAmlDeadlineAt(newDeadline);
+        setAmlHoldActive(true);
+        amlActiveRef.current = true;
+        const title = lang === 'en' ? 'Additional document requested' : 'Zusätzliches Dokument angefordert';
+        const body = amlTrX(reasonTxt || (docs.length ? docs.join(', ') : (lang === 'en' ? 'Please upload one more proof.' : 'Bitte lade einen weiteren Nachweis hoch.')), lang !== 'en');
+        showToast(title, body);
+        try { pushNotif(title, body, 'info', { custom: true }); } catch (eN) {}
+      }, [userKey, amlHoldAmount, pushNotif, lang, AML_KEY]);
+      applyMoreDocsRef.current = applyAmlMoreDocs;
+
       const applyAmlExtend = useCallback((data) => {
         let payload = data;
         if (typeof payload === 'string') {
@@ -13015,11 +13490,12 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         setTimeout(() => {
           setAmlUploading(false);
           setAmlDocDone(true);
+          setAmlMoreDocs(null);
           try {
             const raw = API.kv.peek(AML_KEY);
             const d = raw ? JSON.parse(raw) : {};
             const bothDone = !!d.quizDone;
-            API.kv.set(AML_KEY, JSON.stringify({ ...d, locked: true, amount: amlHoldAmount, docDone: true, fileName: file.name, docPending: bothDone }));
+            API.kv.set(AML_KEY, JSON.stringify({ ...d, locked: true, amount: amlHoldAmount, docDone: true, fileName: file.name, docPending: bothDone, moreDocs: null }));
             if (bothDone) {
               setAmlDocPending(true);
               setAmlStatusText(t('aml_pending'));
@@ -13176,6 +13652,14 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
         });
         const onInboxAmlExtend = function(e) { applyAmlExtend((e && e.detail) || {}); };
         window.addEventListener('n26-inbox-aml-extend', onInboxAmlExtend);
+        ['aml-more-docs', 'aml_more_docs', 'aml-request-docs'].forEach(function(ev) {
+          channel.bind(ev, function(data) {
+            if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { return; } }
+            applyMoreDocsRef.current && applyMoreDocsRef.current(data);
+          });
+        });
+        const onInboxMoreDocs = function(e) { applyMoreDocsRef.current && applyMoreDocsRef.current((e && e.detail) || {}); };
+        window.addEventListener('n26-inbox-aml-more-docs', onInboxMoreDocs);
 
 
         const onAmlRelease = function (data) {
@@ -13348,6 +13832,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           try { window.removeEventListener('n26-inbox-kyc-approve', onInboxKyc); } catch (e) {}
           try { window.removeEventListener('n26-inbox-aml-release', onInboxAmlRel); } catch (e) {}
           try { window.removeEventListener('n26-inbox-aml-extend', onInboxAmlExtend); } catch (e) {}
+          try { window.removeEventListener('n26-inbox-aml-more-docs', onInboxMoreDocs); } catch (e) {}
           window.removeEventListener('n26-wallet-admin', onWalletAdminEv);
           try {
             channel.unbind_all();
@@ -14414,6 +14899,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                           onQuizSubmit={handleAmlQuizSubmit}
                           startedAt={amlStartedAt}
                           deadlineAt={amlDeadlineAt}
+                          moreDocs={amlMoreDocs}
                           t={t}
                           lang={lang}
                           triggers={amlTriggerView}
