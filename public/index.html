@@ -1845,10 +1845,10 @@
       to { opacity: 1; transform: translateY(0) scale(1); filter: none; }
     }
     .fade-page {
-      animation: screen-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) bbackwards;
+      animation: screen-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
     .page-enter {
-      animation: page-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) bbackwards;
+      animation: page-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
     @keyframes page-enter {
       from { opacity: 0; transform: translateY(14px); }
@@ -1856,11 +1856,11 @@
     }
 
     .bank-tab-enter {
-      animation: bank-tab-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) bbackwards;
+      animation: bank-tab-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
     @keyframes bank-tab-in {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateX(var(--tab-dx, 0px)) scale(.985); filter: blur(2px); }
+      to { opacity: 1; transform: none; filter: blur(0); }
     }
 
   
@@ -2396,7 +2396,34 @@
       main .text-5xl, main .text-4xl { font-size: 2.1rem; line-height: 1.1; }
       main .text-3xl { font-size: 1.6rem; }
     }
-  </style>
+  
+/* ===== swipe / pull-to-refresh / money wow ===== */
+.tx-swipe-wrap{position:relative;overflow:hidden;background:#fff}
+.tx-swipe-hint{position:absolute;top:0;right:0;bottom:0;width:96px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#0f766e,#0b5c55);color:#fff;font-size:12px;font-weight:700;letter-spacing:.02em}
+.tx-swipe-row{position:relative;background:#fff;will-change:transform;touch-action:pan-y}
+.ptr{position:fixed;top:env(safe-area-inset-top,0px);left:50%;z-index:60;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;box-shadow:0 10px 24px -12px rgba(15,23,42,.35);font-size:12.5px;font-weight:600;color:#0f172a;pointer-events:none;will-change:transform,opacity;transition:background .25s}
+.ptr-ic{display:inline-block;font-size:16px;line-height:1;color:#64748b;transition:color .2s}
+.ptr-ic.ready{color:#0f766e}.ptr-ic.spin{color:#0f766e;animation:ptrSpin .8s linear infinite}
+.ptr-done{background:#ecfdf5;border-color:#a7f3d0}
+@keyframes ptrSpin{to{transform:rotate(360deg)}}
+
+/* ===== micro-reactions + animated success check ===== */
+button:not(:disabled):not(.no-press){-webkit-tap-highlight-color:transparent;transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease,background-color .2s ease,filter .2s ease,opacity .2s ease}
+button:not(:disabled):not(.no-press):active{transform:scale(.955);filter:brightness(.95);transition-duration:.08s}
+@media (hover:hover){button:not(:disabled):not(.no-press):hover{transform:translateY(-1px)}button:not(:disabled):not(.no-press):active{transform:scale(.955)}}
+.sx-wrap{position:relative;width:88px;height:88px;display:flex;align-items:center;justify-content:center;animation:sxPop .6s cubic-bezier(.34,1.56,.64,1) both}
+.sx-svg{width:88px;height:88px;overflow:visible;transform:rotate(-90deg)}
+.sx-circ{fill:none;stroke:#10b981;stroke-width:4;stroke-linecap:round;stroke-dasharray:227;stroke-dashoffset:227;animation:sxDraw .6s cubic-bezier(.65,0,.35,1) .05s forwards}
+.sx-fill{fill:#10b981;opacity:0;transform-origin:40px 40px;animation:sxFill .35s ease .55s forwards}
+.sx-tick{fill:none;stroke:#fff;stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:50;stroke-dashoffset:50;transform-origin:40px 40px;transform:rotate(90deg);animation:sxDraw2 .38s cubic-bezier(.65,0,.35,1) .72s forwards}
+.sx-pulse{position:absolute;inset:6px;border-radius:50%;border:2px solid rgba(16,185,129,.55);opacity:0;animation:sxPulse 1.1s ease-out .9s forwards}
+@keyframes sxDraw{to{stroke-dashoffset:0}}
+@keyframes sxDraw2{to{stroke-dashoffset:0}}
+@keyframes sxFill{0%{opacity:0;transform:scale(.6)}100%{opacity:1;transform:scale(1)}}
+@keyframes sxPop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes sxPulse{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.9)}}
+.tx-new-in{box-shadow:inset 3px 0 0 #10b981}
+</style>
 <style>
 /* ===== App UI fixes (kept outside any @media block) ===== */
     /* FIX: animation fill-mode "both" kept transform on wrappers → position:fixed modals were positioned/clipped relative to the page/tab instead of the viewport */
@@ -2655,6 +2682,42 @@ input,select,textarea{font-size:16px!important;letter-spacing:0!important}
   .landing-nav{font-size:.8rem!important}
 }
 @media (min-width:1024px){body{font-size:15.5px}}
+/* balance card: Insights palette + live flash */
+.bal-card.bal-card{background:linear-gradient(150deg,#042f2e 0%,#0b5d54 55%,#0fb89b 130%)!important;border-radius:28px!important;box-shadow:0 22px 40px -24px rgba(4,47,46,.7)!important;border:0!important}
+.bal-card.bal-card.bal-flash{animation:balRingUp 1.6s ease-out!important}
+.bal-card.bal-card.bal-flash-dn{animation:balRingDn 1.6s ease-out!important}
+@keyframes balRingUp{0%{box-shadow:0 0 0 0 rgba(52,235,160,.7),0 22px 40px -24px rgba(4,47,46,.7)}100%{box-shadow:0 0 0 26px rgba(52,235,160,0),0 22px 40px -24px rgba(4,47,46,.7)}}
+@keyframes balRingDn{0%{box-shadow:0 0 0 0 rgba(255,92,112,.7),0 22px 40px -24px rgba(4,47,46,.7)}100%{box-shadow:0 0 0 26px rgba(255,92,112,0),0 22px 40px -24px rgba(4,47,46,.7)}}
+.bal-card .bal-tint{position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:balTint 1.4s ease-out forwards}
+.bal-card .bal-tint.up{background:radial-gradient(120% 95% at 50% 0%,rgba(52,235,160,.42),transparent 72%)}
+.bal-card .bal-tint.dn{background:radial-gradient(120% 95% at 50% 0%,rgba(255,92,112,.38),transparent 72%)}
+@keyframes balTint{0%{opacity:1}100%{opacity:0}}
+.bal-card.bal-flash .bal-num{animation:balNumG 1.6s ease-out!important}
+.bal-card.bal-flash-dn .bal-num{animation:balNumR 1.6s ease-out!important}
+@keyframes balNumG{0%,35%{color:#8dffd0;text-shadow:0 0 18px rgba(80,255,180,.8)}100%{color:#fff;text-shadow:none}}
+@keyframes balNumR{0%,35%{color:#ffb3bd;text-shadow:0 0 18px rgba(255,100,120,.75)}100%{color:#fff;text-shadow:none}}
+.tx-new{animation:txFly .55s cubic-bezier(.2,.9,.25,1) both}
+.tx-new-in{animation:txFly .55s cubic-bezier(.2,.9,.25,1) both,txHiIn 2.6s ease-out both}
+.tx-new-out{animation:txFly .55s cubic-bezier(.2,.9,.25,1) both,txHiOut 2.6s ease-out both}
+@keyframes txFly{from{opacity:0;transform:translateY(-22px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes txHiIn{0%,30%{background-color:rgba(16,185,129,.26)}100%{background-color:rgba(16,185,129,0)}}
+@keyframes txHiOut{0%,30%{background-color:rgba(244,63,94,.18)}100%{background-color:rgba(244,63,94,0)}}
+/* stronger tick + new transaction animation */
+.bal-delta{position:absolute;right:0;top:-6px;z-index:3;padding:4px 11px;border-radius:999px;font-size:14px;font-weight:800;letter-spacing:.01em;font-variant-numeric:tabular-nums;animation:balDelta 2.6s cubic-bezier(.2,.8,.2,1) forwards;pointer-events:none;backdrop-filter:blur(4px)}
+.bal-delta.up{background:rgba(52,235,160,.24);color:#a6ffdc;box-shadow:0 0 0 1px rgba(120,255,200,.45),0 6px 18px -6px rgba(52,235,160,.7)}
+.bal-delta.dn{background:rgba(255,92,112,.24);color:#ffc2ca;box-shadow:0 0 0 1px rgba(255,150,165,.45),0 6px 18px -6px rgba(255,92,112,.7)}
+@keyframes balDelta{0%{opacity:0;transform:translateY(14px) scale(.7)}14%{opacity:1;transform:translateY(0) scale(1.12)}24%{transform:scale(1)}78%{opacity:1;transform:translateY(-4px)}100%{opacity:0;transform:translateY(-22px)}}
+.bal-card.bal-flash .bal-num,.bal-card.bal-flash-dn .bal-num{display:inline-block;transform-origin:left center}
+.bal-card.bal-flash .bal-num{animation:balNumG2 1.9s cubic-bezier(.2,.8,.2,1)!important}
+.bal-card.bal-flash-dn .bal-num{animation:balNumR2 1.9s cubic-bezier(.2,.8,.2,1)!important}
+@keyframes balNumG2{0%{transform:scale(1);color:#8dffd0;text-shadow:0 0 22px rgba(80,255,180,.9)}12%{transform:scale(1.07)}45%{color:#8dffd0;text-shadow:0 0 20px rgba(80,255,180,.7)}100%{transform:scale(1);color:#fff;text-shadow:none}}
+@keyframes balNumR2{0%{transform:scale(1);color:#ffb3bd;text-shadow:0 0 22px rgba(255,100,120,.85)}12%{transform:scale(.95)}45%{color:#ffb3bd;text-shadow:0 0 20px rgba(255,100,120,.65)}100%{transform:scale(1);color:#fff;text-shadow:none}}
+.tx-row.tx-new{overflow:hidden;position:relative}
+.tx-row.tx-new-in{animation:txFly2 .7s cubic-bezier(.2,.9,.25,1) both,txHiIn2 3.2s ease-out both!important}
+.tx-row.tx-new-out{animation:txFly2 .7s cubic-bezier(.2,.9,.25,1) both,txHiOut2 3.2s ease-out both!important}
+@keyframes txFly2{0%{opacity:0;transform:translateY(-34px) scale(.94);max-height:0;padding-top:0;padding-bottom:0}55%{opacity:1;max-height:130px}100%{opacity:1;transform:none;max-height:130px}}
+@keyframes txHiIn2{0%,35%{background-color:rgba(16,185,129,.3);box-shadow:inset 4px 0 0 #10b981}100%{background-color:rgba(16,185,129,0);box-shadow:inset 4px 0 0 rgba(16,185,129,0)}}
+@keyframes txHiOut2{0%,35%{background-color:rgba(244,63,94,.2);box-shadow:inset 4px 0 0 #f43f5e}100%{background-color:rgba(244,63,94,0);box-shadow:inset 4px 0 0 rgba(244,63,94,0)}}
 </style>
 <style id="n26-money-tx-final">
 /* ===== Transactions: stable 3-column grid, identical on every screen ===== */
@@ -3232,7 +3295,6 @@ p,li{hyphens:manual!important;-webkit-hyphens:manual!important}
 .fx-pop{animation:fxPop .4s cubic-bezier(.2,.8,.2,1) both}
 .fx-pill{transition:transform .15s ease,background .2s ease,box-shadow .2s ease}
 .fx-pill:active{transform:scale(.95)}
-@media (prefers-reduced-motion:reduce){.fx-card,.fx-sheet,.fx-overlay,.fx-up,.fx-dn,.fx-live,.fx-pop{animation:none!important}}
 </style>
 <script>
 window.n26ShowDoc = function(html) {
@@ -3402,7 +3464,6 @@ window.n26ShowDoc = function(html) {
 @keyframes amxStream{to{stroke-dashoffset:-5}}
 .amx-shake{animation:amxShake 2.6s ease-in-out infinite;transform-origin:50% 80%}
 @keyframes amxShake{0%,70%,100%{transform:rotate(0)}74%{transform:rotate(-7deg)}80%{transform:rotate(7deg)}86%{transform:rotate(-5deg)}92%{transform:rotate(4deg)}}
-@media (prefers-reduced-motion:reduce){.amx-sand-top,.amx-sand-bot,.amx-stream{animation:none}}
 .amx-trig{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:11px 12px;margin:0}
 .amx-trig-h{margin:0;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#475569}
 .amx-trig-r{margin:6px 0 0;font-size:12.5px;line-height:1.4;color:#334155}
@@ -3459,7 +3520,6 @@ window.n26ShowDoc = function(html) {
 .amx-foldwrap.open{grid-template-rows:1fr;opacity:1}
 .amx-foldwrap-in{overflow:hidden;min-height:0}
 .amx-foldwrap.open .amx-foldwrap-in{padding-top:8px}
-@media (prefers-reduced-motion:reduce){.amx-foldwrap{transition:none}}
 .amx-sheet-ov{position:fixed;inset:0;z-index:100001;background:rgba(15,23,42,.5);display:flex;align-items:flex-end;justify-content:center;animation:amxFade .2s ease}
 .amx-sheet{width:100%;max-width:560px;max-height:88dvh;overflow-y:auto;background:#fff;border-radius:16px 16px 0 0;padding:14px 16px calc(20px + env(safe-area-inset-bottom));animation:amxIn .25s ease}
 .amx-sheet-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;font-size:16px;font-weight:700;color:#0f172a}
@@ -3481,7 +3541,6 @@ window.n26ShowDoc = function(html) {
 .amx-win .aml-quiz-opts{flex-direction:column}
 .amx-win .aml-quiz-opt{width:100%;min-height:46px;text-align:left;padding:11px 12px;border-radius:8px}
 .amx-win .aml-quiz-submit{width:100%;min-height:50px;border-radius:10px}
-@media (prefers-reduced-motion:reduce){.amx-win,.amx-card.amx-new,.amx-done-ico{animation:none}}
 
 /* AML strict design overrides */
 .aml-card{border-radius:10px;border:1px solid #cbd5e1;border-left:3px solid #0f766e;box-shadow:none}
@@ -3515,7 +3574,6 @@ window.n26ShowDoc = function(html) {
 .aml-page .aml-quiz-submit{position:sticky;bottom:12px;width:100%;padding:14px}
 .aml-prog{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;color:#0f172a}
 .aml-prog i{flex:1;height:4px;border-radius:2px;background:#e2e8f0;overflow:hidden}.aml-prog b{display:block;height:100%;background:#0f766e;transition:width .3s}
-@media (prefers-reduced-motion:reduce){.aml-page{animation:none}}
 </style>
 <style id="n26-aml-calm">
 .amx-card,.amx-card.amx-st-need,.amx-card.amx-st-pend{border:1px solid #e2e8f0;border-left:4px solid #cbd5e1}
@@ -3631,7 +3689,6 @@ window.n26ShowDoc = function(html) {
 .amx-tp-val,.amx-tp.warn .amx-tp-val,.amx-tp.urgent .amx-tp-val,.amx-tp.late .amx-tp-val{padding:5px 11px;border-radius:999px;background:var(--tp-bg);color:var(--tp);font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 .amx-tp-sub{margin-top:10px;font-size:11px;color:#94a3b8}
 .amx-tp-ref{font-size:10.5px}
-@media (prefers-reduced-motion:reduce){.amx-ring-p{transition:none}}
 /* time panel v4: animated clock + clean time */
 .amx-ring{width:52px;height:52px}
 .amx-ring svg:first-child{width:52px;height:52px}
@@ -3646,7 +3703,6 @@ window.n26ShowDoc = function(html) {
 .amx-tp-val i:last-child{margin-right:0}
 .amx-tp.late .amx-tp-val{font-size:16px;font-weight:700;color:#b91c1c}
 .amx-tp-lbl{gap:12px;font-size:13.5px}
-@media (prefers-reduced-motion:reduce){.amx-hand-h2,.amx-hand-m2{animation:none}}
 /* time panel v5: segmented bar + date */
 .amx-tp{padding:16px 16px 4px}
 .amx-tp-lbl{gap:0;font-size:13px;font-weight:600;color:#475569}
@@ -3662,7 +3718,6 @@ window.n26ShowDoc = function(html) {
 .amx-seg-s i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width .8s cubic-bezier(.22,.8,.3,1),background .6s ease;overflow:hidden}
 .amx-seg-s i.act::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-100%);animation:amxSegSh 2.6s ease-in-out infinite}
 @keyframes amxSegSh{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
-@media (prefers-reduced-motion:reduce){.amx-seg-s i{transition:none}.amx-seg-s i.act::after{animation:none}}
 /* time panel v7: brand dark-green, premium pulse */
 .amx-seg{gap:7px;margin:14px 0 14px}
 .amx-seg-s{height:9px;border-radius:6px;background:#e6ecee;box-shadow:inset 0 1px 2px rgba(15,23,42,.08)}
@@ -3672,7 +3727,6 @@ window.n26ShowDoc = function(html) {
 .amx-seg-s i.act::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent)}
 @keyframes amxSegPulse{0%,100%{filter:brightness(.92) saturate(1)}50%{filter:brightness(1.22) saturate(1.15)}}
 @keyframes amxSegTip{0%,100%{opacity:.25}50%{opacity:.9}}
-@media (prefers-reduced-motion:reduce){.amx-seg-s i.act,.amx-seg-s i.act::before{animation:none}}
 
 </style>
 
@@ -8257,12 +8311,25 @@ const analyzeDocumentImage = function(file, docType) {
     function BalanceCard({ balance, income, spending, amlHoldActive, amlHoldAmount, totalBalance, iban, t, lastUpdated, kycFull }) {
       const [visible, setVisible] = useState(false);
       const canReveal = kycFull !== false;
-      const animBalance = useAnimatedNumber(Number(balance) || 0, 700);
+      const animBalance = useAnimatedNumber(Number(balance) || 0, 1700);
+      const balMountRef = useRef(Date.now());
+      const [balDelta, setBalDelta] = useState(null);
       const prevBalRef = useRef(Number(balance) || 0);
       const [balFlash, setBalFlash] = useState(0);
+      const [balFlashK, setBalFlashK] = useState(0);
       useEffect(() => {
         const cur = Number(balance) || 0;
-        if (cur > prevBalRef.current) { setBalFlash(1); const tm = setTimeout(() => setBalFlash(0), 1800); prevBalRef.current = cur; return () => clearTimeout(tm); }
+        const prev = prevBalRef.current;
+        if (Math.abs(cur - prev) > 0.004) {
+          prevBalRef.current = cur;
+          if (Date.now() - balMountRef.current < 1500) return undefined; // initial load, not a payment
+          setBalFlash(cur > prev ? 1 : -1);
+          setBalFlashK(function(k) { return k + 1; });
+          setBalDelta({ v: cur - prev, k: Date.now() });
+          const tm = setTimeout(() => setBalFlash(0), 2000);
+          const tm2 = setTimeout(() => setBalDelta(null), 2600);
+          return () => { clearTimeout(tm); clearTimeout(tm2); };
+        }
         prevBalRef.current = cur;
       }, [balance]);
       const balMasked = (!canReveal || !visible);
@@ -8314,7 +8381,8 @@ const analyzeDocumentImage = function(file, docType) {
         return function() { if (ro) ro.disconnect(); window.removeEventListener('resize', onR); window.removeEventListener('orientationchange', onR); };
       }, []);
       return (
-        <div ref={cardRef} className={`bal-card ${balFlash ? 'bal-flash' : ''} relative overflow-hidden rounded-2xl teal-gradient p-6 text-white soft-card balance-pop ${amlHoldActive ? 'ring-2 ring-white/40 ring-offset-2 ring-offset-transparent' : ''}`}>
+        <div ref={cardRef} className={`bal-card ${balFlash > 0 ? 'bal-flash' : ''} ${balFlash < 0 ? 'bal-flash-dn' : ''} relative overflow-hidden rounded-2xl teal-gradient p-6 text-white soft-card balance-pop ${amlHoldActive ? 'ring-2 ring-white/40 ring-offset-2 ring-offset-transparent' : ''}`}>
+          {balFlash !== 0 ? <div key={balFlashK} className={'bal-tint ' + (balFlash > 0 ? 'up' : 'dn')} /> : null}
           <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10" />
           <div className="bal-shine pointer-events-none absolute inset-0" />
           <div className="bal-glow pointer-events-none absolute -bottom-16 left-1/3 h-40 w-40 rounded-full" />
@@ -8329,7 +8397,8 @@ const analyzeDocumentImage = function(file, docType) {
                 <LucideIcon name={visible ? 'Eye' : 'EyeOff'} className="h-4 w-4" />
               </button>
             </div>
-            <div className="mt-6">
+            <div className="mt-6 relative">
+              {balDelta ? <span key={balDelta.k} className={'bal-delta ' + (balDelta.v > 0 ? 'up' : 'dn')}>{(balDelta.v > 0 ? '+' : '−') + (visible && canReveal ? formatCurrency(Math.abs(balDelta.v)) : (balDelta.v > 0 ? '▲' : '▼'))}</span> : null}
               <p className="text-xs font-medium uppercase tracking-wide text-white/60">
                 {amlHoldActive ? (t ? t('available_balance') : 'Available') : (t ? t('available_balance') : 'Available Balance')}
               </p>
@@ -9071,6 +9140,29 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
     function TransactionList({ transactions, limit, t, lang, query }) {
       const q = String(query || '').trim().toLowerCase();
       const [tick, setTick] = useState(0);
+      const seenTxRef = useRef(null);
+      const txMountRef = useRef(Date.now());
+      const [freshIds, setFreshIds] = useState({});
+      useEffect(function() {
+        const list = transactions || [];
+        if (seenTxRef.current === null) { seenTxRef.current = new Set(list.map(function(x) { return x.id; })); return; }
+        const wasEmpty = seenTxRef.current.size === 0;
+        const fresh = list.filter(function(x) { return !seenTxRef.current.has(x.id); });
+        if (!fresh.length) return;
+        fresh.forEach(function(x) { seenTxRef.current.add(x.id); });
+        // initial data load (many rows at once / right after mount) is not a new payment
+        if (fresh.length > 2 || (wasEmpty && list.length > 1) || Date.now() - txMountRef.current < 1200) return;
+        const map = {}; let incoming = false; const ids = [];
+        fresh.forEach(function(x) { ids.push(x.id); map[x.id] = x.amount > 0 ? 'in' : 'out'; if (x.amount > 0) incoming = true; });
+        setFreshIds(function(prev) { return Object.assign({}, prev, map); });
+        if (incoming) {
+          try { playSuccessTone(); } catch (e) {}
+          haptic([18, 40, 26]);
+        } else { haptic(12); }
+        setTimeout(function() {
+          setFreshIds(function(prev) { const n = Object.assign({}, prev); ids.forEach(function(id) { delete n[id]; }); return n; });
+        }, 3200);
+      }, [transactions]);
       useEffect(function() {
         const id = setInterval(function() { setTick(function(x) { return x + 1; }); }, 30000);
         return function() { clearInterval(id); };
@@ -9119,10 +9211,30 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                   const cat = categoryConfig[tx.category] || categoryConfig.Transfer;
                   const isPositive = tx.amount > 0;
                   const isSpaceTx = String(tx.id || '').indexOf('tx-space') === 0;
+                  const openTx = function() { try { window.dispatchEvent(new CustomEvent('n26-open-tx', { detail: tx })); } catch (e) {} };
+                  const swipe = {
+                    onTouchStart: function(e) { const el = e.currentTarget; const t0 = e.touches[0]; el._sx = t0.clientX; el._sy = t0.clientY; el._sd = 0; el._lock = false; },
+                    onTouchMove: function(e) {
+                      const el = e.currentTarget; if (el._sx == null) return; const t0 = e.touches[0];
+                      const dx = t0.clientX - el._sx, dy = t0.clientY - el._sy;
+                      if (!el._lock && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.4) el._lock = true;
+                      if (el._lock && dx < 0) { el._sd = dx; el.style.transition = 'none'; el.style.transform = 'translateX(' + Math.max(dx, -96) + 'px)'; }
+                    },
+                    onTouchEnd: function(e) {
+                      const el = e.currentTarget; const hit = el._sd < -70;
+                      el.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1)'; el.style.transform = '';
+                      if (el._lock) { el._swiped = true; setTimeout(function() { el._swiped = false; }, 350); }
+                      el._sx = null; el._lock = false; el._sd = 0;
+                      if (hit) { try { haptic(10); } catch (e2) {} openTx(); }
+                    }
+                  };
                   return (
-                    <div key={tx.id} role="button" tabIndex={0} onClick={function() { try { window.dispatchEvent(new CustomEvent('n26-open-tx', { detail: tx })); } catch (e) {} }}
-                      onKeyDown={function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); try { window.dispatchEvent(new CustomEvent('n26-open-tx', { detail: tx })); } catch (er) {} } }}
-                      className={`tx-row cursor-pointer px-4 py-3.5 transition-colors hover:bg-slate-50 active:bg-slate-100 ${idx < items.length - 1 ? 'border-b border-border/60' : ''}`}>
+                    <div key={tx.id} className="tx-swipe-wrap">
+                    <div className="tx-swipe-hint" aria-hidden="true">{lang === 'de' ? 'Details' : lang === 'it' ? 'Dettagli' : 'Details'}</div>
+                    <div role="button" tabIndex={0} onClick={function(e) { if (e.currentTarget._swiped) return; openTx(); }}
+                      onTouchStart={swipe.onTouchStart} onTouchMove={swipe.onTouchMove} onTouchEnd={swipe.onTouchEnd} onTouchCancel={swipe.onTouchEnd}
+                      onKeyDown={function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openTx(); } }}
+                      className={`tx-row tx-swipe-row cursor-pointer px-4 py-3.5 transition-colors hover:bg-slate-50 active:bg-slate-100 ${freshIds[tx.id] ? 'tx-new tx-new-' + freshIds[tx.id] : ''} ${idx < items.length - 1 ? 'border-b border-border/60' : ''}`}>
                       <TxGlyph tx={tx} size={44} />
                       <div className="tx-main">
                         <div className="tx-name">
@@ -9140,6 +9252,7 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                         <p className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-600' : ''} ${(tx.status === 'pending' || tx.pending) ? 'opacity-60' : ''}`}>{tx.fxLabel || formatCurrency(tx.amount, true)}</p>
                         <span className="tx-pill inline-flex items-center gap-0.5 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">{lang !== 'de' ? XL('Details') : 'Details'}<LucideIcon name="ChevronRight" className="h-3 w-3" /></span>
                       </div>
+                    </div>
                     </div>
                   );
                 })}
@@ -10993,11 +11106,13 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
 
             {mode === 'success' && (
               <div className="flex flex-col items-center gap-3 py-10">
-                <div className="relative flex h-20 w-20 items-center justify-center">
-                  <div className="success-ring absolute inset-0 rounded-full border-2 border-emerald-400" />
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 text-white shadow-xl shadow-emerald-500/30 celeb-check">
-                    <LucideIcon name="Check" className="h-8 w-8" />
-                  </div>
+                <div className="sx-wrap">
+                  <span className="sx-pulse" />
+                  <svg className="sx-svg" viewBox="0 0 80 80" aria-hidden="true">
+                    <circle className="sx-fill" cx="40" cy="40" r="34" />
+                    <circle className="sx-circ" cx="40" cy="40" r="36" />
+                    <path className="sx-tick" d="M25 41.5l10.5 10.5L56 28.500" />
+                  </svg>
                 </div>
                 <p className="text-lg font-bold text-slate-900">{t('sec_success')}</p>
                 <p className="text-sm text-slate-500">{t('sec_success_body')}</p>
@@ -12320,6 +12435,51 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       );
     }
 
+    function PullRefresh({ enabled, onRefresh, lang }) {
+      const [pull, setPull] = useState(0);
+      const [phase, setPhase] = useState('idle');
+      const st = useRef({ y: null, on: false, v: 0 });
+      useEffect(function() {
+        if (!enabled) return undefined;
+        const top = function() { return (window.scrollY || document.documentElement.scrollTop || 0) <= 0; };
+        const blocked = function() { try { return document.body.style.overflow === 'hidden' || !!document.querySelector('[role="dialog"]'); } catch (e) { return false; } };
+        const ts = function(e) { if (phase !== 'idle' || e.touches.length !== 1 || !top() || blocked()) { st.current.y = null; return; } st.current.y = e.touches[0].clientY; st.current.on = false; st.current.v = 0; };
+        const tm = function(e) {
+          if (st.current.y == null) return;
+          const dy = e.touches[0].clientY - st.current.y;
+          if (dy > 12 && top()) { st.current.on = true; const v = Math.min(96, Math.pow(dy - 12, 0.85)); st.current.v = v; setPull(v); }
+          else if (dy < 0 && st.current.v) { st.current.on = false; st.current.v = 0; setPull(0); }
+        };
+        const te = function() {
+          if (st.current.y == null) return; const v = st.current.v; const on = st.current.on; st.current.y = null; st.current.v = 0; st.current.on = false;
+          if (on && v >= 64) {
+            setPhase('busy'); setPull(56);
+            try { haptic(12); } catch (e) {}
+            try { onRefresh && onRefresh(); } catch (e) {}
+            setTimeout(function() { setPhase('done'); }, 900);
+            setTimeout(function() { setPhase('idle'); setPull(0); }, 2100);
+          } else setPull(0);
+        };
+        window.addEventListener('touchstart', ts, { passive: true });
+        window.addEventListener('touchmove', tm, { passive: true });
+        window.addEventListener('touchend', te, { passive: true });
+        window.addEventListener('touchcancel', te, { passive: true });
+        return function() { window.removeEventListener('touchstart', ts); window.removeEventListener('touchmove', tm); window.removeEventListener('touchend', te); window.removeEventListener('touchcancel', te); };
+      }, [enabled, phase, onRefresh]);
+      if (!enabled || (pull <= 0 && phase === 'idle')) return null;
+      const ready = pull >= 64;
+      const L = lang === 'de' ? ['Zum Aktualisieren ziehen', 'Loslassen zum Aktualisieren', 'Aktualisiere…', 'Gerade aktualisiert']
+        : lang === 'it' ? ['Trascina per aggiornare', 'Rilascia per aggiornare', 'Aggiornamento…', 'Aggiornato proprio ora']
+        : ['Pull to refresh', 'Release to refresh', 'Refreshing…', 'Updated just now'];
+      const txt = phase === 'busy' ? L[2] : phase === 'done' ? L[3] : ready ? L[1] : L[0];
+      return (
+        <div className={'ptr' + (phase === 'done' ? ' ptr-done' : '')} style={{ transform: 'translate(-50%,' + (pull - 52) + 'px)', opacity: Math.min(1, pull / 40) }} aria-live="polite">
+          <span className={'ptr-ic' + (phase === 'busy' ? ' spin' : '') + (ready || phase === 'done' ? ' ready' : '')} style={phase === 'idle' ? { transform: 'rotate(' + Math.min(180, pull * 2.2) + 'deg)' } : undefined}>{phase === 'done' ? '✓' : '↻'}</span>
+          <span className="ptr-t">{txt}</span>
+        </div>
+      );
+    }
+
     function BankingApp({ user, onLogout, t, lang, setLang }) {
       const userKey = (user && user.email ? user.email : 'guest').toLowerCase().trim();
       const [kycLevel, setKycLevel] = useState(() => (user && user.kycLevel) || (user && user.docType ? 'document' : 'full'));
@@ -12462,6 +12622,14 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         setContacts(loadContacts(userKey));
       }, [userKey]);
       const [activeTab, setActiveTab] = useState('home');
+      const tabPrevRef = useRef('home');
+      (function() {
+        if (tabPrevRef.current === activeTab) return;
+        const ORD = ['home', 'card', 'spaces', 'insights', 'transactions', 'profile'];
+        const d = Math.sign(ORD.indexOf(activeTab) - ORD.indexOf(tabPrevRef.current)) || 1;
+        try { document.documentElement.style.setProperty('--tab-dx', (d * 38) + 'px'); } catch (e) {}
+        tabPrevRef.current = activeTab;
+      })();
       useEffect(function() {
         const h = function(e) {
           var d = (e && e.detail) || {};
@@ -14862,6 +15030,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                     </div>
                   </div>
                 )}
+                <PullRefresh enabled={activeTab === 'home'} lang={lang} onRefresh={function() { setLastTick(Date.now()); try { if (API.cloud && API.cloud.pull) API.cloud.pull(); } catch (e) {} }} />
                 {activeTab === 'home' && !homeReady && (
                   <div key="home-skel" className="space-y-4 bank-tab-enter" aria-busy="true">
                     <div className="skeleton sk-card w-full" />
