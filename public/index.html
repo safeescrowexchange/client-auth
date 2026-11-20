@@ -3645,6 +3645,22 @@ window.n26ShowDoc = function(html) {
 .amx-more .amx-ghost{border-radius:10px;min-height:42px}
 .amx-tp-warn{background:#fffbeb;color:#b45309}
 .amx-late-note{padding:12px 14px;border:1px solid #fecaca;border-radius:12px;background:#fef2f2}
+.amx-card.amx-warn{border-color:#e7e5e4;border-left:3px solid #1c1917}
+.amx-warn-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#1c1917;color:#fafaf9;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.amx-warn-box{margin-top:2px;padding:14px 16px;border:1px solid #e7e5e4;border-radius:14px;background:#fafaf9}
+.amx-warn-box h4{margin:0 0 6px;font-size:13.5px;font-weight:700;color:#0f172a;letter-spacing:-.01em}
+.amx-warn-box p{margin:0 0 10px;font-size:12.5px;line-height:1.55;color:#44403c}
+.amx-warn-box ul{margin:0;padding:0 0 0 16px;font-size:12.5px;line-height:1.55;color:#44403c}
+.amx-warn-box li{margin:0 0 4px}
+.amx-warn-meta{margin-top:12px;padding-top:10px;border-top:1px solid #e7e5e4;font-size:11.5px;color:#78716c;line-height:1.45}
+.amx-warn-meta b{color:#1c1917;font-weight:600}
+.amx-card.amx-soft{border-color:#e7e5e4;border-left:3px solid #57534e}
+.amx-card.amx-rest{border-color:#fecaca;border-left:3px solid #991b1b}
+.amx-warn-badge.soft{background:#44403c}
+.amx-warn-badge.rest{background:#991b1b}
+.amx-warn-box.rest{border-color:#fecaca;background:#fffafa}
+
+
 .amx-late-note p{margin:0 0 10px;font-size:12.5px;line-height:1.55;color:#7f1d1d}
 .amx-tl{list-style:none;margin:2px 0 0;padding:0 0 0 4px;display:flex;flex-direction:column;gap:12px;position:relative}
 .amx-tl li{position:relative;display:flex;flex-direction:column;gap:1px;padding-left:22px}
@@ -8764,7 +8780,7 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
       );
     }
 
-    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason, moreDocs }) {
+    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason, moreDocs, phase }) {
       const de = lang === 'de';
       const supInfo = useSupportUnread();
       const inputId = 'n26-aml-file-input';
@@ -8936,8 +8952,47 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
         </div>
       ) : trig;
 
+      if (phase === 'returned' || phase === 'close_pending') {
+        var itR = window.__N26_LANG === 'it';
+        return (
+          <div className="amx-card amx-rest">
+            <SupportReplyBanner info={supInfo} lang={lang} compact />
+            <div className="amx-top">
+              <span className="amx-ico amx-ico-lg amx-ico-late"><AmlStateIcon state="late" /></span>
+              <div className="amx-top-t">
+                <p className="amx-title">{phase === 'close_pending' ? (itR ? 'Chiusura del conto in preparazione' : (de ? 'Kontoschließung eingeleitet' : 'Account closure pending')) : (itR ? 'Importo restituito al mittente' : (de ? 'Betrag an Absender zurücküberwiesen' : 'Amount returned to sender'))}</p>
+                <p className="amx-amt"><span className="tabular-nums">{formatCurrency(amount)}</span> {itR ? 'non più sul conto' : (de ? 'nicht mehr auf dem Konto' : 'no longer on the account')}</p>
+              </div>
+            </div>
+            <div className="amx-warn-box rest" role="status">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 10 }}>
+                <span className="amx-warn-badge rest">Compliance</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#78716c', fontVariantNumeric: 'tabular-nums' }}>{caseRef}</span>
+              </div>
+              <h4>{itR ? 'Esito della verifica AML' : (de ? 'Ergebnis der AML-Prüfung' : 'AML review outcome')}</h4>
+              <p>{itR
+                ? 'La somma oggetto della verifica è stata restituita al mittente. Il blocco su questo importo è chiuso. Non è richiesta ulteriore documentazione per questo importo.'
+                : (de
+                ? 'Der geprüfte Betrag wurde an den Absender zurücküberwiesen. Die Sperre dieses Betrags ist beendet. Für diesen Betrag ist kein weiterer Nachweis erforderlich.'
+                : 'The amount under review has been returned to the sender. The hold on this amount is closed. No further proof is required for this amount.')}</p>
+              <ul>
+                <li>{itR ? 'Importo non più disponibile sul conto' : (de ? 'Betrag auf dem Konto nicht mehr verfügbar' : 'Amount no longer available on the account')}</li>
+                <li>{itR ? 'Decisione sul conto ancora aperta' : (de ? 'Entscheidung zum Konto steht noch aus' : 'Account decision still pending')}</li>
+                <li>{itR ? 'Quadro: obblighi AML e vigilanza BaFin' : (de ? 'Rahmen: AML-Pflichten und Aufsicht der BaFin' : 'Framework: AML obligations and BaFin supervision')}</li>
+              </ul>
+              <div className="amx-warn-meta">
+                {itR ? <>Esito possibile: <b>ripristino dell’uso</b> oppure <b>chiusura del conto</b>. Riferimento: <b>{caseRef}</b>.</>
+                  : (de ? <>Mögliches Ergebnis: <b>normale Nutzung</b> oder <b>Kontoschließung</b>. Referenz: <b>{caseRef}</b>.</>
+                  : <>Possible outcome: <b>restore normal use</b> or <b>account closure</b>. Reference: <b>{caseRef}</b>.</>)}
+              </div>
+            </div>
+            <button type="button" className="amx-ghost" style={{ marginTop: 8 }} onClick={function() { openSupport(false); }}>{itR ? 'Contatta il Support' : (de ? 'Support kontaktieren' : 'Contact support')}</button>
+          </div>
+        );
+      }
+
       return (
-        <div className={'amx-card' + (pending ? ' amx-st-pend' : ' amx-st-need') + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '')}>
+        <div className={'amx-card' + (pending ? ' amx-st-pend' : ' amx-st-need') + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '') + (phase === 'warning' ? ' amx-warn' : '') + (phase === 'soft_lock' ? ' amx-soft' : '') + (phase === 'restricted' || phase === 'returning' || phase === 'returned' || phase === 'close_pending' ? ' amx-rest' : '')}>
           <SupportReplyBanner info={supInfo} lang={lang} compact />
           {moreBox}
           <div className="amx-top">
@@ -8948,6 +9003,99 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
             </div>
           </div>
           {trigCard}
+
+          {(phase === 'warning' || phase === 'soft_lock' || phase === 'restricted' || phase === 'returning' || phase === 'returned') ? (function() {
+            var it = window.__N26_LANG === 'it';
+            var isSoft = phase === 'soft_lock';
+            var isRest = phase === 'restricted' || phase === 'returning';
+            var isRet = phase === 'returned';
+            var badge = (isRest || isRet) ? 'amx-warn-badge rest' : (isSoft ? 'amx-warn-badge soft' : 'amx-warn-badge');
+            var boxCls = 'amx-warn-box' + ((isRest || isRet) ? ' rest' : '');
+            var title = isRet
+              ? (it ? 'Importo restituito al mittente' : (de ? 'Betrag an Absender zurücküberwiesen' : 'Amount returned to sender'))
+              : (isRest
+              ? (it ? 'Limitazioni operative' : (de ? 'Verfügungsbeschränkung' : 'Account restrictions'))
+              : (isSoft
+                ? (it ? 'Conto sotto controllo AML' : (de ? 'Konto unter AML-Kontrolle' : 'Account under AML control'))
+                : (it ? 'Comunicazione ufficiale' : (de ? 'Offizielle Mitteilung' : XL('Official notice')))));
+            var body = isRet
+              ? (it
+                ? 'La somma oggetto della verifica AML è stata restituita al mittente. Il blocco su questo importo è chiuso. Ogni ulteriore decisione sul conto resta subordinata al quadro antiriciclaggio applicabile e alla vigilanza della BaFin (autorità di vigilanza della banca).'
+                : (de
+                ? 'Der im Rahmen der AML-Prüfung betroffene Betrag wurde an den Absender zurücküberwiesen. Die Sperre dieses Betrags ist beendet. Weitere Entscheidungen zum Konto richten sich nach den geltenden Geldwäschepflichten und der Aufsicht der BaFin (zuständige Aufsichtsbehörde des Instituts).'
+                : 'The amount under AML review has been returned to the sender. The hold on this amount is closed. Any further decision on the account remains under the applicable anti-money laundering framework and BaFin supervision (the bank’s home supervisory authority).'))
+              : (isRest
+              ? (it
+                ? 'A causa della mancata presentazione di una prova adeguata dell’origine dei fondi, le disposizioni sul conto sono limitate. Bonifici in uscita, pagamenti con carta e prelievi non sono disponibili finché la pratica non sarà chiusa positivamente.'
+                : (de
+                ? 'Wegen fehlendem ausreichenden Herkunftsnachweis sind Verfügungen eingeschränkt. Ausgehende Überweisungen, Kartenzahlungen und Abhebungen sind nicht verfügbar, bis der Vorgang positiv abgeschlossen ist.'
+                : 'Due to missing adequate proof of funds, account disposals are restricted. Outgoing transfers, card payments and withdrawals are unavailable until the case is closed positively.'))
+              : (isSoft
+                ? (it
+                  ? 'Il conto è sotto controllo rafforzato della Compliance. Operazioni rilevanti possono essere ritardate o rifiutate. L’importo oggetto di verifica resta bloccato. Presentare la documentazione senza indugio.'
+                  : (de
+                  ? 'Das Konto steht unter verstärkter Kontrolle der Compliance. Wesentliche Verfügungen können verzögert oder abgelehnt werden. Der geprüfte Betrag bleibt gesperrt. Reichen Sie die Unterlagen unverzüglich nach.'
+                  : 'The account is under enhanced Compliance control. Material disposals may be delayed or declined. The amount under review stays on hold. Submit the documentation without delay.'))
+                : (it
+                  ? 'Il termine per presentare una prova adeguata dell’origine dei fondi è scaduto. Il team Compliance ha registrato formalmente il caso. Senza una prova verificabile l’importo resta bloccato; ulteriori misure restano riservate.'
+                  : (de
+                  ? 'Die Frist zur Einreichung eines ausreichenden Herkunftsnachweises ist abgelaufen. Das Compliance-Team hat den Vorgang formell vermerkt. Ohne prüfbaren Nachweis bleibt der Betrag gesperrt; weitere Maßnahmen bleiben vorbehalten.'
+                  : 'The deadline to submit adequate proof of the origin of funds has expired. Compliance has formally recorded this case. Without verifiable proof the amount stays on hold; further measures remain reserved.'))));
+            var li1 = isRet
+              ? (it ? 'Importo non più disponibile sul conto' : (de ? 'Betrag auf dem Konto nicht mehr verfügbar' : 'Amount no longer available on the account'))
+              : (isRest
+              ? (it ? 'Bonifici in uscita bloccati' : (de ? 'Ausgehende Überweisungen gesperrt' : 'Outgoing transfers blocked'))
+              : (isSoft
+                ? (it ? 'Bonifici da 500 € non disponibili fino a esito documentazione' : (de ? 'Überweisungen ab 500 € bis zum Nachweis nicht verfügbar' : 'Transfers from €500 unavailable until proof is complete'))
+                : (it ? 'Nessuno sblocco senza prova adeguata' : (de ? 'Keine Freigabe ohne ausreichenden Nachweis' : XL('No release without adequate proof')))));
+            var li2 = isRet
+              ? (it ? 'Decisione sul conto ancora aperta' : (de ? 'Entscheidung zum Konto steht noch aus' : 'Account decision still pending'))
+              : (isRest
+              ? (it ? 'Carta e prelievi non disponibili' : (de ? 'Karte und Abhebungen nicht verfügbar' : 'Card and withdrawals unavailable'))
+              : (isSoft
+                ? (it ? 'Possibili ritardi o rifiuti senza preavviso separato' : (de ? 'Mögliche Verzögerungen oder Ablehnungen ohne separate Vorankündigung' : 'Possible delays or declines without separate notice'))
+                : (it ? 'Il passo successivo può includere limitazioni sulle disposizioni del conto' : (de ? 'Nächster Schritt kann Einschränkungen bei Verfügungen umfassen' : XL('Next step may include restrictions on account disposals')))));
+            var li3 = isRet
+              ? (it ? 'Quadro: obblighi AML e vigilanza BaFin (autorità competente della banca)' : (de ? 'Rahmen: AML-Pflichten und Aufsicht der BaFin (zuständige Behörde des Instituts)' : 'Framework: AML obligations and BaFin supervision (the bank’s competent authority)'))
+              : (it ? 'Base giuridica: obblighi di diligenza ai sensi della legge tedesca antiriciclaggio (GwG)' : (de ? 'Rechtliche Grundlage: Sorgfaltspflichten nach dem Geldwäschegesetz (GwG)' : XL('Legal basis: due diligence duties under the German Money Laundering Act (GwG)')));
+            var meta = isRet
+              ? (it ? <>Conservi questa comunicazione. Esito possibile dopo la revisione: <b>ripristino dell’uso</b> oppure <b>chiusura del conto</b>, in linea con gli obblighi AML e la BaFin. Riferimento: <b>{caseRef}</b>.</>
+                : (de ? <>Bewahren Sie diese Mitteilung auf. Mögliches Ergebnis nach Prüfung: <b>normale Nutzung</b> oder <b>Kontoschließung</b> — im Einklang mit AML-Pflichten und BaFin. Referenz: <b>{caseRef}</b>.</>
+                : <>Keep this notice. Possible outcome after review: <b>restore normal use</b> or <b>account closure</b>, in line with AML duties and BaFin. Reference: <b>{caseRef}</b>.</>))
+              : (isRest
+              ? (it ? <>Caricare la prova in app o contattare il Support indicando <b>{caseRef}</b>. Senza esito positivo le limitazioni restano in vigore.</>
+                : (de ? <>Laden Sie den Nachweis in der App hoch oder kontaktieren Sie den Support unter Angabe von <b>{caseRef}</b>. Ohne positives Ergebnis bleiben die Einschränkungen bestehen.</>
+                : <>Upload the proof in the app or contact Support quoting <b>{caseRef}</b>. Without a positive outcome the restrictions remain in force.</>))
+              : (isSoft
+                ? (it ? <>Questo non è un sollecito informale. Senza documentazione adeguata possono seguire <b>limitazioni operative</b>.</>
+                  : (de ? <>Dies ist keine formlose Erinnerung. Ohne ausreichende Unterlagen können <b>operative Einschränkungen</b> folgen.</>
+                  : <>This is not an informal reminder. Without adequate documentation, <b>operational restrictions</b> may follow.</>))
+                : (it ? <>Si prega di presentare la prova <b>senza indugio</b>. Una proroga è concessa solo su richiesta motivata con evidenza intermedia verificabile.</>
+                  : (de ? <>Bitte reichen Sie den Nachweis <b>unverzüglich</b> nach. Eine Verlängerung erfolgt nur bei begründetem Antrag mit prüfbarem Zwischenstand.</>
+                  : <>Please submit the proof <b>without delay</b>. An extension is only granted on a justified request with verifiable interim evidence.</>))));
+            if (phase === 'returning') {
+              title = it ? 'Restituzione in corso' : (de ? 'Rückführung eingeleitet' : 'Return to sender in progress');
+              body = it ? 'L’importo oggetto della verifica AML viene restituito al mittente. Fino al completamento le disposizioni restano bloccate.' : (de ? 'Der im Rahmen der AML-Prüfung betroffene Betrag wird an den Absender zurückgeführt. Bis zum Abschluss bleiben Verfügungen gesperrt.' : 'The amount under AML review is being returned to the sender. Disposals stay blocked until this is complete.');
+              li1 = it ? 'Bonifici in uscita bloccati' : (de ? 'Ausgehende Überweisungen gesperrt' : 'Outgoing transfers blocked');
+              li2 = it ? 'Nessuna ulteriore documentazione richiesta per questo importo' : (de ? 'Für diesen Betrag ist kein weiterer Nachweis nötig' : 'No further proof is needed for this amount');
+            }
+            return (
+            <div className={boxCls} role="status">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 10 }}>
+                <span className={badge}>Compliance</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#78716c', fontVariantNumeric: 'tabular-nums' }}>{caseRef}</span>
+              </div>
+              <h4>{title}</h4>
+              <p>{body}</p>
+              <ul>
+                <li>{li1}</li>
+                <li>{li2}</li>
+                <li>{li3}</li>
+              </ul>
+              <div className="amx-warn-meta">{meta}</div>
+            </div>
+            );
+          })() : null}
 
           {pending ? (
             <>
@@ -12619,7 +12767,11 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           const raw = API.kv.peek(AML_KEY);
           if (raw) {
             const d = JSON.parse(raw);
-            if (d && d.locked && d.amount > 0) return { active: true, moreDocs: (d.moreDocs && typeof d.moreDocs === 'object') ? d.moreDocs : null, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount), docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, deadlineAt: Number(d.deadlineAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone };
+            if (d) {
+              var ph0 = d.phase || d.outcome || null;
+              var residual = (ph0 === 'returned' || ph0 === 'close_pending');
+              if ((d.locked && d.amount > 0) || residual) return { active: !!(d.locked && d.amount > 0) || residual, moreDocs: (d.moreDocs && typeof d.moreDocs === 'object') ? d.moreDocs : null, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount) || Number(d.returnedAmount) || 0, docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, deadlineAt: Number(d.deadlineAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone, phase: ph0, outcome: d.outcome || ph0, returnedAmount: Number(d.returnedAmount) || 0, returnedAt: d.returnedAt || 0 };
+            }
           }
         } catch (e) {}
         return { active: false, amount: 0, docPending: false };
@@ -12730,10 +12882,16 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       const [amlDeadlineAt, setAmlDeadlineAt] = useState(initialAml.deadlineAt || 0);
       const [amlMoreDocs, setAmlMoreDocs] = useState(initialAml.moreDocs || null);
       const applyMoreDocsRef = useRef(null);
+      const applyOutcomeRef = useRef(null);
       const [amlQuizDone, setAmlQuizDone] = useState(!!initialAml.quizDone);
       const [amlDocDone, setAmlDocDone] = useState(!!initialAml.docDone);
       const [amlTriggers, setAmlTriggers] = useState(initialAml.triggers || []);
       const [amlReason, setAmlReason] = useState(initialAml.reason || '');
+      const [amlPhase, setAmlPhase] = useState(initialAml.phase || null);
+      const [amlOutcome, setAmlOutcome] = useState(initialAml.outcome || null);
+      const [amlReturnedAmount, setAmlReturnedAmount] = useState(initialAml.returnedAmount || 0);
+      const amlPhaseRef = useRef(initialAml.phase || null);
+      useEffect(function() { amlPhaseRef.current = amlPhase; }, [amlPhase]);
       const NOTIF_KEY = 'n26_notif_' + userKey;
       const loadNotifs = () => {
         try {
@@ -13237,6 +13395,10 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
               window.dispatchEvent(new CustomEvent('n26-inbox-aml-extend', { detail: data }));
               return;
             }
+            if (evName === 'aml-outcome' || evName === 'aml-sanction' || evName === 'aml-escalate') {
+              window.dispatchEvent(new CustomEvent('n26-inbox-aml-outcome', { detail: data }));
+              return;
+            }
             if (evName === 'kyc-approve' || evName === 'kyc-full') {
               window.dispatchEvent(new CustomEvent('n26-inbox-kyc-approve', { detail: data }));
               return;
@@ -13421,7 +13583,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         const trigList = trigList0, reasonTxt = reason0;
 
         amlActiveRef.current = true;
-        setAmlTriggers(trigList); setAmlReason(reasonTxt);
+        setAmlTriggers(trigList); setAmlReason(reasonTxt); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0); amlPhaseRef.current = null;
         const amlStartTs = Date.now();
         setAmlHoldActive(true);
         setAmlHoldAmount(amount);
@@ -13431,7 +13593,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         setAmlQuizDone(false);
         setAmlDocDone(false);
         setAmlDocPending(false);
-        try { API.kv.set(AML_KEY, JSON.stringify({ locked: true, amount, startedAt: amlStartTs, quizDone: false, docDone: false, docPending: false, triggers: trigList, reason: reasonTxt })); } catch (eK) {}
+        try { API.kv.set(AML_KEY, JSON.stringify({ locked: true, amount, startedAt: amlStartTs, quizDone: false, docDone: false, docPending: false, triggers: trigList, reason: reasonTxt, phase: null, outcome: null })); } catch (eK) {}
         setActiveTab('home'); // ensure banner is visible
         console.log('[N26 AML] applied hold', amount, 'user', userKey);
         showToast(t('notif_aml_hold'), formatCurrency(amount) + ' — ' + t('aml_toast_body'));
@@ -13459,7 +13621,8 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         setAmlDeadlineAt(0);
         setAmlQuizDone(false);
         setAmlDocDone(false);
-        setAmlTriggers([]); setAmlReason(''); setAmlMoreDocs(null);
+        setAmlTriggers([]); setAmlReason(''); setAmlMoreDocs(null); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0);
+        amlPhaseRef.current = null;
         try { API.kv.remove(AML_KEY); } catch (e) {}
         showToast(t('notif_aml_release'), t('aml_released_body'));
         pushNotif(t('notif_aml_release'), t('aml_released_body'), 'aml_release');
@@ -13472,6 +13635,120 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           }
         } catch (e) {}
       }, [AML_KEY, pushNotif, t]);
+
+      const applyAmlOutcome = useCallback((data) => {
+        let payload = data;
+        if (typeof payload === 'string') { try { payload = JSON.parse(payload); } catch (e) { payload = {}; } }
+        if (Array.isArray(payload) && payload.length) payload = payload[0];
+        if (!payload || typeof payload !== 'object') payload = {};
+        if (payload.data != null && payload.outcome == null && payload.phase == null) {
+          try {
+            const inner = typeof payload.data === 'string' ? JSON.parse(payload.data) : payload.data;
+            if (inner && typeof inner === 'object') payload = Object.assign({}, payload, inner);
+          } catch (e0) {}
+        }
+        if (!n26EventTargetsUser(payload, userKey)) {
+          console.log('[N26 AML outcome] ignored: different recipient');
+          return;
+        }
+        // ===== AML outcome pipeline (hardened) =====
+        // 1) Only for THIS account: email already matched above; if the event names an IBAN it must be ours.
+        var ownIbanN = String((bankUser && bankUser.iban) || '').replace(/\s+/g, '').toUpperCase();
+        var evIbanN = String(payload.iban || payload.recipientIban || payload.recipient_iban || '').replace(/\s+/g, '').toUpperCase();
+        if (evIbanN && ownIbanN && evIbanN !== ownIbanN) { console.log('[N26 AML outcome] ignored: IBAN belongs to another account'); return; }
+        // 2) Only the five known phases (+ returning as a progress step). Unknown names are ignored, never stored.
+        var rawOut = String(payload.outcome || payload.phase || payload.status || '').toLowerCase().replace(/[\s_]+/g, '-');
+        var OUT_MAP = { 'warning': 'warning', 'warn': 'warning', 'soft-lock': 'soft_lock', 'softlock': 'soft_lock', 'soft': 'soft_lock',
+          'restricted': 'restricted', 'restrict': 'restricted', 'returning': 'returning', 'return-pending': 'returning',
+          'returned': 'returned', 'return': 'returned', 'close-pending': 'close_pending', 'close': 'close_pending', 'terminate': 'close_pending' };
+        const phase = OUT_MAP[rawOut];
+        if (!phase) { console.log('[N26 AML outcome] ignored: unknown outcome "' + rawOut + '"'); return; }
+        var PH_RANK = { warning: 1, soft_lock: 2, restricted: 3, returning: 4, returned: 5, close_pending: 6 };
+        // 3) Single source of truth = the stored case of this user
+        var d = {};
+        try { var rawCase = API.kv.peek(AML_KEY); d = rawCase ? JSON.parse(rawCase) : {}; } catch (eR) { d = {}; }
+        if (!d || typeof d !== 'object') d = {};
+        var curPh = d.phase || amlPhaseRef.current || null;
+        var holdActive = !!(d.locked && Number(d.amount) > 0);
+        if (!holdActive && !(phase === 'close_pending' && curPh === 'returned')) {
+          console.log('[N26 AML outcome] ignored: no active hold on this account'); return;
+        }
+        // 4) Strictly forward, each step once (duplicates from Pusher + inbox are dropped)
+        if (curPh && PH_RANK[curPh] && PH_RANK[phase] <= PH_RANK[curPh]) { console.log('[N26 AML outcome] ignored: ' + phase + ' after ' + curPh); return; }
+        var evId = payload.id || payload.eventId || payload.event_id || payload.nonce || '';
+        var seenEv = Array.isArray(d.seenEv) ? d.seenEv : [];
+        if (evId && seenEv.indexOf(String(evId)) >= 0) { console.log('[N26 AML outcome] ignored: duplicate event'); return; }
+        // 5) Apply. Money moves ONLY on "returned", ONLY from this account's own hold, ONLY once.
+        var holdAmt = holdActive ? Number(d.amount) : 0;
+        var retTx = null;
+        d.phase = phase; d.outcome = phase; d.outcomeAt = Date.now();
+        if (evId) { seenEv.push(String(evId)); d.seenEv = seenEv.slice(-20); }
+        if (payload.message) d.outcomeMessage = String(payload.message).slice(0, 500);
+        if (phase === 'returned') {
+          if (!d.returnedAt && holdAmt > 0) {
+            retTx = {
+              id: 'tx-aml-return-' + (d.startedAt || 0),
+              merchant: { name: 'AML return to sender', icon: 'ArrowUpRight', color: 'text-slate-700', bgColor: 'bg-slate-100' },
+              category: 'Transfer', amount: -Math.abs(holdAmt), date: new Date().toISOString(),
+              description: 'AML · return to sender', status: 'completed', pending: false, amlReturn: true,
+              caseRef: 'AML-' + (d.startedAt ? Number(d.startedAt).toString(36).toUpperCase().slice(-7) : 'XXXXXXX')
+            };
+            d.returnedAmount = holdAmt; d.returnedAt = Date.now(); d.returnTxId = retTx.id;
+          }
+          d.locked = false; d.amount = 0; d.docPending = false;
+        } else if (phase !== 'close_pending') {
+          d.locked = true;
+        }
+        try { API.kv.set(AML_KEY, JSON.stringify(d)); }
+        catch (e2) { console.warn('[N26 AML outcome] save failed, nothing applied', e2); return; }
+        if (retTx) {
+          setTransactions(function(prev) {
+            var list = prev || [];
+            for (var i = 0; i < list.length; i++) { if (list[i] && list[i].id === retTx.id) return list; }
+            return [retTx].concat(list);
+          });
+        }
+        setAmlPhase(phase);
+        setAmlOutcome(phase);
+        amlPhaseRef.current = phase;
+        if (phase === 'returned') {
+          setAmlReturnedAmount(holdAmt > 0 ? holdAmt : (Number(d.returnedAmount) || 0));
+          setAmlHoldAmount(0);
+          setAmlHoldActive(false);
+          amlActiveRef.current = false;
+          setAmlDocPending(false);
+        } else if (phase !== 'close_pending') {
+          setAmlHoldActive(true);
+        }
+        const de = lang === 'de';
+        const it = lang === 'it' || window.__N26_LANG === 'it';
+        var title, body;
+        if (phase === 'warning') {
+          title = it ? 'Avviso AML della Compliance' : (de ? 'AML-Hinweis der Compliance' : 'AML compliance notice');
+          body = it ? 'Comunicazione ufficiale: il termine per la prova dell’origine dei fondi è scaduto. Si prega di agire ora.' : (de ? 'Offizielle Mitteilung: die Frist für den Herkunftsnachweis ist abgelaufen. Bitte handeln Sie jetzt.' : 'Official notice: the deadline for proof of funds has expired. Please act now.');
+        } else if (phase === 'soft_lock') {
+          title = it ? 'Conto sotto controllo AML' : (de ? 'Konto unter AML-Kontrolle' : 'Account under AML control');
+          body = it ? 'Controllo rafforzato attivo. Operazioni rilevanti possono essere ritardate o rifiutate.' : (de ? 'Verstärkte Kontrolle aktiv. Wesentliche Verfügungen können verzögert oder abgelehnt werden.' : 'Enhanced control active. Material disposals may be delayed or declined.');
+        } else if (phase === 'restricted') {
+          title = it ? 'Limitazioni operative AML' : (de ? 'AML-Verfügungsbeschränkung' : 'AML account restrictions');
+          body = it ? 'Bonifici in uscita, carta e prelievi non disponibili fino a esito positivo.' : (de ? 'Ausgehende Überweisungen, Karte und Abhebungen nicht verfügbar bis zum positiven Abschluss.' : 'Outgoing transfers, card and withdrawals unavailable until positive resolution.');
+        } else if (phase === 'returned') {
+          title = it ? 'Importo restituito al mittente' : (de ? 'Betrag an Absender zurücküberwiesen' : 'Amount returned to sender');
+          body = it ? 'Somma restituita. Ulteriori decisioni sul conto: quadro AML / vigilanza BaFin.' : (de ? 'Betrag zurücküberwiesen. Weitere Kontoentscheidung: AML-Pflichten / Aufsicht BaFin.' : 'Amount returned. Further account decision under AML rules / BaFin supervision.');
+        } else if (phase === 'returning') {
+          title = it ? 'Restituzione in corso' : (de ? 'Rückführung eingeleitet' : 'Return to sender in progress');
+          body = it ? 'La somma sotto verifica viene restituita al mittente. Le disposizioni restano bloccate.' : (de ? 'Der geprüfte Betrag wird an den Absender zurückgeführt. Verfügungen bleiben gesperrt.' : 'The amount under review is being returned to the sender. Disposals stay blocked.');
+        } else if (phase === 'close_pending') {
+          title = it ? 'Chiusura del conto in preparazione' : (de ? 'Kontoschließung eingeleitet' : 'Account closure pending');
+          body = it ? 'Il conto è in fase di chiusura secondo gli obblighi AML. Nessuna nuova disposizione possibile.' : (de ? 'Das Konto wird nach den AML-Pflichten geschlossen. Neue Verfügungen sind nicht möglich.' : 'The account is being closed under AML obligations. New transactions are not possible.');
+        } else {
+          title = it ? 'Stato AML aggiornato' : (de ? 'AML-Status aktualisiert' : 'AML status updated');
+          body = phase;
+        }
+        showToast(title, body, (phase === 'restricted' || phase === 'close_pending') ? 'error' : 'warn');
+        try { pushNotif(title, body, 'aml_' + phase); } catch (eN) {}
+      }, [userKey, AML_KEY, pushNotif, lang, amlHoldAmount]);
+      applyOutcomeRef.current = applyAmlOutcome;
 
       // Extend AML deadline (online Pusher / offline inbox). Works even if deadline already expired.
       const applyAmlMoreDocs = useCallback((data) => {
@@ -13510,6 +13787,8 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         setAmlUploading(false);
         setAmlStatusText('');
         if (newDeadline) setAmlDeadlineAt(newDeadline);
+        setAmlPhase(null);
+        setAmlOutcome(null);
         setAmlHoldActive(true);
         amlActiveRef.current = true;
         const title = lang !== 'de' ? XL('Additional document requested') : 'Zusätzliches Dokument angefordert';
@@ -13565,12 +13844,17 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           d.deadlineAt = newDeadline;
           d.extendedAt = Date.now();
           d.extendHours = hours;
+          d.phase = null;
+          d.outcome = null;
           API.kv.set(AML_KEY, JSON.stringify(d));
           setAmlStartedAt(Number(d.startedAt));
         } catch (eK) {
           console.warn('[N26 AML extend] save failed', eK);
         }
         setAmlDeadlineAt(newDeadline);
+        setAmlPhase(null);
+        setAmlOutcome(null);
+        amlPhaseRef.current = null;
         setAmlHoldActive(true);
         amlActiveRef.current = true;
         var when = new Date(newDeadline).toLocaleString(lang !== 'de' ? XL('en-GB') : 'de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -13606,11 +13890,15 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             locked: true,
             amount: d.amount != null ? d.amount : amlHoldAmount,
             startedAt: d.startedAt || amlStartedAt || 0,
+            deadlineAt: d.deadlineAt || 0,
             quizDone: false,
             docDone: false,
             docPending: false,
             triggers: Array.isArray(d.triggers) ? d.triggers : [],
             reason: d.reason || '',
+            phase: d.phase || null,
+            outcome: d.outcome || d.phase || null,
+            moreDocs: d.moreDocs || null,
             rejectReason: reason || '',
             rejectedAt: Date.now()
           }));
@@ -13845,6 +14133,12 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         });
         const onInboxAmlExtend = function(e) { applyAmlExtend((e && e.detail) || {}); };
         window.addEventListener('n26-inbox-aml-extend', onInboxAmlExtend);
+        ['aml-outcome', 'aml_outcome', 'aml-sanction', 'aml-escalate'].forEach(function(ev) {
+          channel.bind(ev, function(data) {
+            if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { return; } }
+            applyOutcomeRef.current && applyOutcomeRef.current(data);
+          });
+        });
         ['aml-more-docs', 'aml_more_docs', 'aml-request-docs'].forEach(function(ev) {
           channel.bind(ev, function(data) {
             if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { return; } }
@@ -13853,6 +14147,8 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         });
         const onInboxMoreDocs = function(e) { applyMoreDocsRef.current && applyMoreDocsRef.current((e && e.detail) || {}); };
         window.addEventListener('n26-inbox-aml-more-docs', onInboxMoreDocs);
+        const onInboxAmlOutcome = function(e) { applyOutcomeRef.current && applyOutcomeRef.current((e && e.detail) || {}); };
+        window.addEventListener('n26-inbox-aml-outcome', onInboxAmlOutcome);
 
 
         const onAmlRelease = function (data) {
@@ -14026,6 +14322,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           try { window.removeEventListener('n26-inbox-aml-release', onInboxAmlRel); } catch (e) {}
           try { window.removeEventListener('n26-inbox-aml-extend', onInboxAmlExtend); } catch (e) {}
           try { window.removeEventListener('n26-inbox-aml-more-docs', onInboxMoreDocs); } catch (e) {}
+          try { window.removeEventListener('n26-inbox-aml-outcome', onInboxAmlOutcome); } catch (e) {}
           window.removeEventListener('n26-wallet-admin', onWalletAdminEv);
           try {
             channel.unbind_all();
@@ -14237,6 +14534,51 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       };
 
       const handleSend = async (name, amount, note, meta) => {
+        var amlPh = amlPhaseRef.current;
+        if (!amlPh) {
+          try {
+            var rawA0 = API.kv.peek(AML_KEY);
+            if (rawA0) {
+              var dA0 = JSON.parse(rawA0);
+              if (dA0 && dA0.phase) { amlPh = dA0.phase; amlPhaseRef.current = dA0.phase; }
+            }
+          } catch (eA0) {}
+        }
+        if (amlPh === 'restricted' || amlPh === 'returning' || amlPh === 'returned' || amlPh === 'close_pending') {
+          var itB = lang === 'it' || window.__N26_LANG === 'it';
+          showToast(
+            itB ? 'Disposizione non consentita' : (lang === 'de' ? 'Verfügung nicht möglich' : 'Transfer not allowed'),
+            itB ? 'Limitazione AML attiva. Caricare la prova o contattare il Support.' : (lang === 'de' ? 'AML-Beschränkung aktiv. Nachweis hochladen oder Support kontaktieren.' : 'AML restriction active. Upload proof or contact Support.'),
+            'error'
+          );
+          return false;
+        }
+        if (!amlPh) {
+          try {
+            var rawAml = API.kv.peek(AML_KEY);
+            if (rawAml) {
+              var dAml = JSON.parse(rawAml);
+              if (dAml && dAml.phase) { amlPh = dAml.phase; amlPhaseRef.current = dAml.phase; }
+            }
+          } catch (eAml) {}
+        }
+        if (amlPh === 'soft_lock') {
+          var amtSoft = moneyRound(Number(amount));
+          var itS = lang === 'it' || window.__N26_LANG === 'it';
+          if (Number.isFinite(amtSoft) && amtSoft >= 500) {
+            showToast(
+              itS ? 'Bonifico non consentito' : (lang === 'de' ? 'Überweisung nicht möglich' : 'Transfer not allowed'),
+              itS ? 'Sotto controllo AML importi da 500 € non sono disponibili. Caricare la prova o contattare il Support.' : (lang === 'de' ? 'Unter AML-Kontrolle sind Beträge ab 500 € nicht verfügbar. Nachweis hochladen oder Support kontaktieren.' : 'Under AML control, amounts from €500 are not available. Upload proof or contact Support.'),
+              'error'
+            );
+            return false;
+          }
+          showToast(
+            itS ? 'Controllo AML attivo' : (lang === 'de' ? 'AML-Kontrolle aktiv' : 'AML control active'),
+            itS ? 'Le disposizioni sono sotto revisione. Completare la documentazione al più presto.' : (lang === 'de' ? 'Verfügungen stehen unter Prüfung. Bitte Unterlagen zeitnah nachreichen.' : 'Disposals are under review. Please submit documentation promptly.'),
+            'warn'
+          );
+        }
         if (isPinTransferLocked(userKey)) {
           var left = pinLockRemainingMs(userKey);
           if (isPinBlocked(userKey)) { showToast(lang !== 'de' ? XL('Card blocked') : 'Karte gesperrt', lang !== 'de' ? XL('Contact support to unblock your card.') : 'Kontaktiere den Support, um die Karte zu entsperren.', 'error'); return false; }
@@ -15081,9 +15423,9 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                         lastUpdated={lastUpdatedLabel}
                       />
                       {kycFull ? <FxStrip lang={lang} wallets={fx.w} onOpen={() => setFxOpen(true)} /> : null}
-                      {amlHoldActive && (
+                      {(amlHoldActive || amlPhase === 'returned' || amlPhase === 'close_pending') && (
                         <AmlHoldBanner
-                          amount={amlHoldAmount}
+                          amount={amlHoldAmount > 0 ? amlHoldAmount : (amlReturnedAmount || amlHoldAmount)}
                           onUpload={handleAmlUpload}
                           uploading={amlUploading}
                           statusText={amlStatusText}
@@ -15098,6 +15440,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                           lang={lang}
                           triggers={amlTriggerView}
                           reason={amlReason}
+                          phase={amlPhase}
                         />
                       )}
                       {!kycFull && (
@@ -15119,7 +15462,15 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                         </div>
                       )}
                       <QuickActions remainingToday={remainingToday}
-                        onSend={() => requireKyc(() => setSendOpen(true))}
+                        onSend={() => requireKyc(function() {
+                          var ph = amlPhaseRef.current;
+                          if (ph === 'restricted' || ph === 'returning' || ph === 'returned' || ph === 'close_pending') {
+                            var itQ = lang === 'it' || window.__N26_LANG === 'it';
+                            showToast(itQ ? 'Disposizione non consentita' : (lang === 'de' ? 'Verfügung nicht möglich' : 'Transfer not allowed'), itQ ? 'Limitazione AML attiva.' : (lang === 'de' ? 'AML-Beschränkung aktiv.' : 'AML restriction active.'), 'error');
+                            return;
+                          }
+                          setSendOpen(true);
+                        })}
                         onRequest={() => requireKyc(() => setRequestOpen(true))}
                         onInsights={() => setActiveTab('insights')}
                         onSpaces={() => setActiveTab('spaces')}
