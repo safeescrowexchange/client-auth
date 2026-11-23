@@ -2741,6 +2741,45 @@ input,select,textarea{font-size:16px!important;letter-spacing:0!important}
 @keyframes txFly2{0%{opacity:0;transform:translateY(-34px) scale(.94);max-height:0;padding-top:0;padding-bottom:0}55%{opacity:1;max-height:130px}100%{opacity:1;transform:none;max-height:130px}}
 @keyframes txHiIn2{0%,35%{background-color:rgba(16,185,129,.3);box-shadow:inset 4px 0 0 #10b981}100%{background-color:rgba(16,185,129,0);box-shadow:inset 4px 0 0 rgba(16,185,129,0)}}
 @keyframes txHiOut2{0%,35%{background-color:rgba(244,63,94,.2);box-shadow:inset 4px 0 0 #f43f5e}100%{background-color:rgba(244,63,94,0);box-shadow:inset 4px 0 0 rgba(244,63,94,0)}}
+
+/* ---- odometer digits ---- */
+.rd{position:relative;display:inline-block;clip-path:inset(0 -.03em 0 -.03em);line-height:1;vertical-align:baseline}
+.rd-ghost{visibility:hidden}
+.rd-in{position:absolute;left:0;top:0;display:flex;flex-direction:column;transition:transform 1.05s cubic-bezier(.16,.84,.24,1);will-change:transform}
+.rd-ghost{line-height:1}
+.rd-in>span{display:block;line-height:1;height:1em}
+/* ---- frozen card: matte frost that creeps in from the top and melts away ---- */
+.card-frozen{filter:saturate(.8) brightness(.97)!important}
+.bank-card__frost{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='228'><filter id='f' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.9 .75' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.5 -.7'/></filter><rect width='100%25' height='100%25' filter='url(%23f)'/></svg>") center/cover no-repeat,
+    radial-gradient(120% 90% at 15% 0%,rgba(240,250,255,.55),rgba(240,250,255,0) 62%),
+    radial-gradient(90% 70% at 92% 100%,rgba(196,228,250,.42),rgba(196,228,250,0) 60%),
+    linear-gradient(160deg,rgba(226,243,255,.40),rgba(186,218,244,.30));
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 30%,transparent 38%);mask-image:linear-gradient(180deg,#000 0%,#000 30%,transparent 38%);
+  -webkit-mask-size:100% 330%;mask-size:100% 330%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:0 100%;mask-position:0 100%;opacity:.0;
+  transition:-webkit-mask-position 2.2s cubic-bezier(.4,0,.2,1),mask-position 2.2s cubic-bezier(.4,0,.2,1),opacity 1.4s ease 1s}
+.bank-card__frost.on{-webkit-mask-position:0 0;mask-position:0 0;opacity:1;transition:-webkit-mask-position 1.6s cubic-bezier(.3,.7,.2,1),mask-position 1.6s cubic-bezier(.3,.7,.2,1),opacity .6s ease}
+.bank-card__frost-chip{position:absolute;left:50%;bottom:14%;transform:translate(-50%,8px);z-index:5;pointer-events:none;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.05em;color:#0c4a6e;background:rgba(240,249,255,.86);box-shadow:0 4px 14px -4px rgba(12,74,110,.35);opacity:0;transition:opacity .5s ease,transform .5s ease}
+.bank-card__frost-chip.on{opacity:1;transform:translate(-50%,0);transition-delay:.7s}
+/* ---- AML support block ---- */
+.amx-sup{margin:0 0 12px;padding:12px 14px;border-radius:14px;background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.18);display:flex;flex-direction:column;gap:8px}
+.amx-sup-h{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#0f766e}
+.amx-sup-ref{font-weight:600;letter-spacing:.02em;color:#64748b;font-variant-numeric:tabular-nums}
+.amx-sup-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e11d48;margin-right:6px;vertical-align:1px}
+.amx-sup-msg{display:block;width:100%;text-align:left;font-size:13px;line-height:1.45;color:#0f172a;background:#fff;border-radius:12px;padding:10px 12px;border:1px solid rgba(15,23,42,.08)}
+.amx-sup-meta{display:block;margin-top:4px;font-size:10.5px;color:#64748b}
+.amx-sup-empty{font-size:12.5px;line-height:1.45;color:#475569}
+.amx-sup-btn{align-self:flex-start;font-size:12px;font-weight:700;color:#fff;background:#0f766e;border-radius:999px;padding:8px 16px}
+/* ---- fixed: new transaction no longer shows the swipe layer through the row; height grows smoothly ---- */
+.tx-swipe-hint{opacity:0;transition:opacity .12s ease;pointer-events:none}
+.tx-swipe-wrap.tx-wrap-new{animation:txGrow .5s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes txGrow{from{max-height:0}to{max-height:150px}}
+.tx-swipe-wrap .tx-row.tx-new{overflow:visible;transform:none}
+.tx-swipe-wrap .tx-row.tx-new-in{animation:txRowIn .55s cubic-bezier(.2,.9,.25,1) .06s backwards,txHiIn2 3.2s ease-out both!important}
+.tx-swipe-wrap .tx-row.tx-new-out{animation:txRowIn .55s cubic-bezier(.2,.9,.25,1) .06s backwards,txHiOut2 3.2s ease-out both!important}
+@keyframes txRowIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
 </style>
 <style id="n26-money-tx-final">
 /* ===== Transactions: stable 3-column grid, identical on every screen ===== */
@@ -5301,6 +5340,10 @@ window.n26ShowDoc = function(html) {
       if (!tx || !(Number(tx.amount) < 0)) return false;
       var id = String(tx.id || '');
       if (id.indexOf('tx-space') === 0) return false;
+      // cancelled / declined / refunded transfers and AML returns never count against the daily limit
+      var stt = String(tx.status || '').toLowerCase();
+      if (stt === 'rejected' || stt === 'cancelled' || stt === 'canceled' || stt === 'failed' || tx.sbStatus === 'rejected' || tx.sbStatus === 'cancelled') return false;
+      if (tx.refunded || tx.refundOf || tx.amlReturn) return false;
       return true;
     }
     // >>> NEW: целочисленная арифметика в центах
@@ -5325,7 +5368,7 @@ window.n26ShowDoc = function(html) {
       return h >>> 0;
     }
     function txPublicId(tx) {
-      var a = txHash(tx && tx.id, 1).toString(36), b = txHash(tx && tx.id, 7).toString(36);
+      var pidSrc = tx && (tx.refundOf || tx.id); var a = txHash(pidSrc, 1).toString(36), b = txHash(pidSrc, 7).toString(36);
       return ('N26-' + (a + b).toUpperCase().replace(/[^A-Z0-9]/g, '').padEnd(10, '7').slice(0, 10));
     }
     function txDigits(seed, n, salt) {
@@ -5518,25 +5561,50 @@ window.n26ShowDoc = function(html) {
     }
 
 
-    function playSuccessTone() {
+    // ===== sound: one shared AudioContext (unlocked on first touch, which iOS requires) =====
+    var __audioCtx = null;
+    function soundEnabled() { try { return API.kv.peek('n26_sound') !== '0'; } catch (e) { return true; } }
+    function getAudioCtx() {
       try {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if (!Ctx) return;
-        const ctx = new Ctx();
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = 'sine';
-        o.frequency.setValueAtTime(880, ctx.currentTime);
-        o.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.08);
-        g.gain.setValueAtTime(0.0001, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.28);
-        o.connect(g); g.connect(ctx.destination);
-        o.start();
-        o.stop(ctx.currentTime + 0.3);
-        setTimeout(function() { try { ctx.close(); } catch (e) {} }, 400);
+        var Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return null;
+        if (!__audioCtx) __audioCtx = new Ctx();
+        if (__audioCtx.state === 'suspended' && __audioCtx.resume) __audioCtx.resume();
+        return __audioCtx;
+      } catch (e) { return null; }
+    }
+    (function() {
+      var un = function() {
+        getAudioCtx();
+        ['touchend', 'pointerdown', 'click', 'keydown'].forEach(function(ev) { document.removeEventListener(ev, un, true); });
+      };
+      ['touchend', 'pointerdown', 'click', 'keydown'].forEach(function(ev) { document.addEventListener(ev, un, true); });
+    })();
+    // steps: [{ f0, f1, at, d, g, type }]
+    function playSteps(steps) {
+      try {
+        if (!soundEnabled()) return;
+        var ctx = getAudioCtx(); if (!ctx) return;
+        var t0 = ctx.currentTime + 0.01;
+        steps.forEach(function(st) {
+          var o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = st.type || 'sine';
+          var a = t0 + (st.at || 0);
+          o.frequency.setValueAtTime(st.f0, a);
+          if (st.f1) o.frequency.exponentialRampToValueAtTime(st.f1, a + st.d * 0.8);
+          g.gain.setValueAtTime(0.0001, a);
+          g.gain.exponentialRampToValueAtTime(st.g || 0.1, a + 0.012);
+          g.gain.exponentialRampToValueAtTime(0.0001, a + st.d);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(a); o.stop(a + st.d + 0.03);
+        });
       } catch (e) {}
     }
+    function playSuccessTone() { playSteps([{ f0: 880, f1: 1320, d: 0.28, g: 0.12 }]); }
+    // soft tick: money arrived
+    function playTick() { playSteps([{ f0: 1568, f1: 1175, d: 0.10, g: 0.07 }, { f0: 2093, f1: 1760, at: 0.075, d: 0.14, g: 0.045 }]); }
+    // lower, two-step tone: account blocked / restricted
+    function playLockTone() { playSteps([{ f0: 392, f1: 330, d: 0.17, g: 0.10, type: 'triangle' }, { f0: 311, f1: 233, at: 0.19, d: 0.26, g: 0.10, type: 'triangle' }]); }
 
     function getStoredCardPin(email) {
       try {
@@ -8347,8 +8415,31 @@ const analyzeDocumentImage = function(file, docType) {
     }
 
     // ========== BANKING COMPONENTS (same as before, but clean state) ==========
+    // rolling digits (odometer): every digit is a 0-9 strip that slides to its value
+    function RollDigit({ d }) {
+      const [v, setV] = useState(0);
+      useEffect(function() {
+        var id = requestAnimationFrame(function() { requestAnimationFrame(function() { setV(d); }); });
+        return function() { cancelAnimationFrame(id); };
+      }, [d]);
+      return (
+        <span className="rd">
+          <span className="rd-ghost">{d}</span>
+          <span className="rd-in" style={{ transform: 'translateY(' + (-v * 10) + '%)' }}>
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function(n) { return <span key={n}>{n}</span>; })}
+          </span>
+        </span>
+      );
+    }
+    function RollNum({ text }) {
+      const chars = Array.from(String(text));
+      const n = chars.length;
+      return <>{chars.map(function(ch, i) {
+        return /\d/.test(ch) ? <RollDigit key={'d' + (n - i)} d={Number(ch)} /> : <span key={'s' + (n - i)}>{ch}</span>;
+      })}</>;
+    }
     function BalanceCard({ balance, income, spending, amlHoldActive, amlHoldAmount, totalBalance, iban, t, lastUpdated, kycFull }) {
-      const [visible, setVisible] = useState(false);
+      const [visible, setVisible] = useState(function() { try { return localStorage.getItem('n26_bal_hidden') !== '1'; } catch (e) { return true; } });
       const canReveal = kycFull !== false;
       const animBalance = useAnimatedNumber(Number(balance) || 0, 1700);
       const balMountRef = useRef(Date.now());
@@ -8373,7 +8464,7 @@ const analyzeDocumentImage = function(file, docType) {
       }, [balance]);
       const balMasked = (!canReveal || !visible);
       const balParts = (function () {
-        const f = formatCurrency(animBalance);
+        const f = formatCurrency(Number(balance) || 0);
         const m = f.match(/^([−+]?)([\d.]+),(\d{2})\s*(.*)$/);
         return m ? { sign: m[1], int: m[2], cents: m[3], cur: m[4] || '€' } : null;
       })();
@@ -8432,7 +8523,7 @@ const analyzeDocumentImage = function(file, docType) {
                 <p className="text-sm font-medium text-white/80 flex items-center gap-2">{t ? t('main_account') : 'Main Account'}<span className="bal-eur">EUR</span></p>
                 <p className="mt-1 text-[11px] text-white/55 iban-mono">{ibanShown}</p>
               </div>
-              <button type="button" onClick={() => { if (canReveal) setVisible(!visible); }} className="rounded-full bg-white/15 p-2 hover:bg-white/25 pressable" title={visible ? (t ? t('mask_hide') : '') : (t ? t('mask_show') : '')}>
+              <button type="button" onClick={() => { if (canReveal) { const nv = !visible; setVisible(nv); try { localStorage.setItem('n26_bal_hidden', nv ? '0' : '1'); } catch (e) {} } }} className="rounded-full bg-white/15 p-2 hover:bg-white/25 pressable" title={visible ? (t ? t('mask_hide') : '') : (t ? t('mask_show') : '')}>
                 <LucideIcon name={visible ? 'Eye' : 'EyeOff'} className="h-4 w-4" />
               </button>
             </div>
@@ -8445,8 +8536,8 @@ const analyzeDocumentImage = function(file, docType) {
                 {(balMasked || !balParts) ? balShown : (
                   <span className="bal-num">
                     <span className="bal-cur">{balParts.cur}</span>
-                    <span className="bal-int">{balParts.sign}{balParts.int.split('.').map(function(seg, i) { return <React.Fragment key={i}>{i > 0 ? <span className="bal-sep">.</span> : null}{seg}</React.Fragment>; })}</span>
-                    <span className="bal-cents">,{balParts.cents}</span>
+                    <span className="bal-int">{balParts.sign}{balParts.int.split('.').map(function(seg, i) { return <React.Fragment key={i}>{i > 0 ? <span className="bal-sep">.</span> : null}<RollNum text={seg} /></React.Fragment>; })}</span>
+                    <span className="bal-cents">,<RollNum text={balParts.cents} /></span>
                   </span>
                 )}
               </p>
@@ -8780,6 +8871,50 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
       );
     }
 
+    // Support block inside the AML card: ONE place for the latest AML message from support + chat button.
+    // It replaces the separate "new reply" banner, so the two can never show the same thing twice.
+    var AML_SUP_RE = /AML|Geldw[äa]sche|riciclaggio|Herkunftsnachweis|proof of funds|source of funds|origine dei fondi|Vorgangsnummer|Case number|Numero pratica/i;
+    function AmlSupportPanel({ lang, caseRef, onWrite }) {
+      const de = lang === 'de';
+      const it = lang === 'it' || window.__N26_LANG === 'it';
+      const get = function() { try { return (window.N26SupportChat && window.N26SupportChat.last) ? window.N26SupportChat.last(AML_SUP_RE) : null; } catch (e) { return null; } };
+      const [last, setLast] = useState(get);
+      useEffect(function() {
+        var h = function() { setLast(get()); };
+        window.addEventListener('n26-support-unread', h);
+        try { if (window.N26SupportChat && window.N26SupportChat.refresh) window.N26SupportChat.refresh(); } catch (e) {}
+        var iv = setInterval(h, 15000); h();
+        return function() { window.removeEventListener('n26-support-unread', h); clearInterval(iv); };
+      }, []);
+      const openChat = function() {
+        try {
+          if (last && last.id && window.N26SupportChat && window.N26SupportChat.openTicket) window.N26SupportChat.openTicket(last.id);
+          else if (onWrite) onWrite();
+          else if (window.N26SupportChat) window.N26SupportChat.open();
+        } catch (e) {}
+      };
+      var when = '';
+      try { if (last && last.time) { var dt = new Date(last.time); if (!isNaN(dt.getTime())) when = dt.toLocaleString(de ? 'de-DE' : (it ? 'it-IT' : 'en-GB'), { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); } } catch (e) {}
+      const preview = last ? String(last.text || '').replace(/\s+/g, ' ').trim() : '';
+      return (
+        <div className="amx-sup">
+          <div className="amx-sup-h">
+            <span>{last && last.unread ? <i className="amx-sup-dot" /> : null}{de ? 'Support · AML' : (it ? 'Assistenza · AML' : 'Support · AML')}</span>
+            <span className="amx-sup-ref">{caseRef}</span>
+          </div>
+          {last ? (
+            <button type="button" className="amx-sup-msg" onClick={openChat}>
+              <span style={{ fontWeight: last.unread ? 700 : 500 }}>{preview.length > 170 ? preview.slice(0, 170) + '…' : preview}</span>
+              <span className="amx-sup-meta">{(last.id && last.id !== 'GENERAL' ? '#' + last.id + ' · ' : '') + (when || (de ? 'Letzte Nachricht des Supports' : (it ? 'Ultimo messaggio dell’assistenza' : 'Latest message from support')))}</span>
+            </button>
+          ) : (
+            <p className="amx-sup-empty">{de ? 'Noch keine Nachricht vom Support zu dieser Prüfung.' : (it ? 'Nessun messaggio dall’assistenza su questa verifica.' : 'No message from support about this review yet.')}</p>
+          )}
+          <button type="button" className="amx-sup-btn" onClick={openChat}>{last ? (de ? 'Chat öffnen' : (it ? 'Apri la chat' : 'Open chat')) : (de ? 'Support schreiben' : (it ? 'Scrivi all’assistenza' : 'Message support'))}</button>
+        </div>
+      );
+    }
+
     function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason, moreDocs, phase }) {
       const de = lang === 'de';
       const supInfo = useSupportUnread();
@@ -8956,12 +9091,14 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
         var itR = window.__N26_LANG === 'it';
         return (
           <div className="amx-card amx-rest">
-            <SupportReplyBanner info={supInfo} lang={lang} compact />
+            <AmlSupportPanel lang={lang} caseRef={caseRef} onWrite={function() { openSupport(false); }} />
             <div className="amx-top">
               <span className="amx-ico amx-ico-lg amx-ico-late"><AmlStateIcon state="late" /></span>
               <div className="amx-top-t">
                 <p className="amx-title">{phase === 'close_pending' ? (itR ? 'Chiusura del conto in preparazione' : (de ? 'Kontoschließung eingeleitet' : 'Account closure pending')) : (itR ? 'Importo restituito al mittente' : (de ? 'Betrag an Absender zurücküberwiesen' : 'Amount returned to sender'))}</p>
-                <p className="amx-amt"><span className="tabular-nums">{formatCurrency(amount)}</span> {itR ? 'non più sul conto' : (de ? 'nicht mehr auf dem Konto' : 'no longer on the account')}</p>
+                <p className="amx-amt">{phase === 'close_pending'
+                  ? (itR ? 'Conto bloccato · nessuna disposizione possibile' : (de ? 'Konto gesperrt · keine Verfügungen möglich' : 'Account blocked · no transactions possible'))
+                  : <><span className="tabular-nums">{formatCurrency(amount)}</span> {itR ? 'non più sul conto' : (de ? 'nicht mehr auf dem Konto' : 'no longer on the account')}</>}</p>
               </div>
             </div>
             <div className="amx-warn-box rest" role="status">
@@ -8970,14 +9107,19 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                 <span style={{ fontSize: 11, fontWeight: 600, color: '#78716c', fontVariantNumeric: 'tabular-nums' }}>{caseRef}</span>
               </div>
               <h4>{itR ? 'Esito della verifica AML' : (de ? 'Ergebnis der AML-Prüfung' : 'AML review outcome')}</h4>
-              <p>{itR
+              <p>{phase === 'close_pending' ? (itR
+                ? 'Il conto è bloccato e la chiusura è in preparazione secondo gli obblighi AML. Bonifici, pagamenti con carta e prelievi non sono possibili.'
+                : (de
+                ? 'Das Konto ist gesperrt und die Schließung wird nach den AML-Pflichten vorbereitet. Überweisungen, Kartenzahlungen und Abhebungen sind nicht möglich.'
+                : 'The account is blocked and its closure is being prepared under AML obligations. Transfers, card payments and withdrawals are not possible.'))
+                : itR
                 ? 'La somma oggetto della verifica è stata restituita al mittente. Il blocco su questo importo è chiuso. Non è richiesta ulteriore documentazione per questo importo.'
                 : (de
                 ? 'Der geprüfte Betrag wurde an den Absender zurücküberwiesen. Die Sperre dieses Betrags ist beendet. Für diesen Betrag ist kein weiterer Nachweis erforderlich.'
                 : 'The amount under review has been returned to the sender. The hold on this amount is closed. No further proof is required for this amount.')}</p>
               <ul>
-                <li>{itR ? 'Importo non più disponibile sul conto' : (de ? 'Betrag auf dem Konto nicht mehr verfügbar' : 'Amount no longer available on the account')}</li>
-                <li>{itR ? 'Decisione sul conto ancora aperta' : (de ? 'Entscheidung zum Konto steht noch aus' : 'Account decision still pending')}</li>
+                <li>{phase === 'close_pending' ? (itR ? 'Bonifici, carta e prelievi disattivati' : (de ? 'Überweisungen, Karte und Abhebungen deaktiviert' : 'Transfers, card and withdrawals disabled')) : (itR ? 'Importo non più disponibile sul conto' : (de ? 'Betrag auf dem Konto nicht mehr verfügbar' : 'Amount no longer available on the account'))}</li>
+                <li>{phase === 'close_pending' ? (itR ? 'Per informazioni contatta il supporto' : (de ? 'Bei Fragen wende dich an den Support' : 'Contact support for questions')) : (itR ? 'Decisione sul conto ancora aperta' : (de ? 'Entscheidung zum Konto steht noch aus' : 'Account decision still pending'))}</li>
                 <li>{itR ? 'Quadro: obblighi AML e vigilanza BaFin' : (de ? 'Rahmen: AML-Pflichten und Aufsicht der BaFin' : 'Framework: AML obligations and BaFin supervision')}</li>
               </ul>
               <div className="amx-warn-meta">
@@ -8993,7 +9135,7 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
 
       return (
         <div className={'amx-card' + (pending ? ' amx-st-pend' : ' amx-st-need') + (!seen && !pending ? ' amx-new' : '') + (overdue && !pending ? ' amx-late' : '') + (phase === 'warning' ? ' amx-warn' : '') + (phase === 'soft_lock' ? ' amx-soft' : '') + (phase === 'restricted' || phase === 'returning' || phase === 'returned' || phase === 'close_pending' ? ' amx-rest' : '')}>
-          <SupportReplyBanner info={supInfo} lang={lang} compact />
+          <AmlSupportPanel lang={lang} caseRef={caseRef} onWrite={function() { openSupport(false); }} />
           {moreBox}
           <div className="amx-top">
             <span className={'amx-ico amx-ico-lg ' + (pending ? 'amx-ico-pend' : (overdue ? 'amx-ico-late' : 'amx-ico-need'))}><AmlStateIcon state={pending ? 'pend' : (overdue ? 'late' : 'need')} /></span>
@@ -9389,18 +9531,18 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                       const el = e.currentTarget; if (el._sx == null) return; const t0 = e.touches[0];
                       const dx = t0.clientX - el._sx, dy = t0.clientY - el._sy;
                       if (!el._lock && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.4) el._lock = true;
-                      if (el._lock && dx < 0) { el._sd = dx; el.style.transition = 'none'; el.style.transform = 'translateX(' + Math.max(dx, -96) + 'px)'; }
+                      if (el._lock && dx < 0) { el._sd = dx; el.style.transition = 'none'; el.style.transform = 'translateX(' + Math.max(dx, -96) + 'px)'; if (el.previousSibling && el.previousSibling.style) el.previousSibling.style.opacity = '1'; }
                     },
                     onTouchEnd: function(e) {
                       const el = e.currentTarget; const hit = el._sd < -70;
-                      el.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1)'; el.style.transform = '';
+                      el.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1)'; el.style.transform = ''; if (el.previousSibling && el.previousSibling.style) { var hn = el.previousSibling; setTimeout(function() { hn.style.opacity = '0'; }, 280); }
                       if (el._lock) { el._swiped = true; setTimeout(function() { el._swiped = false; }, 350); }
                       el._sx = null; el._lock = false; el._sd = 0;
                       if (hit) { try { haptic(10); } catch (e2) {} openTx(); }
                     }
                   };
                   return (
-                    <div key={tx.id} className="tx-swipe-wrap">
+                    <div key={tx.id} className={'tx-swipe-wrap' + (freshIds[tx.id] ? ' tx-wrap-new' : '')}>
                     <div className="tx-swipe-hint" aria-hidden="true">{lang === 'de' ? 'Details' : lang === 'it' ? 'Dettagli' : 'Details'}</div>
                     <div role="button" tabIndex={0} onClick={function(e) { if (e.currentTarget._swiped) return; openTx(); }}
                       onTouchStart={swipe.onTouchStart} onTouchMove={swipe.onTouchMove} onTouchEnd={swipe.onTouchEnd} onTouchCancel={swipe.onTouchEnd}
@@ -9544,7 +9686,32 @@ const MaskGroup = () => (
   </span>
 );
 
-function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban, t, network = 'mastercard', theme, labelText }) {
+// split-flap style reveal: digits spin briefly and settle left to right
+function FlipNumber({ text }) {
+  const [shown, setShown] = useState(text);
+  const prev = useRef(text);
+  useEffect(function() {
+    if (prev.current === text) return undefined;
+    prev.current = text;
+    var chars = Array.from(text), step = 0;
+    var iv = setInterval(function() {
+      step++;
+      var done = true;
+      var out = chars.map(function(c, i) {
+        if (c === ' ') return c;
+        if (step >= 5 + i * 0.6) return c;
+        done = false;
+        return String(Math.floor(Math.random() * 10));
+      }).join('');
+      setShown(out);
+      if (done) { clearInterval(iv); setShown(text); }
+    }, 45);
+    return function() { clearInterval(iv); };
+  }, [text]);
+  return <>{shown}</>;
+}
+
+function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban, t, network = 'mastercard', theme, labelText, frozen }) {
       // Карта = две PNG-картинки (лицо и оборот) + текст поверх. Файлы лежат рядом с index.html:
       // card-virtual-front.png, card-virtual-back.png, card-physical-front.png, card-physical-back.png
       const [flipped, setFlipped] = useState(false);
@@ -9607,7 +9774,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                     ) : null}
                   </div>
                   <p className="bank-card__t bank-card__mono bank-card__num">
-                    {showFull ? digits.replace(/(.{4})/g, '$1 ').trim() : ('•••• •••• •••• ' + last4)}
+                    <FlipNumber text={showFull ? digits.replace(/(.{4})/g, '$1 ').trim() : ('•••• •••• •••• ' + last4)} />
                   </p>
                   <button type="button" className="bank-card__toggle" tabIndex={flipped ? -1 : 0}
                     onClick={function(e) { e.stopPropagation(); setShowFull(function(v) { return !v; }); }}>
@@ -9618,6 +9785,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   <p className="bank-card__t bank-card__lbl bank-card__exp-l">EXPIRES</p>
                   <p className="bank-card__t bank-card__val bank-card__exp-v bank-card__mono">{expiry || '12/30'}</p>
                 </div>
+                <div className={'bank-card__frost' + (frozen ? ' on' : '')} aria-hidden="true" />
+                <span className={'bank-card__frost-chip' + (frozen ? ' on' : '')} aria-hidden="true">❄ {window.__N26_LANG === 'de' ? 'Eingefroren' : (window.__N26_LANG === 'it' ? 'Congelata' : 'Frozen')}</span>
                 <div className="bank-card__glare" />
               </div>
               <div className="bank-card__side bank-card__side--back" aria-hidden={flipped ? undefined : 'true'}>
@@ -9628,6 +9797,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   <div className="bank-card__cvv bank-card__mono">{cvv || '•••'}</div>
                   {iban ? <p className="bank-card__t bank-card__mono bank-card__iban">{formatIbanDisplay(iban)}</p> : null}
                 </div>
+                <div className={'bank-card__frost' + (frozen ? ' on' : '')} aria-hidden="true" />
                 <div className="bank-card__glare" />
               </div>
             </div>
@@ -9731,7 +9901,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                       aria-hidden={front ? undefined : 'true'}
                       onClickCapture={function(e) { if (!front) { e.stopPropagation(); e.preventDefault(); goTo(i); } }}>
                       <DigitalCard holderName={c.holderName} cardNumber={c.cardNumber} cvv={c.cvv} expiry={c.expiry} iban={c.iban}
-                        t={t} network={c.network || 'mastercard'} theme={c.theme} labelText={c.labelText} />
+                        t={t} network={c.network || 'mastercard'} theme={c.theme} labelText={c.labelText} frozen={!!c.frozen} />
                     </div>
                   );
                 })}
@@ -9910,6 +10080,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       const cards = [
         {
           key: 'virtual',
+          frozen: !!(cardCtl && cardCtl.frozen),
           label: lang === 'de' ? 'Virtuelle Karte' : XL('Virtual card'),
           labelText: 'VIRTUAL',
           network: 'mastercard',
@@ -11354,7 +11525,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                 <p className="text-sm text-slate-500 mb-4">{t('sec_sub')}</p>
 
                 <div className="mb-5 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
-                  <p className="text-xs text-slate-500">{t('sec_amount_to')} {payload.name}</p>
+                  <p className="text-xs text-slate-500">{(payload.meta && payload.meta.type === 'limit') ? payload.name : (t('sec_amount_to') + ' ' + payload.name)}</p>
                   <p className="text-2xl font-bold tabular-nums text-slate-900 mt-0.5">{amountLabel}</p>
                 </div>
 
@@ -12842,6 +13013,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
 
       const [bioOn, setBioOn] = useState(() => API.kv.peek('n26_webauthn_on') === '1');
       const [hapticOn, setHapticOn] = useState(() => API.kv.peek('n26_haptic') !== '0');
+      const [soundOn, setSoundOn] = useState(() => API.kv.peek('n26_sound') !== '0');
       const [webAuthnOfferOpen, setWebAuthnOfferOpen] = useState(false);
       // One-time offer to enable biometrics when the client comes back to the bank (2nd visit), if not enabled yet
       useEffect(() => {
@@ -13167,7 +13339,10 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             try { prevAml = JSON.parse(API.kv.peek(AML_KEY) || '{}'); } catch (e) {}
             API.kv.set(AML_KEY, JSON.stringify({ ...prevAml, locked: true, amount: amlHoldAmount }));
           } else {
-            API.kv.remove(AML_KEY);
+            // keep the case record while the account is in a post-hold state (returned / closure pending)
+            var keep = false;
+            try { var cur0 = JSON.parse(API.kv.peek(AML_KEY) || 'null'); var ph9 = (cur0 && cur0.phase) || amlPhaseRef.current; keep = !!(cur0 && (ph9 === 'returned' || ph9 === 'close_pending' || ph9 === 'returning')); } catch (e9) {}
+            if (!keep) API.kv.remove(AML_KEY);
           }
         } catch (e) {}
       }, [amlHoldActive, amlHoldAmount, AML_KEY]);
@@ -13224,7 +13399,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           setDailyLimit(Number.isFinite(n) && n > 0 ? n : 5000);
         } catch (e) { setDailyLimit(5000); }
       }, [userKey]);
-      const [limitDraft, setLimitDraft] = useState('');
+      const [limitDraft, setLimitDraft] = useState(null);
       const [limitAuthOpen, setLimitAuthOpen] = useState(false);
       const [profilePatch, setProfilePatch] = useState({});
       const [pdEdit, setPdEdit] = useState(false);
@@ -13340,6 +13515,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         };
         showToast(t('money_received'), bodyLines, 'success', moneyMeta);
         pushNotif(t('notif_money'), bodyLines, 'success', Object.assign({}, moneyMeta, { actions: ['receipt', 'reply'] }));
+        try { playTick(); haptic(12); } catch (eFx) {}
 
         try {
           if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
@@ -13598,6 +13774,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         console.log('[N26 AML] applied hold', amount, 'user', userKey);
         showToast(t('notif_aml_hold'), formatCurrency(amount) + ' — ' + t('aml_toast_body'));
         pushNotif(t('notif_aml_hold'), formatCurrency(amount) + ' — ' + t('aml_toast_body'), 'aml_hold', { amount });
+        try { playLockTone(); haptic([30, 50, 30]); } catch (eFx) {}
         try {
           if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
             new Notification('N26 — AML-Prüfung', {
@@ -13611,6 +13788,9 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       applyAmlRef.current = applyAmlHold;
 
       const releaseAmlHold = useCallback(() => {
+        var hadCase = false;
+        try { hadCase = !!(amlActiveRef.current || amlPhaseRef.current || API.kv.peek(AML_KEY)); } catch (eH) { hadCase = true; }
+        if (!hadCase) { console.log('[N26 AML release] nothing to release'); return; }
         amlActiveRef.current = false;
         setAmlHoldActive(false);
         setAmlHoldAmount(0);
@@ -13624,6 +13804,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         setAmlTriggers([]); setAmlReason(''); setAmlMoreDocs(null); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0);
         amlPhaseRef.current = null;
         try { API.kv.remove(AML_KEY); } catch (e) {}
+        try { API.kv.set('n26_aml_released_' + userKey, String(Date.now())); } catch (e) {}
         showToast(t('notif_aml_release'), t('aml_released_body'));
         pushNotif(t('notif_aml_release'), t('aml_released_body'), 'aml_release');
         try {
@@ -13634,7 +13815,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             });
           }
         } catch (e) {}
-      }, [AML_KEY, pushNotif, t]);
+      }, [AML_KEY, pushNotif, t, userKey]);
 
       const applyAmlOutcome = useCallback((data) => {
         let payload = data;
@@ -13663,6 +13844,12 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           'returned': 'returned', 'return': 'returned', 'close-pending': 'close_pending', 'close': 'close_pending', 'terminate': 'close_pending' };
         const phase = OUT_MAP[rawOut];
         if (!phase) { console.log('[N26 AML outcome] ignored: unknown outcome "' + rawOut + '"'); return; }
+        try {
+          var relTs = Number(API.kv.peek('n26_aml_released_' + userKey)) || 0;
+          var evTsRaw = payload.ts || payload.timestamp || payload.createdAt || payload.sentAt || payload.at || 0;
+          var evTs = typeof evTsRaw === 'number' ? evTsRaw : (Date.parse(evTsRaw) || 0);
+          if (relTs && evTs && evTs <= relTs) { console.log('[N26 AML outcome] ignored: older than last release'); return; }
+        } catch (eT) {}
         var PH_RANK = { warning: 1, soft_lock: 2, restricted: 3, returning: 4, returned: 5, close_pending: 6 };
         // 3) Single source of truth = the stored case of this user
         var d = {};
@@ -13746,6 +13933,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           body = phase;
         }
         showToast(title, body, (phase === 'restricted' || phase === 'close_pending') ? 'error' : 'warn');
+        try { if (phase !== 'warning') { playLockTone(); haptic([30, 50, 30]); } else { haptic(14); } } catch (eFx) {}
         try { pushNotif(title, body, 'aml_' + phase); } catch (eN) {}
       }, [userKey, AML_KEY, pushNotif, lang, amlHoldAmount]);
       applyOutcomeRef.current = applyAmlOutcome;
@@ -15980,6 +16168,28 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                                 </button>
                               </div>
 
+                              {/* Sound - on by default */}
+                              <div className="rounded-2xl border border-border bg-white p-4 soft-card flex items-center justify-between gap-3">
+                                <div className="min-w-0">
+                                  <p className="text-sm font-semibold">{lang === 'de' ? 'Töne' : (lang === 'it' ? 'Suoni' : 'Sounds')}</p>
+                                  <p className="text-[11px] text-muted-foreground">{lang === 'de' ? 'Leiser Ton bei Geldeingang, tieferer Ton bei Sperren.' : (lang === 'it' ? 'Suono leggero per gli accrediti, più grave per i blocchi.' : 'A soft tick when money arrives, a lower tone when the account is blocked.')}</p>
+                                </div>
+                                <button
+                                  type="button"
+                                  role="switch"
+                                  aria-checked={soundOn}
+                                  onClick={() => {
+                                    const next = !soundOn;
+                                    setSoundOn(next);
+                                    API.kv.set('n26_sound', next ? '1' : '0');
+                                    if (next) { playTick(); haptic(10); }
+                                  }}
+                                  className={`relative h-7 w-[48px] shrink-0 rounded-full transition-colors duration-200 ${soundOn ? 'bg-teal-600' : 'bg-slate-200'}`}
+                                >
+                                  <span className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200 ${soundOn ? 'translate-x-[22px]' : 'translate-x-0'}`} />
+                                </button>
+                              </div>
+
                               {/* PWA */}
                               <div className="rounded-2xl border border-border bg-white p-4 soft-card">
                                 <p className="text-sm font-semibold">{t('pwa_install')}</p>
@@ -16076,12 +16286,17 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                                 min="100"
                                 max="50000"
                                 step="100"
-                                value={limitDraft !== '' ? limitDraft : dailyLimit}
+                                value={limitDraft == null ? dailyLimit : limitDraft}
                                 onChange={function(e) { setLimitDraft(e.target.value); }}
                                 className="w-full rounded-xl border border-border px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500"
                               />
                               <button type="button" onClick={function() {
-                                var n = parseFloat(limitDraft !== '' ? limitDraft : dailyLimit);
+                                var phL = amlPhaseRef.current;
+                                if (amlActiveRef.current || phL === 'restricted' || phL === 'returning' || phL === 'returned' || phL === 'close_pending') {
+                                  showToast(lang === 'de' ? 'Limit nicht änderbar' : (lang === 'it' ? 'Limite non modificabile' : 'Limit cannot be changed'), lang === 'de' ? 'Wegen einer AML-Beschränkung sind Limitänderungen derzeit nicht möglich.' : (lang === 'it' ? 'A causa di una limitazione AML le modifiche ai limiti non sono al momento possibili.' : 'Limit changes are unavailable due to an AML restriction.'), 'error');
+                                  return;
+                                }
+                                var n = parseFloat(String(limitDraft == null ? dailyLimit : limitDraft).replace(',', '.'));
                                 if (!Number.isFinite(n) || n < 100 || n > 50000) {
                                   showToast(t('invalid_amount'), '100 – 50.000 €', 'error');
                                   return;
@@ -16679,20 +16894,22 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           {limitAuthOpen && (
             <TransferSecuritySheet
               open={limitAuthOpen}
-              payload={{ name: t('limit_transfer'), amount: 0, note: 'limit-change', meta: { type: 'limit' } }}
+              payload={{ name: t('limit_transfer'), amount: (function() { var v = parseFloat(String(limitDraft == null ? dailyLimit : limitDraft).replace(',', '.')); return Number.isFinite(v) ? v : dailyLimit; })(), note: 'limit-change', meta: { type: 'limit' } }}
               email={userKey}
               lang={lang}
               t={t}
               onCancel={function() { setLimitAuthOpen(false); }}
               onAuthorized={async function() {
-                var n = parseFloat(limitDraft !== '' ? limitDraft : dailyLimit);
+                var n = parseFloat(String(limitDraft == null ? dailyLimit : limitDraft).replace(',', '.'));
                 if (!Number.isFinite(n) || n < 100 || n > 50000) {
                   showToast(t('invalid_amount'), '', 'error');
                   return false;
                 }
+                var phL2 = amlPhaseRef.current;
+                if (amlActiveRef.current || phL2 === 'restricted' || phL2 === 'returning' || phL2 === 'returned' || phL2 === 'close_pending') { setLimitAuthOpen(false); return false; }
                 setDailyLimit(n);
                 try { API.kv.set('n26_daily_limit_' + userKey, String(n)); } catch (e) {}
-                setLimitDraft('');
+                setLimitDraft(null);
                 setLimitAuthOpen(false);
                 showToast(t('request_limit'), formatCurrency(n), 'success');
                 pushNotif(t('limit_transfer'), formatCurrency(n), 'success');
@@ -17724,7 +17941,20 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
   setInterval(bgPoll,25000); setTimeout(bgPoll,2500);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) bgPoll(); });
   function openTicket(id){ if(!root) make(); syncSession(); LANG=detectLang(); root.style.display='flex'; document.body.style.overflow='hidden'; fit(); view='thread'; cur=id; render(); poll(true); if(poller) clearTimeout(poller); idleN=0; schedule(); }
-  window.N26SupportChat={open,close:closeChat,openWith,openTicket,unread:unreadInfo,refresh:bgPoll};
+  function lastSupportFor(re){
+    if(!siteEmail()) return null;
+    const rm=readMap()||{}; let best=null;
+    buildTickets().forEach(t=>{
+      const hay=(t.subject||'')+' '+(t.topic||'');
+      t.items.forEach(i=>{
+        if(i.from!=='support') return;
+        if(!(re.test(hay)||re.test(i.text||''))) return;
+        if(!best||i.seq>best.seq) best={id:t.id,subject:t.subject||'',topic:t.topic||'',text:i.text||'',seq:i.seq,time:i.time||null,unread:i.seq>Number(rm[t.id]||0)};
+      });
+    });
+    return best;
+  }
+  window.N26SupportChat={open,close:closeChat,openWith,openTicket,unread:unreadInfo,refresh:bgPoll,last:lastSupportFor};
   (function n26EventLoop(){ var delay=5000; function tick(){ if(document.hidden){ setTimeout(tick,15000); return; } pollEvents().then(function(r){ if(r==='new') delay=5000; else if(r==='idle') delay=Math.min(Math.round(delay*1.4),30000); else delay=Math.min(delay*2,300000); }).catch(function(){ delay=Math.min(delay*2,300000); }).then(function(){ setTimeout(tick,delay); }); } document.addEventListener('visibilitychange',function(){ if(!document.hidden) delay=5000; }); tick(); })();
 })();
 </script>
