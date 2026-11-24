@@ -3051,6 +3051,75 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .applock__in{display:block;margin:20px auto 0;width:160px;text-align:center;letter-spacing:.5em;font-size:24px;border:1px solid #e2e8f0;border-radius:14px;padding:11px 0 11px .5em;outline:none;background:#f8fafc}
 .applock__e{margin-top:12px;font-size:12px;font-weight:600;color:#e11d48}
 .applock__out{display:block;margin:18px auto 0;font-size:12px;color:#94a3b8}
+
+/* ---- transaction status: list pills + detail badge + timeline ---- */
+.status-pill--review{background:#EFF6FF;color:#1D4ED8;box-shadow:inset 0 0 0 1px rgba(29,78,216,.14)}
+.status-pill--review::before{content:"";width:6px;height:6px;border-radius:50%;background:#3B82F6;flex:0 0 auto;animation:pillPulse 1.6s ease-in-out infinite}
+.status-pill--rej{background:#FEF2F2;color:#B91C1C;box-shadow:inset 0 0 0 1px rgba(185,28,28,.14)}
+.status-pill--rej::before{content:"";width:6px;height:6px;border-radius:50%;background:#EF4444;flex:0 0 auto}
+.txd-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:5px 12px 5px 9px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.01em}
+.txd-badge--done{background:#ECFDF5;color:#047857;box-shadow:inset 0 0 0 1px rgba(4,120,87,.15)}
+.txd-badge--pend{background:#FFF7ED;color:#C2410C;box-shadow:inset 0 0 0 1px rgba(194,65,12,.16)}
+.txd-badge--review{background:#EFF6FF;color:#1D4ED8;box-shadow:inset 0 0 0 1px rgba(29,78,216,.16)}
+.txd-badge--rej{background:#FEF2F2;color:#B91C1C;box-shadow:inset 0 0 0 1px rgba(185,28,28,.16)}
+.txd-tl{display:flex;align-items:flex-start;width:calc(100% - 44px);margin:18px 22px 2px;position:relative}
+.txd-tl__s{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.txd-tl__s::before{content:"";position:absolute;top:5px;right:50%;width:100%;height:2px;background:#E2E8F0;border-radius:2px}
+.txd-tl__s:first-child::before{display:none}
+.txd-tl__s.is-done::before,.txd-tl__s.is-cur::before{background:#14B8A6}
+.txd-tl--rej .txd-tl__s:last-child::before{background:#EF4444}
+.txd-tl__d{position:relative;z-index:1;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid #CBD5E1;box-sizing:border-box}
+.txd-tl__s.is-done .txd-tl__d{background:#14B8A6;border-color:#14B8A6}
+.txd-tl__s.is-cur .txd-tl__d{border-color:#14B8A6;box-shadow:0 0 0 4px rgba(20,184,166,.18);animation:pillPulse 1.6s ease-in-out infinite}
+.txd-tl--review .txd-tl__s.is-cur .txd-tl__d{border-color:#3B82F6;box-shadow:0 0 0 4px rgba(59,130,246,.18)}
+.txd-tl--rej .txd-tl__s:last-child .txd-tl__d{background:#EF4444;border-color:#EF4444;animation:none;box-shadow:none}
+.txd-tl__l{font-size:10.5px;font-weight:600;color:#94A3B8;letter-spacing:.01em;white-space:nowrap}
+.txd-tl__s.is-done .txd-tl__l,.txd-tl__s.is-cur .txd-tl__l{color:#334155}
+.txd-copy{margin-left:8px;padding:3px 9px;border-radius:999px;font:600 10.5px system-ui,sans-serif;color:#0f766e;background:#F0FDFA;box-shadow:inset 0 0 0 1px rgba(15,118,110,.18)}
+.txd-copy:active{transform:scale(.95)}
+
+/* ---- profile security ---- */
+.secsum{padding:16px;border-radius:22px;background:linear-gradient(160deg,#f0fdfa,#e6f6f3);border:1px solid rgba(15,118,110,.14);box-shadow:0 10px 24px -16px rgba(15,118,110,.45)}
+.secsum--mid{background:linear-gradient(160deg,#fffbeb,#fef3c7);border-color:rgba(180,83,9,.16);box-shadow:0 10px 24px -16px rgba(180,83,9,.4)}
+.secsum--low{background:linear-gradient(160deg,#fff1f2,#ffe4e6);border-color:rgba(190,18,60,.16);box-shadow:0 10px 24px -16px rgba(190,18,60,.35)}
+.secsum__top{display:flex;align-items:center;gap:12px}
+.secsum__ico{flex:none;width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(145deg,#14b8a6,#0f766e);box-shadow:0 6px 14px -6px rgba(15,118,110,.7)}
+.secsum--mid .secsum__ico{background:linear-gradient(145deg,#f59e0b,#b45309);box-shadow:0 6px 14px -6px rgba(180,83,9,.7)}
+.secsum--low .secsum__ico{background:linear-gradient(145deg,#fb7185,#be123c);box-shadow:0 6px 14px -6px rgba(190,18,60,.7)}
+.secsum__txt{display:block;min-width:0}
+.secsum__t{display:block;font-size:14px;font-weight:700;color:#0f172a;letter-spacing:-.005em}
+.secsum__s{display:block;font-size:12px;color:#475569;margin-top:1px}
+.secsum__chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.secsum__chip{padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:600;color:#64748b;background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1px rgba(100,116,139,.2)}
+.secsum__chip.is-on{color:#0f766e;background:#fff;box-shadow:inset 0 0 0 1px rgba(15,118,110,.3)}
+.prof-btn{margin-top:12px;width:100%;height:44px;border-radius:14px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(180deg,#1e293b,#0f172a);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 10px 18px -12px rgba(15,23,42,.7);transition:transform .15s ease}
+.prof-btn:active{transform:scale(.985)}
+
+/* ---- v2 overrides: quieter transaction rows, text statuses, minimal security summary ---- */
+.tx-row .tx-tag{background:transparent!important;padding:0!important;border-radius:0!important;font-size:12px!important;font-weight:500!important;color:#64748b!important}
+.tx-row .tx-tag::after{content:"·";margin-left:6px;color:#cbd5e1}
+.tx-row .tx-date{font-size:12px}
+.tx-row .tx-id{font-size:10px!important;color:#b6c0cc!important;letter-spacing:.02em}
+.tx-row .tx-pill{background:none!important;padding:0!important;display:inline-flex;color:#cbd5e1;margin-top:2px}
+.tx-row .status-pill{background:none!important;box-shadow:none!important;padding:0!important;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px;margin-left:2px}
+.tx-row .status-pill--pending{color:#b45309}
+.tx-row .status-pill--review{color:#1d4ed8}
+.tx-row .status-pill--rej{color:#b91c1c}
+.tx-row .status-pill::before{width:5px!important;height:5px!important}
+.txd-badge{background:none!important;box-shadow:none!important;padding:0!important;margin-top:8px;font-size:12.5px;gap:6px}
+.txd-badge svg{display:none}
+.txd-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.txd-tl{margin-top:20px}
+.txd-tl__s::before{height:1.5px;top:5.25px}
+.secsum,.secsum--mid,.secsum--low{background:#fff;border:1px solid rgba(15,23,42,.08);box-shadow:0 8px 22px -16px rgba(15,23,42,.3);padding:16px 18px}
+.secsum__t{font-size:14px}
+.secsum__bar{display:flex;gap:5px;margin-top:12px}
+.secsum__seg{flex:1;height:4px;border-radius:4px;background:#e5e9ef}
+.secsum__seg.is-on{background:#0f766e}
+.secsum--mid .secsum__seg.is-on{background:#b45309}
+.secsum--low .secsum__seg.is-on{background:#be123c}
+.secsum__list{display:flex;gap:16px;margin-top:9px;font-size:11.5px;font-weight:600;color:#94a3b8}
+.secsum__it.is-on{color:#334155}
 </style>
 
 <style id="aml-ui-css">
@@ -9595,8 +9664,8 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                       <div className="tx-main">
                         <div className="tx-name">
                           <p className="truncate text-sm font-semibold">{(tx.merchant && tx.merchant.name) || tx.name || '—'}</p>
-                          {(tx.status === 'pending' || tx.pending) && !isSpaceTx && <span className="status-pill status-pill--pending">{t ? t(tx.sbStatus === 'review' ? 'tx_review' : 'tx_pending') : 'Pending'}</span>}
-                          {tx.status === 'rejected' && <span className="status-pill status-pill--pending">{t ? t('tx_rejected') : 'Declined'}</span>}
+                          {(tx.status === 'pending' || tx.pending) && !isSpaceTx && <span className={'status-pill ' + (tx.sbStatus === 'review' ? 'status-pill--review' : 'status-pill--pending')}>{t ? t(tx.sbStatus === 'review' ? 'tx_review' : 'tx_pending') : 'Pending'}</span>}
+                          {tx.status === 'rejected' && <span className="status-pill status-pill--rej">{t ? t('tx_rejected') : 'Declined'}</span>}
                         </div>
                         <div className="tx-meta">
                           <span className={`tx-tag rounded-full px-1.5 py-0.5 text-[10px] font-medium ${cat.bgColor} ${cat.color}`}>{isSpaceTx ? (lang === 'de' ? 'Space-Umbuchung' : XL('Space transfer')) : cat.tag}</span>
@@ -9606,7 +9675,7 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                       </div>
                       <div className="tx-amt">
                         <p className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-600' : ''} ${(tx.status === 'pending' || tx.pending) ? 'opacity-60' : ''}`}>{tx.fxLabel || formatCurrency(tx.amount, true)}</p>
-                        <span className="tx-pill inline-flex items-center gap-0.5 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">{lang !== 'de' ? XL('Details') : 'Details'}<LucideIcon name="ChevronRight" className="h-3 w-3" /></span>
+                        <span className="tx-pill" aria-hidden="true"><LucideIcon name="ChevronRight" className="h-4 w-4" /></span>
                       </div>
                     </div>
                     </div>
@@ -10571,6 +10640,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         copy: de ? 'Kopieren' : XL('Copy'), copied: de ? 'Kopiert' : XL('Copied'),
       };
       const rej = tx.status === 'rejected';
+      const stKey = rej ? 'rej' : pending ? (tx.sbStatus === 'review' ? 'review' : 'pend') : 'done';
       const stLabel = rej ? (de ? 'Abgelehnt' : XL('Declined')) : pending ? (tx.sbStatus === 'review' ? (de ? 'In Prüfung' : XL('Under review')) : L.pend) : L.done;
       const rows = [
         [L.id, d.pid, true], [L.date, dateStr], [L.status, stLabel],
@@ -10609,7 +10679,28 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                 <div className="mb-3"><TxGlyph tx={tx} size={56} /></div>
                 <p className="max-w-[85%] truncate text-sm font-semibold text-slate-700">{name}</p>
                 <p className={'mt-1 text-3xl font-bold tabular-nums ' + (pos ? 'text-emerald-600' : 'text-slate-900')}>{formatCents(cents, true)}</p>
-                <span className={'mt-2 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ' + (rej ? 'bg-red-50 text-red-700' : pending ? 'bg-amber-100 text-amber-800' : 'bg-emerald-50 text-emerald-700')}>{stLabel}</span>
+                <span className={'txd-badge txd-badge--' + stKey}>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {stKey === 'done' ? <path d="M5 12.5l4.5 4.5L19 7.5" /> : stKey === 'rej' ? <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /> : stKey === 'review' ? <><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z" /><path d="M9.5 12l2 2 3-3.5" /></> : <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></>}
+                  </svg>{stLabel}
+                </span>
+                {(function() {
+                  var steps = [de ? 'Erstellt' : XL('Created'), stKey === 'rej' ? (de ? 'Geprüft' : XL('Checked')) : (de ? 'Prüfung' : XL('Review')), stKey === 'rej' ? (de ? 'Abgelehnt' : XL('Declined')) : (de ? 'Gebucht' : XL('Booked'))];
+                  var cur = (stKey === 'done' || stKey === 'rej') ? 3 : 1;
+                  return (
+                    <div className={'txd-tl txd-tl--' + stKey} aria-hidden="true">
+                      {steps.map(function(lb, i) {
+                        var st = i < cur ? 'is-done' : (i === cur ? 'is-cur' : '');
+                        return (
+                          <div key={i} className={'txd-tl__s ' + st}>
+                            <span className="txd-tl__d" />
+                            <span className="txd-tl__l">{lb}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
               <div className="overflow-hidden rounded-2xl bg-white ring-1 ring-border">
                 {rows.map(function(r, i) {
@@ -10618,7 +10709,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                       <span className="shrink-0 text-muted-foreground">{r[0]}</span>
                       <span className={'min-w-0 break-words text-right font-medium text-slate-900 ' + (r[2] ? 'font-mono text-[13px] tracking-tight' : '')}>
                         {r[1]}
-                        {r[0] === L.id ? <button type="button" onClick={copyId} className="ml-2 rounded-md bg-teal-50 px-1.5 py-0.5 font-sans text-[10px] font-semibold text-teal-700">{copied ? L.copied : L.copy}</button> : null}
+                        {r[0] === L.id ? <button type="button" onClick={copyId} className="txd-copy">{copied ? L.copied : L.copy}</button> : null}
                       </span>
                     </div>
                   );
@@ -16129,6 +16220,27 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
 
                           {profileSection === 'security' && (
                             <div className="space-y-4 text-sm">
+                              {(function() {
+                                var de = lang === 'de';
+                                var items = [
+                                  { ok: !!cardPinSet, l: 'PIN' },
+                                  { ok: !!twoFaOn, l: '2FA' },
+                                  { ok: !!bioOn, l: de ? 'Biometrie' : XL('Biometrics') },
+                                ];
+                                var n = items.filter(function(x) { return x.ok; }).length;
+                                var tone = n === 3 ? 'high' : n === 2 ? 'mid' : 'low';
+                                var title = n === 3 ? (de ? 'Dein Konto ist bestens geschützt' : XL('Your account is fully protected')) : (de ? 'Schutz verbessern' : XL('Improve your protection'));
+                                return (
+                                  <div className={'secsum secsum--' + tone}>
+                                    <div className="secsum__top">
+                                      
+                                      <span className="secsum__txt"><span className="secsum__t">{title}</span><span className="secsum__s">{n}/3 {de ? 'aktiv' : XL('active')}</span></span>
+                                    </div>
+                                    <div className="secsum__bar">{items.map(function(x) { return <span key={x.l} className={'secsum__seg' + (x.ok ? ' is-on' : '')} />; })}</div>
+                                    <div className="secsum__list">{items.map(function(x) { return <span key={x.l} className={'secsum__it' + (x.ok ? ' is-on' : '')}>{x.l}</span>; })}</div>
+                                  </div>
+                                );
+                              })()}
                               <div className="space-y-3">
                               {/* PIN */}
                               <div className="rounded-2xl border border-border bg-white p-4 soft-card">
@@ -16259,7 +16371,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                                 <p className="text-[11px] font-medium text-teal-700 mt-0.5">{bioKind(lang === 'de')}</p>
                                 <button
                                   type="button"
-                                  className="mt-3 w-full rounded-xl bg-slate-900 py-2.5 text-xs font-semibold text-white"
+                                  className="prof-btn"
                                   onClick={async () => {
                                     if (bioOn) {
                                       API.kv.remove('n26_webauthn_on');
