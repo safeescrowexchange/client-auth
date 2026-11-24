@@ -115,7 +115,7 @@
   }
 
   // session keys are per-browser: never written to / read from the cloud table
-  var LOCAL_ONLY = { 'n26_session': 1, 'n26_session_meta': 1 };
+  var LOCAL_ONLY = { 'n26_session': 1, 'n26_session_meta': 1, 'n26_webauthn_cred': 1, 'n26_webauthn_on': 1, 'n26_bio_lock': 1, 'n26_bio_offer_done': 1, 'n26_bio_visits': 1 };
 
   function createStore(name, useCloud) {
     var driver = driverOf(name);
@@ -2750,18 +2750,19 @@ input,select,textarea{font-size:16px!important;letter-spacing:0!important}
 .rd-in>span{display:block;line-height:1;height:1em}
 /* ---- frozen card: matte frost that creeps in from the top and melts away ---- */
 .card-frozen{filter:saturate(.8) brightness(.97)!important}
-.bank-card__frost{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;
+.bank-card__frost{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;overflow:hidden;
+  -webkit-backdrop-filter:blur(2.5px) saturate(.85);backdrop-filter:blur(2.5px) saturate(.85);
   background:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='228'><filter id='f' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.9 .75' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.5 -.7'/></filter><rect width='100%25' height='100%25' filter='url(%23f)'/></svg>") center/cover no-repeat,
-    radial-gradient(120% 90% at 15% 0%,rgba(240,250,255,.55),rgba(240,250,255,0) 62%),
-    radial-gradient(90% 70% at 92% 100%,rgba(196,228,250,.42),rgba(196,228,250,0) 60%),
-    linear-gradient(160deg,rgba(226,243,255,.40),rgba(186,218,244,.30));
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 30%,transparent 38%);mask-image:linear-gradient(180deg,#000 0%,#000 30%,transparent 38%);
-  -webkit-mask-size:100% 330%;mask-size:100% 330%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-position:0 100%;mask-position:0 100%;opacity:.0;
-  transition:-webkit-mask-position 2.2s cubic-bezier(.4,0,.2,1),mask-position 2.2s cubic-bezier(.4,0,.2,1),opacity 1.4s ease 1s}
-.bank-card__frost.on{-webkit-mask-position:0 0;mask-position:0 0;opacity:1;transition:-webkit-mask-position 1.6s cubic-bezier(.3,.7,.2,1),mask-position 1.6s cubic-bezier(.3,.7,.2,1),opacity .6s ease}
-.bank-card__frost-chip{position:absolute;left:50%;bottom:14%;transform:translate(-50%,8px);z-index:5;pointer-events:none;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.05em;color:#0c4a6e;background:rgba(240,249,255,.86);box-shadow:0 4px 14px -4px rgba(12,74,110,.35);opacity:0;transition:opacity .5s ease,transform .5s ease}
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='228'><filter id='f' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='11'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 .12'/></filter><rect width='100%25' height='100%25' filter='url(%23f)'/></svg>") center/100% 100% no-repeat,
+    radial-gradient(ellipse 85% 80% at 50% 50%,rgba(226,242,255,.18) 0%,rgba(226,242,255,.34) 55%,rgba(255,255,255,.72) 100%),
+    linear-gradient(155deg,rgba(236,248,255,.34),rgba(190,222,247,.28) 55%,rgba(225,241,255,.38));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 0 22px 6px rgba(255,255,255,.55);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 46%,transparent 62%);mask-image:linear-gradient(180deg,#000 0%,#000 46%,transparent 62%);
+  -webkit-mask-size:100% 300%;mask-size:100% 300%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:0 100%;mask-position:0 100%;opacity:0;
+  transition:-webkit-mask-position 1.6s cubic-bezier(.4,0,.2,1),mask-position 1.6s cubic-bezier(.4,0,.2,1),opacity 1s ease .6s}
+.bank-card__frost.on{-webkit-mask-position:0 0;mask-position:0 0;opacity:1;transition:-webkit-mask-position 1.5s cubic-bezier(.3,.7,.2,1),mask-position 1.5s cubic-bezier(.3,.7,.2,1),opacity .5s ease}
+.bank-card__frost-chip{display:inline-flex;align-items:center;gap:6px;position:absolute;left:50%;bottom:14%;transform:translate(-50%,8px);z-index:5;pointer-events:none;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.05em;color:#0c4a6e;background:rgba(240,249,255,.86);box-shadow:0 4px 14px -4px rgba(12,74,110,.35);opacity:0;transition:opacity .5s ease,transform .5s ease}
 .bank-card__frost-chip.on{opacity:1;transform:translate(-50%,0);transition-delay:.7s}
 /* ---- AML support block ---- */
 .amx-sup{margin:0 0 12px;padding:12px 14px;border-radius:14px;background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.18);display:flex;flex-direction:column;gap:8px}
@@ -3008,6 +3009,48 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .wallet-btn.is-added{cursor:default;pointer-events:none}
 .wallet-btn--apple.is-added{background:#1c1c1e}
 .wallet-btn--google.is-added{background:#f8f9fa}
+
+/* ---- premium card buttons ---- */
+.fz-btn{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;border-radius:20px;border:1px solid rgba(15,23,42,.07);background:linear-gradient(180deg,#fff,#f8fafb);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 6px 18px -10px rgba(15,23,42,.25);transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .35s,border-color .35s;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.fz-btn:active{transform:scale(.982)}
+.fz-btn__ico{flex:none;width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#475569;background:linear-gradient(145deg,#f1f5f9,#e2e8f0);box-shadow:0 1px 0 #fff inset,0 1px 2px rgba(15,23,42,.08);transition:background .35s,color .35s}
+.fz-btn__ico svg{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.fz-btn__txt{flex:1;min-width:0;display:block}
+.fz-btn__t{display:block;font-size:14px;font-weight:700;color:#0f172a;letter-spacing:-.005em}
+.fz-btn__s{display:block;font-size:11.5px;line-height:1.35;color:#64748b;margin-top:1px}
+.fz-btn.is-on{background:linear-gradient(180deg,#f0f9ff,#e8f4fc);border-color:rgba(14,116,144,.22);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 8px 22px -12px rgba(14,116,144,.5)}
+.fz-btn.is-on .fz-btn__ico{color:#fff;background:linear-gradient(145deg,#38bdf8,#0e7490);box-shadow:0 4px 12px -4px rgba(14,116,144,.6)}
+.fz-sw,.n26-sw{position:relative;flex:none;width:46px;height:28px;border-radius:999px;background:#cbd5e1;box-shadow:inset 0 1px 2px rgba(15,23,42,.18);transition:background .3s;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fz-sw__k,.n26-sw__k{position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.3),0 3px 8px -2px rgba(15,23,42,.2);transition:transform .28s cubic-bezier(.3,1.3,.5,1)}
+.fz-btn.is-on .fz-sw{background:linear-gradient(90deg,#0ea5e9,#0e7490)}
+.n26-sw.is-on{background:linear-gradient(90deg,#14b8a6,#0f766e)}
+.fz-btn.is-on .fz-sw__k,.n26-sw.is-on .n26-sw__k{transform:translateX(18px)}
+.n26-sw:active .n26-sw__k,.fz-btn:active .fz-sw__k{width:28px}
+.fz-btn.is-on .fz-btn__ico svg{transform:rotate(30deg)}
+.fz-btn.is-on:active .fz-sw__k,.n26-sw.is-on:active .n26-sw__k{transform:translateX(14px)}
+.wallet-btn{height:52px;border-radius:16px;box-shadow:0 8px 18px -10px rgba(0,0,0,.45)}
+.wallet-btn--google{box-shadow:0 1px 2px rgba(60,64,67,.12),0 8px 18px -12px rgba(60,64,67,.4)}
+
+.fz-gate{margin-top:10px;padding:14px 16px;border-radius:18px;background:#fff;border:1px solid rgba(15,23,42,.08);box-shadow:0 8px 22px -14px rgba(15,23,42,.35);text-align:center}
+.fz-gate__t{font-size:12.5px;font-weight:600;color:#0f172a}
+.fz-gate__in{display:block;margin:10px auto 0;width:140px;text-align:center;letter-spacing:.5em;font-size:22px;border:1px solid #e2e8f0;border-radius:14px;padding:10px 0 10px .5em;outline:none;background:#f8fafc}
+.fz-gate__in:focus{border-color:#0e7490;background:#fff}
+.fz-gate__e{margin-top:8px;font-size:12px;font-weight:600;color:#e11d48}
+.fz-gate__c{margin-top:10px;font-size:12px;font-weight:600;color:#64748b}
+.applock{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(244,246,248,.72);-webkit-backdrop-filter:blur(22px) saturate(1.2);backdrop-filter:blur(22px) saturate(1.2)}
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){.applock{background:#f4f6f8}}
+.applock__card{width:100%;max-width:340px;text-align:center;padding:30px 24px 22px;border-radius:28px;background:#fff;box-shadow:0 30px 60px -28px rgba(15,23,42,.45),0 0 0 1px rgba(15,23,42,.06);animation:alIn .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes alIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.applock__ico{margin:0 auto 14px;width:64px;height:64px;border-radius:22px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(145deg,#14b8a6,#0f766e);box-shadow:0 10px 22px -10px rgba(15,118,110,.7)}
+.applock__t{font-size:19px;font-weight:800;color:#0f172a;letter-spacing:-.01em}
+.applock__s{margin-top:4px;font-size:13px;color:#64748b}
+.applock__btn{margin-top:20px;width:100%;height:50px;border-radius:16px;font-size:15px;font-weight:700;color:#fff;background:#0f172a;box-shadow:0 10px 20px -12px rgba(15,23,42,.7)}
+.applock__btn:active{transform:scale(.985)}
+.applock__btn:disabled{opacity:.6}
+.applock__lnk{display:block;margin:14px auto 0;font-size:13px;font-weight:600;color:#0f766e}
+.applock__in{display:block;margin:20px auto 0;width:160px;text-align:center;letter-spacing:.5em;font-size:24px;border:1px solid #e2e8f0;border-radius:14px;padding:11px 0 11px .5em;outline:none;background:#f8fafc}
+.applock__e{margin-top:12px;font-size:12px;font-weight:600;color:#e11d48}
+.applock__out{display:block;margin:18px auto 0;font-size:12px;color:#94a3b8}
 </style>
 
 <style id="aml-ui-css">
@@ -9711,6 +9754,76 @@ function FlipNumber({ text }) {
   return <>{shown}</>;
 }
 
+function SnowflakeIcon(props) {
+  var sz = props.size || 20;
+  var arms = [0, 60, 120, 180, 240, 300];
+  return (
+    <svg viewBox="0 0 24 24" width={sz} height={sz} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {arms.map(function(r) {
+        return <path key={r} transform={'rotate(' + r + ' 12 12)'} d="M12 12V2.2M12 5.6 9.2 3.2M12 5.6 14.8 3.2M12 8.6 10 6.9M12 8.6 14 6.9" />;
+      })}
+    </svg>
+  );
+}
+
+function AppLockGate({ user, onLogout, lang }) {
+  const de = lang === 'de';
+  const email = (user && user.email ? user.email : '').toLowerCase().trim();
+  const enabledNow = function() {
+    try { return !!(API.kv.peek('n26_webauthn_cred') && API.kv.peek('n26_webauthn_on') === '1' && API.kv.peek('n26_bio_lock') !== '0' && webauthnAvailable()); } catch (e) { return false; }
+  };
+  const [locked, setLocked] = useState(function() { return enabledNow(); });
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const [pinMode, setPinMode] = useState(false);
+  const [pin, setPin] = useState('');
+  const kind = bioKind(de);
+  const unlock = async function() {
+    if (busy) return;
+    setBusy(true); setErr('');
+    try { await webauthnAssert(); setLocked(false); setPin(''); setPinMode(false); haptic(12); }
+    catch (e) { setErr(de ? 'Nicht bestätigt. Erneut versuchen oder PIN nutzen.' : XL('Not confirmed. Try again or use PIN.')); }
+    setBusy(false);
+  };
+  useEffect(function() {
+    // Android allows the prompt without a tap; iOS may refuse, then the button is there
+    if (locked) { const id = setTimeout(function() { unlock(); }, 350); return function() { clearTimeout(id); }; }
+    return undefined;
+  }, [locked]);
+  if (!locked) return null;
+  let stored = '';
+  try { stored = getStoredCardPin(email) || ''; } catch (e) {}
+  const submitPin = function(v) {
+    if (String(v) === String(stored)) { setLocked(false); setPin(''); setErr(''); haptic(12); return; }
+    setPin(''); setErr(de ? 'Falscher PIN' : XL('Incorrect PIN')); haptic([30, 40, 30]);
+  };
+  return (
+    <div className="applock" role="dialog" aria-modal="true">
+      <div className="applock__card">
+        <div className="applock__ico">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" /><circle cx="12" cy="15.5" r="1.2" fill="currentColor" stroke="none" /></svg>
+        </div>
+        <h2 className="applock__t">{de ? 'N26 ist gesperrt' : XL('N26 is locked')}</h2>
+        <p className="applock__s">{de ? 'Bestätige mit ' : XL('Confirm with ')}{kind}</p>
+        {!pinMode ? (
+          <>
+            <button type="button" className="applock__btn" onClick={unlock} disabled={busy}>{busy ? '…' : (de ? 'Entsperren' : XL('Unlock'))}</button>
+            {String(stored).length === 4 ? <button type="button" className="applock__lnk" onClick={function() { setPinMode(true); setErr(''); }}>{de ? 'Karten-PIN verwenden' : XL('Use card PIN')}</button> : null}
+          </>
+        ) : (
+          <>
+            <input type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={pin} autoFocus className="applock__in" placeholder="••••"
+              onChange={function(e) { var v = e.target.value.replace(/\D/g, '').slice(0, 4); setPin(v); setErr(''); if (v.length === 4) submitPin(v); }} />
+            <button type="button" className="applock__lnk" onClick={function() { setPinMode(false); setErr(''); }}>{kind}</button>
+          </>
+        )}
+        {err ? <p className="applock__e">{err}</p> : null}
+        <button type="button" className="applock__out" onClick={onLogout}>{de ? 'Abmelden' : XL('Sign out')}</button>
+      </div>
+    </div>
+  );
+}
+
 function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban, t, network = 'mastercard', theme, labelText, frozen }) {
       // Карта = две PNG-картинки (лицо и оборот) + текст поверх. Файлы лежат рядом с index.html:
       // card-virtual-front.png, card-virtual-back.png, card-physical-front.png, card-physical-back.png
@@ -9786,7 +9899,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   <p className="bank-card__t bank-card__val bank-card__exp-v bank-card__mono">{expiry || '12/30'}</p>
                 </div>
                 <div className={'bank-card__frost' + (frozen ? ' on' : '')} aria-hidden="true" />
-                <span className={'bank-card__frost-chip' + (frozen ? ' on' : '')} aria-hidden="true">❄ {window.__N26_LANG === 'de' ? 'Eingefroren' : (window.__N26_LANG === 'it' ? 'Congelata' : 'Frozen')}</span>
+                <span className={'bank-card__frost-chip' + (frozen ? ' on' : '')} aria-hidden="true"><SnowflakeIcon size={13} /> {window.__N26_LANG === 'de' ? 'Eingefroren' : (window.__N26_LANG === 'it' ? 'Congelata' : 'Frozen')}</span>
                 <div className="bank-card__glare" />
               </div>
               <div className="bank-card__side bank-card__side--back" aria-hidden={flipped ? undefined : 'true'}>
@@ -10110,7 +10223,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
           <div className="relative">
             <div className={cardCtl && cardCtl.frozen && isVirtual ? 'card-frozen' : ''}><CardCarousel t={t} cards={cards} onIndexChange={setViewIdx} /></div>
           </div>
-          {isVirtual ? <CardControls ctl={cardCtl} setCtl={setCardCtl} txs={ctlTx} lang={lang} onNotify={ctlNotify} /> : null}
+          {isVirtual ? <CardControls ctl={cardCtl} setCtl={setCardCtl} txs={ctlTx} lang={lang} onNotify={ctlNotify} email={walletEmail} /> : null}
 
           {!cardOrdered ? <PhysOrderCard plan={plan} lang={lang} t={t} onOrder={function() { setCardOrderOpen(true); }} /> : null}
 
@@ -10189,8 +10302,8 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                             try { haptic(10); } catch (eH) {}
                             showToast(item.label, turnOn ? t('setting_on') : t('setting_off'));
                           }}
-                          className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${cardSettings[item.key] ? 'bg-teal-600' : 'bg-slate-200'}`}>
-                          <span className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${cardSettings[item.key] ? 'translate-x-5' : ''}`} />
+                          className={'n26-sw' + (cardSettings[item.key] ? ' is-on' : '')}>
+                          <span className="n26-sw__k" />
                         </button>
                       </div>
                     );
@@ -12319,8 +12432,12 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       return d.toISOString();
     }
 
-    function CardControls({ ctl, setCtl, txs, lang, onNotify }) {
+    function CardControls({ ctl, setCtl, txs, lang, onNotify, email }) {
       const de = lang === 'de';
+      const [gate, setGate] = useState(false);
+      const [gPin, setGPin] = useState('');
+      const [gErr, setGErr] = useState('');
+      const [gBusy, setGBusy] = useState(false);
       const c = ctl || {};
       const lim = Object.assign({ daily: 1000, online: 500, atm: 400 }, c.limits || {});
       const [editing, setEditing] = useState(false);
@@ -12340,10 +12457,29 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         used: de ? 'heute genutzt' : XL('used today'), bad: de ? 'Bitte Beträge zwischen 0 und 10.000 € eingeben.' : XL('Enter amounts between 0 and €10,000.'),
         saved: de ? 'Kartenlimits gespeichert' : XL('Card limits saved'),
       };
-      const toggle = function() {
-        const next = !c.frozen;
+      const applyFreeze = function(next) {
         setCtl(Object.assign({}, c, { frozen: next }));
         if (onNotify) onNotify(next ? (de ? 'Karte eingefroren' : XL('Card frozen')) : (de ? 'Karte entsperrt' : XL('Card unfrozen')), next ? L.frozenNote : (de ? 'Kartenzahlungen sind wieder möglich.' : XL('Card payments are enabled again.')), next ? 'error' : 'success');
+      };
+      const toggle = async function() {
+        if (!c.frozen) { applyFreeze(true); return; }
+        // unfreezing re-enables payments, so it needs confirmation: biometrics first, card PIN as fallback
+        let pinStored = '';
+        try { pinStored = getStoredCardPin(email) || ''; } catch (e0) {}
+        try {
+          if (API.kv.peek('n26_webauthn_cred') && webauthnAvailable()) {
+            setGBusy(true);
+            try { await webauthnAssert(); setGBusy(false); applyFreeze(false); return; } catch (eB) { setGBusy(false); }
+          }
+        } catch (e1) {}
+        if (String(pinStored).length === 4) { setGPin(''); setGErr(''); setGate(true); return; }
+        applyFreeze(false);
+      };
+      const submitGate = function(v) {
+        let pinStored = '';
+        try { pinStored = getStoredCardPin(email) || ''; } catch (e0) {}
+        if (String(v) === String(pinStored)) { setGate(false); setGPin(''); setGErr(''); applyFreeze(false); haptic(12); return; }
+        setGPin(''); setGErr(de ? 'Falscher PIN' : XL('Incorrect PIN')); haptic([30, 40, 30]);
       };
       const saveLimits = function() {
         const nv = {};
@@ -12357,19 +12493,27 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       };
       return (
         <div className="space-y-3">
-          <button type="button" onClick={toggle}
-            className={'flex w-full items-center justify-between rounded-2xl px-5 py-4 text-left ring-1 transition ' + (c.frozen ? 'bg-sky-50 ring-sky-200' : 'bg-white ring-border hover:bg-muted/40')}>
-            <span className="flex items-center gap-3">
-              <span className={'flex h-10 w-10 items-center justify-center rounded-full text-lg ' + (c.frozen ? 'bg-sky-100' : 'bg-slate-100')}>❄</span>
-              <span>
-                <span className="block text-sm font-bold text-slate-900">{c.frozen ? L.unfreeze : L.freeze}</span>
-                <span className="block text-xs text-slate-500">{c.frozen ? L.frozenNote : L.activeNote}</span>
-              </span>
+          <button type="button" onClick={toggle} disabled={gBusy} aria-pressed={!!c.frozen}
+            className={'fz-btn' + (c.frozen ? ' is-on' : '')}>
+            <span className="fz-btn__ico">
+              <SnowflakeIcon size={22} />
             </span>
-            <span className={'relative h-6 w-11 shrink-0 rounded-full transition ' + (c.frozen ? 'bg-sky-500' : 'bg-slate-300')}>
-              <span className={'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ' + (c.frozen ? 'left-[22px]' : 'left-0.5')} />
+            <span className="fz-btn__txt">
+              <span className="fz-btn__t">{c.frozen ? L.unfreeze : L.freeze}</span>
+              <span className="fz-btn__s">{c.frozen ? L.frozenNote : L.activeNote}</span>
             </span>
+            <span className="fz-sw" aria-hidden="true"><span className="fz-sw__k" /></span>
           </button>
+          {gate ? (
+            <div className="fz-gate">
+              <p className="fz-gate__t">{de ? 'Zum Entsperren Karten-PIN eingeben' : XL('Enter card PIN to unfreeze')}</p>
+              <input type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={gPin} autoFocus
+                onChange={function(e) { var v = e.target.value.replace(/\D/g, '').slice(0, 4); setGPin(v); setGErr(''); if (v.length === 4) submitGate(v); }}
+                className="fz-gate__in" placeholder="••••" />
+              {gErr ? <p className="fz-gate__e">{gErr}</p> : null}
+              <button type="button" className="fz-gate__c" onClick={function() { setGate(false); setGPin(''); setGErr(''); }}>{de ? 'Abbrechen' : XL('Cancel')}</button>
+            </div>
+          ) : null}
           <div className="rounded-2xl bg-white p-5 ring-1 ring-border">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-bold text-slate-900">{L.limits}</p>
@@ -13012,6 +13156,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
 
 
       const [bioOn, setBioOn] = useState(() => API.kv.peek('n26_webauthn_on') === '1');
+      const [bioLockOn, setBioLockOn] = useState(() => API.kv.peek('n26_bio_lock') !== '0');
       const [hapticOn, setHapticOn] = useState(() => API.kv.peek('n26_haptic') !== '0');
       const [soundOn, setSoundOn] = useState(() => API.kv.peek('n26_sound') !== '0');
       const [webAuthnOfferOpen, setWebAuthnOfferOpen] = useState(false);
@@ -16143,6 +16288,15 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                                   {bioOn ? t('bio_disable') : t('bio_enable')}
                                 </button>
                                 <p className="mt-1.5 text-[10px] text-muted-foreground">{bioOn ? t('bio_enabled') : t('bio_disabled')}</p>
+                                {bioOn ? (
+                                  <div className="mt-3 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
+                                    <p className="text-xs font-medium text-slate-800">{lang === 'de' ? 'Beim Öffnen der App verlangen' : XL('Require when opening the app')}</p>
+                                    <button type="button" role="switch" aria-checked={bioLockOn} className={'n26-sw' + (bioLockOn ? ' is-on' : '')}
+                                      onClick={function() { var nv = !bioLockOn; setBioLockOn(nv); API.kv.set('n26_bio_lock', nv ? '1' : '0'); haptic(10); }}>
+                                      <span className="n26-sw__k" />
+                                    </button>
+                                  </div>
+                                ) : null}
                               </div>
 
                               {/* Haptic - fixed toggle */}
@@ -17609,6 +17763,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       return (
         <div key="bank" className="screen-transition">
           <BankingApp user={user} onLogout={handleLogout} t={t} lang={lang} setLang={setLang} />
+          <AppLockGate user={user} onLogout={handleLogout} lang={lang} />
         </div>
       );
     }
