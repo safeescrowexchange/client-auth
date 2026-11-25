@@ -2973,6 +2973,28 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
   .bal-card .balance-pop,.bal-card p.tabular-nums.leading-none{font-size:clamp(1.9rem,10vw,2.6rem)!important}
 }
 </style>
+<style id="n26-qa-v2">
+/* ---- quick actions v4: small round buttons, thin line icons ---- */
+.qa-wrap{margin-bottom:0!important;padding:16px 6px 14px!important}
+.space-y-6>.qa-wrap{margin-top:1.5rem!important}
+.qa-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important;justify-items:center}
+.qa-item{gap:7px!important;padding:2px 0!important;-webkit-tap-highlight-color:transparent}
+.qa-ico{width:48px!important;height:48px!important;border-radius:50%!important;transition:transform .18s cubic-bezier(.2,.8,.2,1),background .2s!important}
+.qa-ico svg{width:22px!important;height:22px!important;stroke-width:1.5!important}
+.qa-item:active .qa-ico{transform:scale(.93)!important}
+.qa-lbl{font-size:12px!important;font-weight:500!important;color:#374151!important;letter-spacing:0}
+.qa-item--send .qa-ico,.qa-item--request .qa-ico{background:#3AA892!important;color:#fff!important;box-shadow:none!important}
+.qa-item--insights .qa-ico,.qa-item--spaces .qa-ico{background:#fff!important;color:#2a2f38!important;box-shadow:inset 0 0 0 1px rgba(15,23,42,.1)!important}
+.qa-item--send:active .qa-ico,.qa-item--request:active .qa-ico{background:#319682!important}
+.qa-item--insights:active .qa-ico,.qa-item--spaces:active .qa-ico{background:#F3F4F6!important}
+@media (hover:hover){.qa-item--send:hover .qa-ico,.qa-item--request:hover .qa-ico{background:#41b39c!important}.qa-item--insights:hover .qa-ico,.qa-item--spaces:hover .qa-ico{background:#FAFAFB!important}}
+.qa-item:focus-visible{outline:2px solid #3AA892;outline-offset:3px;border-radius:14px}
+@keyframes qa-slice{0%,100%{transform:translate(0,0)}45%{transform:translate(1.4px,-1.4px)}}
+.qa-insights.go .qa-slice{animation:qa-slice .46s ease-in-out}
+.qa-spaces.go .qa-pig{animation:qa-pig .46s ease-out;transform-origin:50% 50%}
+@media (max-width:380px){.qa-wrap{padding:14px 2px 12px!important}.qa-ico{width:46px!important;height:46px!important}.qa-lbl{font-size:11px!important}}
+</style>
+
 
 <style id="card-stack-css">
 /* ===== Apple-Wallet card stack ===== */
@@ -3120,6 +3142,89 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .secsum--low .secsum__seg.is-on{background:#be123c}
 .secsum__list{display:flex;gap:16px;margin-top:9px;font-size:11.5px;font-weight:600;color:#94a3b8}
 .secsum__it.is-on{color:#334155}
+
+/* ---- v7: refined rows (everything kept, arrow + Details added) ---- */
+.viewall{display:inline-flex;align-items:center;gap:8px;flex:none;padding:5px 5px 5px 14px;border-radius:999px;background:#fff;color:#0f172a;font-size:12.5px;font-weight:700;letter-spacing:.005em;box-shadow:0 0 0 1px rgba(15,23,42,.1),0 6px 14px -10px rgba(15,23,42,.45);transition:transform .15s ease;-webkit-tap-highlight-color:transparent}
+.viewall:active{transform:scale(.97)}
+.viewall__ar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:#0f172a}
+.tx-row .tx-pill{display:inline-flex!important;align-items:center;gap:1px;background:none!important;padding:0!important;color:#0f172a!important;font-size:11.5px;font-weight:600;letter-spacing:.01em;line-height:1;margin-top:1px}
+.tx-row .tx-amt{gap:4px}
+.tx-row .tx-amt p{font-size:14.5px!important;font-weight:700!important;letter-spacing:-.01em}
+.tx-row .tx-amt p.text-emerald-600{background:none!important;padding:0!important;margin:0!important;color:#059669!important}
+.tx-row>:first-child{border-radius:16px!important;background:linear-gradient(160deg,#f4f7f6,#e9efed)!important;box-shadow:inset 0 0 0 1px rgba(15,23,42,.05)!important}
+.tx-row>:first-child svg{color:#0f766e}
+.tx-row .tx-tag{color:#475569!important;font-weight:600!important}
+.tx-row .tx-date{color:#64748b!important}
+.tx-row .tx-id{color:#94a3b8!important;font-size:10px!important;letter-spacing:.03em}
+.tx-row{border-bottom-color:rgba(15,23,42,.05)!important}
+
+/* ---- v9: flat, minimal, refined transaction history ---- */
+.viewall{display:inline-flex!important;align-items:center;gap:4px!important;padding:7px 10px 7px 14px!important;border-radius:10px!important;background:transparent!important;color:#334155!important;font-size:12.5px!important;font-weight:600!important;letter-spacing:.01em;box-shadow:inset 0 0 0 1px rgba(15,23,42,.12)!important;transition:background .2s,box-shadow .2s!important}
+.viewall:hover{background:rgba(15,23,42,.035)!important}
+.viewall:active{background:rgba(15,23,42,.06)!important;transform:none!important}
+.viewall__ar{width:13px!important;height:13px!important;border-radius:0!important;background:none!important;color:#64748b!important;flex:none;display:block!important}
+.tx-row{padding-top:15px!important;padding-bottom:15px!important;column-gap:13px!important;border-bottom-color:rgba(15,23,42,.06)!important;transition:background .15s ease!important}
+.tx-row:active{background:rgba(15,23,42,.025)}
+.tx-row>:first-child{width:42px!important;height:42px!important;border-radius:12px!important;background:#f3f5f7!important;box-shadow:none!important}
+.tx-row>:first-child svg{color:#475569!important}
+.tx-row.tx-pos>:first-child{background:#eef7f2!important}
+.tx-row.tx-pos>:first-child svg{color:#0f766e!important}
+.tx-row .tx-name p{font-size:14.5px!important;font-weight:600!important;letter-spacing:-.01em;color:#0f172a}
+.tx-row .tx-meta{gap:6px!important}
+.tx-row .tx-tag{font-size:12px!important;font-weight:500!important;color:#64748b!important}
+.tx-row .tx-tag::before{display:none!important}
+.tx-row .tx-tag::after{content:"·";margin-left:6px;color:#cbd5e1}
+.tx-row .tx-date{font-size:12px!important;color:#94a3b8!important;font-weight:500}
+.tx-row .tx-id{font-size:9.5px!important;color:#b4bdc8!important;letter-spacing:.04em!important;margin-top:3px}
+.tx-row .tx-amt{gap:5px!important;justify-content:center}
+.tx-row .tx-amt p{font-size:15px!important;font-weight:600!important;letter-spacing:-.015em!important;color:#0f172a;font-feature-settings:"tnum"}
+.tx-row .tx-amt p.text-emerald-600{color:#0f8a63!important}
+.tx-row .tx-amt .amt-dec{font-size:inherit;font-weight:inherit;margin:0}
+.tx-row .tx-pill{align-self:flex-end;padding:0!important;border-radius:0!important;box-shadow:none!important;background:none!important;color:#64748b!important;font-size:11.5px!important;font-weight:500!important;letter-spacing:.01em;margin:0!important}
+.tx-row .tx-pill svg{width:12px!important;height:12px!important;stroke-width:2.2;color:#94a3b8}
+
+/* ---- v10: transaction details (hero, sections, sticky action bar) ---- */
+.txd-hero{display:flex;flex-direction:column;align-items:center;margin-bottom:16px;padding:22px 16px 18px;border-radius:24px;background:linear-gradient(180deg,#f2f3f5 0%,#fff 78%);box-shadow:inset 0 0 0 1px rgba(15,23,42,.06)}
+.txd-hero--in{background:linear-gradient(180deg,#ebf6f0 0%,#fff 78%)}
+.txd-hero--pend{background:linear-gradient(180deg,#fdf3e6 0%,#fff 78%)}
+.txd-hero--review{background:linear-gradient(180deg,#eaf1fb 0%,#fff 78%)}
+.txd-hero--rej{background:linear-gradient(180deg,#fbeceb 0%,#fff 78%)}
+.txd-hero--ref{background:linear-gradient(180deg,#e9f5f3 0%,#fff 78%)}
+.txd-hero__name{max-width:88%;font-size:14.5px;font-weight:600;color:#0f172a;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.txd-hero__via{margin-top:2px;font-size:12px;color:#64748b;text-align:center}
+.txd-hero__via b{font-weight:600;color:#334155}
+.txd-amt{margin-top:12px;font-size:40px;line-height:1.05;font-weight:700;letter-spacing:-.035em;color:#0f172a;font-feature-settings:"tnum";white-space:nowrap}
+.txd-amt__d{font-size:.55em;font-weight:600;letter-spacing:0;margin-left:1px}
+.txd-amt--pos{color:#0f8a63}
+.txd-amt--muted{color:#94a3b8;text-decoration:line-through;text-decoration-thickness:1.5px}
+.txd-tl{width:calc(100% - 28px);margin:20px 14px 0}
+.txd-tl__l{white-space:normal!important;text-align:center;line-height:1.25}
+.txd-tl__t{font-size:10px;font-weight:500;color:#94a3b8;margin-top:-3px}
+.txd-tl--ref .txd-tl__s.is-done .txd-tl__d,.txd-tl--ref .txd-tl__s.is-done::before{background:#0f766e;border-color:#0f766e}
+.txd-badge--ref{color:#0f766e}
+.txd-sec{margin:18px 4px 8px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8}
+.txd-card{overflow:hidden;border-radius:18px;background:#fff;box-shadow:inset 0 0 0 1px rgba(15,23,42,.06)}
+.txd-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:13px 16px;font-size:14px}
+.txd-row--b{border-bottom:1px solid rgba(15,23,42,.06)}
+.txd-row__k{flex:none;color:#64748b}
+.txd-row__v{min-width:0;text-align:right;font-weight:600;color:#0f172a;overflow-wrap:anywhere}
+.txd-row__v--mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:500;letter-spacing:-.01em}
+.txd-card--extra .txd-row{padding:11px 16px;font-size:13px}
+.txd-card--extra .txd-row__v{font-weight:500;color:#334155}
+.txd-bar{display:flex;gap:10px;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:#F7F6F3;border-top:1px solid rgba(15,23,42,.07)}
+.txd-bar__sec,.txd-bar__pri{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:14px;font-size:14px;font-weight:600;-webkit-tap-highlight-color:transparent}
+.txd-bar__sec{flex:none;padding:0 18px;color:#0f172a;background:#fff;box-shadow:inset 0 0 0 1px rgba(15,23,42,.14)}
+.txd-bar__pri{flex:1;min-width:0;color:#fff;background:#0f172a}
+.txd-bar__sec:active,.txd-bar__pri:active{transform:scale(.985)}
+.txd-bar button:focus-visible{outline:2px solid #0f766e;outline-offset:2px}
+
+.txd-hero--ret{background:linear-gradient(180deg,#eef0f6 0%,#fff 78%)}
+.txd-badge--ret{color:#475569}
+.txd-tl--ret .txd-tl__s.is-done .txd-tl__d,.txd-tl--ret .txd-tl__s.is-done::before{background:#64748b;border-color:#64748b}
+.txd-note{margin:10px 6px 0;max-width:290px;text-align:center;font-size:12px;line-height:1.45;color:#64748b}
+.status-pill--ref{color:#0f766e}
+.status-pill--ret{color:#475569}
+.status-pill--ref::before,.status-pill--ret::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;flex:0 0 auto}
 </style>
 
 <style id="aml-ui-css">
@@ -3196,23 +3301,6 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .ins-bar{transform-origin:bottom;animation:insGrow .55s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*9ms);transition:background .15s}
 .ins-chart{cursor:crosshair}
 .ins-root button{-webkit-tap-highlight-color:transparent}
-</style>
-<style id="n26-qa-compact">
-/* Quick actions under the balance card: compact white tiles, same surface/border as other buttons */
-.qa-wrap{margin-top:14px}
-.qa-wrap .qa-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;justify-items:stretch!important}
-.qa-wrap .qa-grid .qa-item{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;
-  width:100%!important;min-width:0!important;padding:10px 2px 9px!important;background:#fff!important;border:1px solid rgba(15,23,42,.07)!important;border-radius:18px!important;
-  box-shadow:0 1px 2px rgba(15,23,42,.04)!important;transition:transform .18s cubic-bezier(.22,1,.36,1),background .18s,box-shadow .18s!important;-webkit-tap-highlight-color:transparent}
-.qa-wrap .qa-grid .qa-item .qa-ico{width:34px!important;height:34px!important;border-radius:50%!important;background:#EAF4F1!important;color:#0f766e!important;box-shadow:none!important;
-  display:flex!important;align-items:center!important;justify-content:center!important;transform:none!important;transition:background .18s!important}
-.qa-wrap .qa-grid .qa-item .qa-ico svg{width:19px!important;height:19px!important;stroke-width:1.7!important}
-.qa-wrap .qa-grid .qa-item .qa-lbl{font-size:11.5px!important;font-weight:600!important;line-height:1.15!important;color:#334155!important;letter-spacing:-.005em;max-width:100%;padding:0 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.qa-wrap .qa-grid .qa-item:active{transform:scale(.96)!important;background:#F7F6F3!important}
-.qa-wrap .qa-grid .qa-item:active .qa-ico{background:#DCEBE6!important}
-@media (hover:hover){.qa-wrap .qa-grid .qa-item:hover{background:#FBFAF8!important;box-shadow:0 6px 14px -10px rgba(4,47,46,.35)!important}.qa-wrap .qa-grid .qa-item:hover .qa-ico{background:#DFF0EB!important}}
-.qa-wrap .qa-grid .qa-item:focus-visible{outline:2px solid #00A88E;outline-offset:2px}
-@media (max-width:360px){.qa-wrap .qa-grid{gap:6px!important}.qa-wrap .qa-grid .qa-item .qa-lbl{font-size:10.5px!important}}
 </style>
 <style id="n26-spaces">
 @keyframes spRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -3922,7 +4010,51 @@ window.n26ShowDoc = function(html) {
 
 
 
-</head>
+<style id="send-sheet-mobile">
+.send-contacts,.send-grab{display:none}
+@media (max-width:767px){
+  .send-root{align-items:flex-end!important;justify-content:center!important}
+  .send-sheet{max-width:100%!important;width:100%!important;height:auto!important;max-height:92dvh;border-radius:24px 24px 0 0!important;
+    animation:send-up .34s cubic-bezier(.2,.8,.2,1)!important;transform:none!important;padding-bottom:env(safe-area-inset-bottom,0)}
+  .send-sheet:not(.send-sheet--type){height:92dvh!important}
+  .send-grab{display:block;width:40px;height:4px;border-radius:2px;background:#D5D9DD;margin:8px auto 0;flex:none}
+  .send-sheet .send-head{border-bottom:0;padding:10px 20px 6px}
+  .send-sheet--type .send-head p{display:none}
+  .send-sheet--type>div.flex-1{padding:6px 0 14px}
+  .send-contacts{display:flex;gap:14px;overflow-x:auto;padding:6px 20px 14px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .send-contacts::-webkit-scrollbar{display:none}
+  .send-contact{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;width:62px;background:none;border:0;padding:0;cursor:pointer}
+  .send-contact:active .send-contact__av{transform:scale(.92)}
+  .send-contact__av{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;font-weight:700;font-size:18px;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+  .send-contact__add{background:#fff;border:1.5px dashed #9CC9BE;color:#0F6B5C}
+  .send-contact__nm{max-width:62px;font-size:12px;line-height:1.2;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .send-sheet--type .space-y-3{margin:0}
+  .send-sheet--type .space-y-3>*+*{margin-top:0}
+  .send-sheet--type .xfer-opt{display:flex!important;align-items:center;gap:10px;width:100%;padding:13px 20px!important;border:0!important;border-top:1px solid #EEF0F2!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-align:left}
+  .send-sheet--type .xfer-opt .qa-tile{display:flex!important;flex:none}
+  .send-sheet--type .xfer-opt{gap:12px!important}
+  .send-sheet--type .xfer-opt .min-w-0{flex:1}
+  .send-sheet--type .xfer-opt p:first-child{font-size:15px;font-weight:600;color:#0f172a}
+  .send-sheet--type .xfer-opt p+p{font-size:12.5px;line-height:1.35;color:#64748B;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .send-sheet--type .xfer-opt:active{background:#F5F7F7!important}
+}
+@keyframes send-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+</style><style id="n26-bottom-nav-v2">
+@media (max-width:1023px){
+  .nav-glass{padding:0 10px calc(10px + env(safe-area-inset-bottom,0px))!important}
+  .nav-glass__bar{width:100%;max-width:560px;margin:0 auto;gap:0!important;padding:6px!important;border-radius:28px!important;
+    background:rgba(255,255,255,.96)!important;box-shadow:0 10px 30px -12px rgba(15,23,42,.35),0 0 0 .5px rgba(15,23,42,.08)!important}
+  .nav-glass__pill{left:6px!important;top:6px!important;width:calc((100% - 12px) / 5)!important;height:54px!important;border-radius:20px!important;background:rgba(15,107,92,.12)!important}
+  .nav-glass__item{flex:1 1 0!important;min-width:0;width:auto!important;height:54px!important;flex-direction:column!important;gap:4px!important;border-radius:20px!important;color:#475569}
+  .nav-glass__item svg{width:22px!important;height:22px!important;stroke-width:1.6}
+  .nav-glass__lbl{display:block;max-width:100%;padding:0 2px;font-size:10.5px;font-weight:600;line-height:1;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .25s}
+  .nav-glass__item.is-active{color:#0F6B5C!important}
+  .nav-glass__item.is-active .nav-glass__lbl{color:#0F6B5C}
+}
+@keyframes nv-spin{0%{transform:rotate(0)}60%{transform:rotate(100deg)}100%{transform:rotate(90deg)}}
+.nv-gear{transform-origin:50% 50%;transform-box:fill-box}
+.nv-svg.go.nv-settings .nv-gear{animation:nv-spin .6s cubic-bezier(.34,1.4,.5,1)}
+</style></head>
 <body>
   <div id="root"></div>
 
@@ -4382,7 +4514,7 @@ window.n26ShowDoc = function(html) {
         aml_title: 'AML-Prüfung — Betrag gesperrt', aml_hold: 'Hold',
         aml_body: 'Ein Teil deines Guthabens ist vorübergehend für Anti-Geldwäsche-Prüfungen (AML) gesperrt. Lade einen Beleg hoch. Nach manueller Prüfung wird der Betrag freigegeben.',
         aml_deadline: 'Frist: bis 15. Oktober 2026', aml_upload: 'Dokument hochladen', aml_checking: 'Prüfung läuft…',
-        aml_locked: 'AML gesperrt', aml_total: 'Gesamtguthaben', aml_available: 'Verfügbar',
+        aml_locked: 'Vorübergehend gesperrt', aml_total: 'Gesamtguthaben', aml_available: 'Verfügbar',
         aml_toast: 'AML-Sperre', aml_toast_body: 'vorübergehend gesperrt — Dokument hochladen',
         aml_released: 'AML freigegeben', aml_released_body: 'Guthaben wieder vollständig verfügbar',
         aml_docs_check: 'Dokumente werden geprüft…', aml_docs_ok: 'Dokumente akzeptiert. Freigabe…',
@@ -4892,7 +5024,7 @@ window.n26ShowDoc = function(html) {
         aml_title: 'AML check — amount held', aml_hold: 'Hold',
         aml_body: 'Part of your balance is temporarily held for anti-money-laundering (AML) checks. Upload a proof document. The amount is released after manual review.',
         aml_deadline: 'Deadline: 15 October 2026', aml_upload: 'Upload document', aml_checking: 'Checking…',
-        aml_locked: 'AML locked', aml_total: 'Total balance', aml_available: 'Available',
+        aml_locked: 'Temporarily frozen', aml_total: 'Total balance', aml_available: 'Available',
         aml_toast: 'AML hold', aml_toast_body: 'temporarily locked — upload a document',
         aml_released: 'AML released', aml_released_body: 'Balance fully available again',
         aml_docs_check: 'Documents are being reviewed…', aml_docs_ok: 'Documents accepted. Releasing…',
@@ -5262,7 +5394,7 @@ window.n26ShowDoc = function(html) {
         trust_realtime: 'Real-time',
         trust_live: 'Live',
       },
-    it: {"nav_accounts":"Conti","nav_banking":"Banking","nav_save":"Risparmia","nav_invest":"Investi","nav_credit":"Credito","nav_travel":"Viaggi","login":"Accedi","continue_btn":"Continua","start_ident":"Avvia l'identificazione","reg_account_title":"Il tuo accesso","reg_account_sub":"E-mail e una password sicura per il tuo conto.","reg_phone_hint":"Incluso il prefisso internazionale","reg_zip_label":"CAP","reg_city_label":"Città","reg_doc_country":"Documenti accettati:","upload_hint":"Tocca per selezionare o trascina qui un file","doc_id_de":"Carta d'identità","doc_id_at":"Carta d'identità","doc_id_ch":"Carta d'identità","doc_id_be":"Carta d'identità","doc_id_pl":"Carta d'identità","doc_id_it":"Carta d'identità","doc_passport":"Passaporto","doc_license":"Patente di guida","face_center":"Posiziona il viso nell'inquadratura","country_title":"Paese di residenza","country_sub":"Seleziona il paese in cui hai la residenza fiscale e vuoi tenere il conto.","country_hint":"Disponibile in alcuni mercati europei selezionati","country_de":"Germania","country_be":"Belgio","country_ch":"Svizzera","country_at":"Austria","country_pl":"Polonia","country_it":"Italia","face_looking":"Ricerca del tuo viso…","face_found":"Viso rilevato – resta nell'inquadratura","face_hold":"Resta fermo…","face_ok":"Posizione OK – selfie sbloccato","face_required":"Attendi finché il viso non viene rilevato","open_account":"Apri il conto","hero_title":"La banca che amerai","hero_sub":"Banking, risparmio e controllo in un'unica app – con licenza bancaria tedesca, protezione dei depositi e verifica dell'identità. Scegli il tuo piano e apri il conto in digitale.","features_title":"Tutto ciò che ti serve","features_sub":"Apri il conto in pochi minuti – completamente digitale, senza andare in filiale.","feat1_t":"Conto corrente gratuito","feat1_d":"Nessun canone mensile. Nessun costo nascosto.","feat2_t":"Bonifici istantanei","feat2_d":"Invia e ricevi denaro in tempo reale.","feat3_t":"Spaces per risparmiare","feat3_d":"Metti da parte i soldi per i tuoi obiettivi – in automatico.","open_now":"Apri il conto ora","footer_rights":"Tutti i diritti riservati.","geo_notice":"Le app di Google Play Store e App Store sono disponibili solo per i cittadini della Germania.","n26_app":"App N26","mobile_banking":"Mobile banking","back":"Indietro","step_of":"Passo","reg_title":"Apri un conto","reg_sub":"Crea il tuo conto N26 in pochi minuti.","first_name":"Nome","last_name":"Cognome","email":"E-mail","password":"Password","password_confirm":"Conferma password","next":"Continua","required":"Obbligatorio","invalid_email":"E-mail non valida","min_password":"Min. 6 caratteri","password_mismatch":"Le password non coincidono","personal_title":"Dati personali","personal_sub":"Ci servono ancora alcuni dati.","phone":"Numero di telefono","birth":"Data di nascita","street":"Via e numero civico","zip":"CAP","city":"Città","agree_prefix":"Accetto i","agree_terms":"Termini","agree_and":"e l'","agree_privacy":"Informativa sulla privacy","agree_of":"di N26.","please_accept":"Accetta","id_check_title":"1. Verifica dell'identità","id_check_sub":"Carica un passaporto, una carta d'identità o una patente. La verifica parte automaticamente.","choose_doc":"Scegli il documento d'identità","doc_formats":"JPG, PNG o PDF · max. 10 MB","start_check":"Avvia la verifica","checklist_1":"Carica documento","checklist_2":"Avvia la verifica e attendi","checklist_3":"Dopo l'approvazione passa alla video identificazione","video_title":"2. Video ID e selfie","video_sub":"Avvia la fotocamera, segui le istruzioni e scatta un selfie. Poi parte il controllo biometrico.","start_camera":"Avvia la fotocamera","take_selfie":"Scatta un selfie","selfie_done":"Selfie e movimento acquisiti","start_bio":"Avvia il controllo biometrico","finish_verify":"Completa la verifica","continue_video":"Passa alla video identificazione","camera_error":"Fotocamera non disponibile. Controlla le autorizzazioni o continua senza fotocamera.","hint_left":"Gira lentamente la testa a sinistra…","hint_right":"Ora gira a destra…","hint_ready":"Guarda dritto – pronto per il selfie","hint_captured":"✓ Movimento e selfie acquisiti","vlist_1":"Avvia la fotocamera","vlist_2":"Gira la testa a sinistra e a destra","vlist_3":"Scatta un selfie","vlist_4":"Attendi il controllo biometrico","check_done":"Controllo completato","can_continue":"Puoi continuare.","progress":"Avanzamento","verify_note":"La verifica dell'identità può richiedere alcuni minuti. Attendi il completamento di tutti i passaggi.","phase_doc_1":"Documento ricevuto","phase_doc_1d":"Il file viene caricato in modo sicuro…","phase_doc_2":"Controllo di autenticità","phase_doc_2d":"Verifichiamo elementi di sicurezza e formato…","phase_doc_3":"Estrazione dei dati","phase_doc_3d":"Estraiamo nome, data di nascita e numero del documento…","phase_doc_4":"Confronto","phase_doc_4d":"I dati vengono confrontati con quelli del modulo…","phase_doc_5":"Approvato","phase_doc_5d":"Parte 1 della verifica dell'identità completata.","phase_sf_1":"Salvataggio della registrazione","phase_sf_1d":"Selfie e sequenza di movimento vengono salvati…","phase_sf_2":"Riconoscimento facciale","phase_sf_2d":"Le caratteristiche biometriche vengono analizzate…","phase_sf_3":"Controllo di vitalità","phase_sf_3d":"Movimenti della testa e vitalità vengono verificati…","phase_sf_4":"Corrispondenza con il documento","phase_sf_4d":"Il viso viene confrontato con la foto del documento…","phase_sf_5":"Verifica OK","phase_sf_5d":"Video identificazione completata con successo.","welcome_title":"Benvenuto in N26!","welcome_sub":"Identità verificata. Il tuo conto è pronto – puoi usare subito il banking.","status_verified":"Verificato","balance_label":"Saldo: ","go_banking":"Vai al banking online","name_label":"Nome","status_label":"Stato","login_title":"Accedi","login_sub":"Accedi con il tuo conto N26.","sign_in":"Accedi","signing_in":"Accesso in corso…","no_account":"Non hai ancora un conto?","register_now":"Registrati ora","account_not_found":"Conto non trovato. Registrati prima.","wrong_password":"Password errata.","email_exists":"Questa e-mail è già registrata. Accedi.","your_password":"La tua password","welcome":"Benvenuto","my_card":"La mia carta","spaces":"Spaces","profile":"Profilo","main_account":"Conto principale","available_balance":"Saldo disponibile","income":"Entrate","spending":"Uscite","send":"Invia","request":"Richiedi","insights":"Analisi","transactions":"Transazioni","no_transactions":"Ancora nessuna transazione","no_tx_hint":"I tuoi primi bonifici appariranno qui.","digital_card":"Carta digitale","card_settings":"Impostazioni carta","active":"Attiva","inactive":"Non attiva","activate_card":"Attiva la carta","online_pay":"Pagamenti online","contactless":"Contactless","atm":"Prelievi al bancomat","abroad":"Pagamenti all'estero","activate_card_desc":"Carta fisica e digitale","online_pay_desc":"E-commerce e app","contactless_desc":"NFC / Apple Pay / Google Pay","atm_desc":"Prelievi di contanti","abroad_desc":"Fuori dall'UE","activate_now":"Attiva la carta ora","card_limit":"Limite della carta","spent_month":"Spesi questo mese","card_active_hint":"La tua carta è attiva. Le impostazioni valgono subito.","card_inactive_hint":"Attiva la carta quando ricevi quella fisica.","per_day_contactless":"al giorno · contactless","card_activated_toast":"Carta attivata","card_activated_desc":"Pagamenti online e contactless abilitati","total_saved":"Totale risparmiato","your_spaces":"I tuoi Spaces","across_spaces":"In {n} Spaces","account_card":"Conto e carta","notifications":"Notifiche","no_notifications":"Nessuna notifica","clear":"Cancella","personal_data":"Dati personali","security":"Sicurezza","limits_features":"Limiti e funzioni","help_support":"Aiuto e assistenza","logout":"Esci","copy":"Copia","copied":"Copiato","iban_copied":"IBAN copiato","card_copied":"Numero della carta copiato","card_number":"Numero della carta","see_all":"Vedi tutto","account_standard":"Standard · verificato","address_stored":"Salvato dai dati di registrazione","personal_note":"Le modifiche ai dati personali richiedono una nuova verifica dell'identità.","app_pin":"Blocco app / PIN","app_pin_desc":"PIN a 4 cifre per l'app","show":"Mostra","hide":"Nascondi","twofa":"Accesso a due fattori","twofa_desc":"E-mail + conferma sul dispositivo","change_password":"Cambia password","logged_devices":"Dispositivi connessi","password_reset_sent":"Il link di reimpostazione è stato inviato alla tua e-mail","only_this_device":"Solo questo dispositivo è connesso","limit_transfer":"Bonifico / giorno","limit_cash":"Contanti / giorno","limit_contactless":"Contactless senza PIN","limit_card":"Limite carta / giorno","limits_note":"I limiti si applicano al tuo conto e possono essere modificati su richiesta.","request_limit":"Richiedi aumento del limite","limit_requested":"Aumento richiesto – verifica entro 1–2 giorni lavorativi","faq1_q":"Come invio denaro?","faq1_a":"Home → Invia → scegli contatto o SEPA → importo.","faq2_q":"Che cos'è uno Space?","faq2_a":"Sottoconti per risparmiare verso obiettivi (vacanza, fondo emergenze…).","faq3_q":"Blocco AML?","faq3_a":"Importi in entrata più elevati possono essere trattenuti. Dopo il caricamento, il team compliance li verifica manualmente e rilascia i fondi.","faq4_q":"Carta smarrita?","faq4_a":"In Carta disattiva la carta, poi contatta l'assistenza.","start_chat":"Avvia la chat con l'assistenza","support_reply":"Ti risponderemo a breve.","send_money":"Invia denaro","choose_type":"Tipo di bonifico","type_contact":"A un contatto","type_sepa":"Bonifico SEPA","type_intl":"Internazionale","type_contact_d":"Ai contatti salvati","type_sepa_d":"IBAN nell'area SEPA (UE/SEE)","type_intl_d":"All'estero con SWIFT/BIC","choose_recipient":"Scegli il destinatario","search_contacts":"Cerca contatti…","no_contacts":"Ancora nessun contatto","add_contact":"Aggiungi contatto","contact_name":"Nome","contact_iban_optional":"IBAN (facoltativo)","save_contact":"Salva","enter_amount":"Inserisci l'importo","amount_eur":"Importo (EUR)","note_optional":"Causale (facoltativa)","available":"Disponibile","continue":"Continua","confirm_transfer":"Conferma il bonifico","you_send":"Stai inviando","to":"a","confirm_send":"Conferma e invia","back_btn":"Indietro","sepa_title":"Bonifico SEPA","recipient_name":"Nome del destinatario","iban":"IBAN","bic_optional":"BIC (facoltativo)","reference":"Causale","sepa_hint":"Bonifici SEPA in EUR nell'UE/SEE – di solito entro 1 giorno lavorativo.","intl_title":"Bonifico internazionale","country":"Paese","swift_bic":"SWIFT / BIC","account_or_iban":"Numero di conto o IBAN","currency":"Valuta","fee":"Commissione","fee_intl":"Commissione internazionale","total_debit":"Addebito totale","intl_hint":"I bonifici internazionali possono richiedere 1–5 giorni lavorativi. Le commissioni vengono detratte dal tuo saldo.","insufficient":"Fondi insufficienti","invalid_amount":"Inserisci un importo valido","invalid_iban":"IBAN non valido","transfer_ok":"Bonifico riuscito","request_money":"Richiedi denaro","select_contact":"Seleziona contatto","live":"LIVE","off":"OFF","aria_next":"Avanti","aria_prev":"Indietro","home":"Home","card":"Carta","stats":"Statistiche","aml_title":"Controllo AML – importo trattenuto","aml_hold":"Blocco","aml_body":"Una parte del tuo saldo è temporaneamente trattenuta per i controlli antiriciclaggio (AML). Carica un documento di verifica. L'importo viene rilasciato dopo la verifica manuale.","aml_deadline":"Scadenza: 15 ottobre 2026","aml_upload":"Carica documento","aml_checking":"Verifica in corso…","aml_locked":"Bloccato AML","aml_total":"Saldo totale","aml_available":"Disponibile","aml_toast":"Blocco AML","aml_toast_body":"temporaneamente bloccato – carica un documento","aml_released":"AML rilasciato","aml_released_body":"Saldo di nuovo pienamente disponibile","aml_docs_check":"I documenti sono in verifica…","aml_docs_ok":"Documenti accettati. Rilascio in corso…","money_received":"Denaro ricevuto","from":"da","upgrade_metal":"Passa a un piano superiore","learn_more":"Scopri di più","n26_metal":"N26 Metal","space_deposit":"Versa su","deposit":"Versamento","add_to":"Aggiungi a","spending_insights":"Analisi delle spese","net":"Netto","by_category":"Per categoria","no_data":"Ancora nessun dato.","no_data_hint":"Le statistiche compaiono quando hai delle transazioni.","today":"Oggi","yesterday":"Ieri","this_week":"Questa settimana","pending":"In sospeso","transfer_cat":"Bonifico","show_num":"Mostra","hide_num":"Nascondi","card_holder":"Titolare della carta","expires":"Scade","kyc_doc_type":"Tipo di documento","kyc_id_card":"Carta d'identità","kyc_passport":"Passaporto","kyc_license":"Patente di guida","kyc_front":"Fronte","kyc_back":"Retro","kyc_upload_front":"Carica il fronte","kyc_upload_back":"Carica il retro","kyc_ocr_title":"Dati estratti","kyc_ocr_confirm":"Conferma i dati","kyc_ocr_hint":"Controlla i dati. Ricarica il documento se qualcosa non è corretto.","kyc_match_score":"Punteggio di corrispondenza","kyc_video_later":"Completa la video identificazione più tardi","kyc_video_later_hint":"Puoi aprire il conto. Bonifici e altre funzioni si sbloccano dopo la video identificazione.","kyc_limited_status":"Limitato","kyc_account_locked_title":"Conto in verifica","kyc_account_locked_body":"I dati del conto e della carta si sbloccano quando la verifica dell'identità è confermata. Riceverai una notifica.","kyc_wait_notify":"Resta aggiornato – ti avviseremo qui non appena sarà approvato.","card_order_title":"Ordina la carta","card_order_sub":"Inserisci l'indirizzo di consegna. Costo 5,00 €. La tua carta virtuale resta invariata.","card_pin_label":"PIN della carta","card_pin_confirm":"Conferma il PIN","card_pin_mismatch":"I PIN non coincidono","card_pin_len":"Il PIN deve avere 4 cifre","card_delivery_title":"Indirizzo di consegna","card_order_fee":"Costo della carta","card_order_pay":"Paga e ordina","card_order_success":"Carta ordinata","card_order_success_body":"La tua carta fisica è in produzione. Ti avviseremo quando sarà pronta e spedita – possono volerci alcune settimane. La carta virtuale resta attiva.","card_order_pending":"Carta fisica ordinata","card_order_eta":"Ti avviseremo quando la carta sarà pronta e spedita. Possono volerci alcune settimane.","card_not_ready":"Dati della carta disponibili dopo l'approvazione dell'identità","iban_hidden":"Nascondi IBAN","kyc_pending_status":"In verifica","wallet_apple":"Aggiungi ad Apple Wallet","wallet_google":"Aggiungi a Google Wallet","wallet_offline_banner":"Nessuna connessione – controlla la rete","offline_retry":"Riprova","connecting":"Contatto con l'emittente della carta…","wallet_connecting":"Contatto con l'emittente della carta…","wallet_check_card":"Verifica di carta e limiti…","wallet_check_device":"Verifica della sicurezza del dispositivo…","wallet_security":"Verifica dei requisiti di sicurezza…","wallet_tokenizing":"Creazione del numero di carta protetto…","wallet_sending":"Invio dei dati al Wallet…","wallet_pending_title":"Richiesta inviata","wallet_pending_body":"La tua richiesta è stata inviata alla banca ed è in attesa di conferma.","wallet_success":"Carta aggiunta","wallet_success_body":"La tua carta è pronta per i pagamenti contactless.","wallet_done":"Fatto","wallet_preview":"N26 Debit","wallet_processing":"Elaborazione","wallet_rejected_toast":"Richiesta Wallet rifiutata","wallet_revoked_toast":"Carta rimossa dal Wallet","wallet_approved_toast":"Carta attivata nel Wallet","sec_title":"Conferma il pagamento","sec_sub":"Conferma il bonifico con il PIN della carta o la biometria.","sec_pin_label":"PIN di conferma","sec_pin_wrong":"PIN errato","sec_pin_set":"Crea un PIN di conferma a 4 cifre","sec_pin_confirm_set":"Conferma il PIN","sec_bio":"Face ID / Touch ID","sec_or":"o","sec_processing":"Elaborazione del pagamento…","sec_success":"Il denaro è in arrivo","sec_success_body":"Il tuo bonifico è stato autorizzato.","sec_amount_to":"a","kyc_pending_banner":"Identità in verifica","kyc_pending_body":"Stiamo verificando i tuoi documenti. L'accesso completo sarà disponibile dopo l'approvazione.","kyc_doc_reject":"Documento non riconosciuto","kyc_doc_reject_body":"Impossibile verificare il file. Carica una foto nitida dell'intero documento.","kyc_doc_too_small":"Immagine troppo piccola. Carica una foto nitida (almeno 320 px, documento intero nell'inquadratura).","doc_mask_hint":"Carica una foto nitida del documento. Tutti gli angoli devono essere visibili.","doc_mask_id":"Carta d'identità – fronte, in orizzontale","doc_mask_id_back":"Carta d'identità – retro","doc_mask_passport":"Passaporto – pagina dei dati (foto + MRZ)","doc_mask_license":"Patente – fronte","doc_mask_tip":"Buona luce, senza flash, tutti gli angoli visibili.","doc_selected":"File selezionato – avvia ora l'identificazione","kyc_doc_analyzing":"Verifica del documento…","kyc_full_status":"Completamente verificato","kyc_banner_title":"Completa la verifica dell'identità","kyc_banner_body":"Video ID in sospeso. Bonifici e Spaces sono temporaneamente limitati.","kyc_banner_cta":"Continua ora","kyc_locked_title":"Funzione bloccata","kyc_locked_body":"Completa prima la verifica dell'identità (video ID).","kyc_complete_title":"Video identificazione","kyc_step_face":"Guarda dritto nella fotocamera","kyc_step_left":"Gira lentamente la testa a sinistra","kyc_step_right":"Gira lentamente la testa a destra","kyc_step_selfie":"Scatta un selfie","kyc_face_ok":"Viso rilevato","kyc_liveness_ok":"Vitalità confermata","kyc_bio_match":"Corrispondenza con il documento","kyc_session_timer":"Sessione","kyc_continue_account":"Apri il conto","kyc_restricted_welcome":"Il tuo conto è aperto. Completa il video ID per abilitare i bonifici.","kyc_done_toast":"Identità confermata","kyc_done_toast_body":"Tutte le funzioni sono sbloccate.","kyc_doc_required":"Scegli il tipo di documento e carica un file","kyc_confirm_data":"Conferma i dati e avvia il controllo","id_number":"Numero del documento","valid_until":"Valido fino al","land_trust_t":"La banca di cui si fidano milioni di persone","land_trust_d":"N26 è una banca tedesca con licenza bancaria completa e protezione dei depositi fino a 100.000 €. Avvisi in tempo reale, controllo della carta e verifiche dell'identità secondo standard bancari proteggono il tuo denaro – in un'app di cui si fidano milioni di persone.","land_free_t":"Banking. Gratis, senza costi nascosti.","land_free_d":"Apri il tuo conto corrente in digitale in pochi passaggi chiari. Carta virtuale, bonifici e Spaces – senza filiale. Nessun costo nascosto con il piano Standard – hai il pieno controllo di limiti e sicurezza.","land_shared_t":"Finanze condivise, semplicemente","land_shared_d":"Gli obiettivi comuni hanno bisogno di salvadanai chiari. Con gli Spaces metti da parte soldi per viaggi, imprevisti o progetti. Panoramica live, obiettivi e progressi – senza fogli di calcolo né caos sul conto principale.","land_metal_t":"Ottieni di più dal tuo denaro","land_metal_d":"Metal significa design premium e vantaggi extra. Più flessibilità, funzioni prioritarie e una carta adatta alla vita di tutti i giorni. Il primo mese è gratis – poi un canone mensile chiaro, senza sorprese.","land_invest_t":"Banking e risparmio in un'unica app","land_invest_d":"Banking quotidiano e risparmio in un solo posto: entrate, uscite e Spaces a colpo d'occhio. Vedi dove vanno i soldi, fissa obiettivi e mantieni il controllo – senza destreggiarti tra cinque app.","land_travel_t":"La carta ideale per viaggiare","land_travel_d":"Paga in viaggio, blocca la carta, regola i limiti – tutto nell'app. Condizioni eque all'estero, contactless e online – con misure di sicurezza che controlli tu quando qualcosa non torna.","land_plans_t":"Scegli il tuo conto","land_plans_d":"Due modelli chiari. Standard resta gratuito. Metal: 2 mesi gratis, poi 16 € / mese con vantaggi premium. Entrambi con IBAN tedesco e apertura digitale.","land_plan_std":"Standard","land_plan_std_d":"Conto corrente gratuito – senza canoni mensili","land_plan_go":"Go","land_plan_go_d":"Viaggi e limiti extra","land_plan_metal":"Metal","land_plan_metal_d":"Premium Metal – 2 mesi gratis, poi 16 € / mese","land_faq_t":"FAQ","land_sec_t":"Sicurezza di livello bancario","land_sec_d":"Notifica a ogni movimento, 3D Secure per i pagamenti online, Video-Ident e controllo dei documenti. Decidi tu quando la carta è online o contactless – livello bancario, senza appuntamento in filiale.","land_cta_t":"Pronto per il banking moderno?","land_cta_d":"Apri il conto in digitale – passaggi chiari e pieno controllo.","choose_plan":"Scegli il piano","plan_std_price":"Gratis","plan_metal_price":"16,00 €","plan_std_price_note":"al mese · completamente gratis","plan_metal_price_note":"2 mesi gratis · poi 16,00 € / mese","plan_feature_iban":"IBAN tedesco","plan_feature_card":"Mastercard digitale","plan_feature_spaces":"Spaces per risparmiare","plan_feature_metal":"Design Metal e priorità","plan_feature_limits":"Limiti più alti","hero_visual_caption":"Premium Banking","hero_visual_sub":"Carta Metal · IBAN tedesco · in tempo reale","menu_open":"Menu","menu_close":"Chiudi","mobile_disclaimer":"L'app N26 offre funzioni estese ed è disponibile solo per i cittadini tedeschi. Il sito web e il banking online si possono usare anche con un permesso di soggiorno in Germania.","aml_pending":"In verifica","aml_pending_body":"Il tuo documento è stato inviato ed è in verifica manuale. I fondi restano bloccati fino al termine della verifica.","aml_pending_toast":"Documento inviato","aml_pending_toast_body":"Stato: in verifica – rilascio dopo l'approvazione manuale","aml_rejected":"Documento rifiutato","aml_rejected_body":"Carica un altro documento.","limit_exceeded":"Limite giornaliero raggiunto","limit_exceeded_body":"Max. {amount} al giorno. Vedi i limiti nelle impostazioni.","space_withdraw":"Preleva","space_withdraw_to":"Sul conto principale","card_status_ordered":"Ordinata","card_status_shipped":"In arrivo","card_status_active":"Attiva","statement_download":"Scarica l'estratto conto","statement_ready":"Estratto conto pronto","kyc_required_title":"Verifica richiesta","kyc_required_statement":"Gli estratti conto sono disponibili solo a verifica dell'identità completata.","wallet_policy_title":"Condizioni d'uso del Wallet","wallet_policy_accept":"Accetto le condizioni","wallet_policy_continue":"Continua","wallet_policy_read":"Leggi il testo completo","wallet_cancel":"Annulla","wallet_info_title":"Aggiungi la carta al Wallet","wallet_info_body":"La tua carta virtuale verrà tokenizzata in modo sicuro. I dati della carta non vengono mai condivisi con gli esercenti.","wallet_policy_text":"Aggiungendo la carta confermi di essere il titolare del conto e di usare la carta solo per pagamenti leciti. La tokenizzazione avviene sul tuo dispositivo. N26 non memorizza i dati biometrici del wallet del tuo dispositivo. Puoi rimuovere la carta dal wallet del dispositivo in qualsiasi momento.","first_transfer_cta":"Invia il primo bonifico","aml_step_hold":"Importo trattenuto","aml_step_submitted":"Documento inviato","aml_step_review":"Verifica manuale","aml_step_done":"Rilasciato","card_pay_sim":"Pagamento","card_pay_ok":"Pagamento approvato","card_pay_blocked":"Pagamento rifiutato","card_pay_blocked_body":"Carta disattivata o pagamenti online disabilitati.","card_pay_ok_body":"{amount}","notif_money":"Denaro ricevuto","notif_aml_hold":"Blocco AML","notif_aml_release":"AML rilasciato","notif_aml_pending":"Documento in verifica","notif_aml_reject":"Documento rifiutato","notif_kyc_done":"Identità confermata","security_device":"Questo dispositivo","security_last_login":"Ultimo accesso","incoming_transfer":"Bonifico in entrata","iban_show":"Mostra IBAN","remaining_today":"Oggi restano {amount}","last_updated":"Ultimo aggiornamento","just_now":"proprio ora","app_version":"Versione 2.4.1 · Build 19.10.2026","security_feed":"Attività di sicurezza","sec_login":"Accesso effettuato sull'app web","sec_device_now":"Questo dispositivo · attivo","confirm_details":"Controlla i dettagli","amount_label":"Importo","fee_label":"Commissione","total_label":"Totale","transfer_processing":"Elaborazione del bonifico…","loading_home":"Caricamento del conto…","mask_show":"Mostra","mask_hide":"Nascondi","bio_title":"Accesso biometrico","bio_desc":"Face ID / impronta digitale per azioni critiche","bio_enable":"Attiva la biometria","bio_disable":"Disattiva la biometria","bio_enabled":"Biometria attiva","bio_disabled":"Biometria disattivata","bio_prompt":"Conferma con la biometria","bio_ok":"Biometria confermata","bio_fail":"Biometria non riuscita o annullata","bio_unsupported":"Biometria non supportata su questo dispositivo","bio_required_transfer":"Importi elevati richiedono la conferma biometrica","share_iban":"Condividi IBAN","share_ok":"Condiviso","share_fail":"Condivisione non disponibile – copiato negli appunti","hash_label":"Checksum SHA-256","hash_note":"Firma crittografica dei dati dell'estratto conto","pwa_install":"Installa l'app","pwa_installed":"Installata come app","pwa_hint":"Aggiungi alla schermata Home per usarla a schermo intero senza barra del browser","vibrate_on":"Feedback aptico","vibrate_desc":"Vibra alle conferme","tx_pending":"Elaborazione","tx_completed":"Completato","tx_processing":"Il bonifico è in elaborazione…","tx_clearing":"Regolamento · SEPA","tx_review":"In verifica","tx_rejected":"Rifiutato","tx_review_toast":"Bonifico in verifica","tx_review_body":"Ti avviseremo al termine della verifica.","tx_sent_toast":"Il bonifico è in elaborazione","tx_sent_body":"Il destinatario riceverà presto i fondi.","tx_self":"Non puoi inviare al tuo stesso IBAN","tx_offline":"Nessuna connessione","tx_offline_body":"Il bonifico non è stato inviato. Riprova.","tx_booked":"Contabilizzato","network_wait":"Connessione al data center…","auth_verifying":"Verifica delle credenziali…","action_processing":"Elaborazione…","welcome_full_title":"Conto aperto","welcome_limited_title":"Conto aperto – identificazione parziale","welcome_full_body":"Il tuo conto corrente è attivo. IBAN e carta sono pronti. Puoi inviare denaro e usare gli Spaces.","welcome_limited_body":"Il tuo conto è aperto. Completa il Video-Ident per bonifici e Spaces – oppure chiedi all'assistenza di sbloccarlo.","account_ready":"Il tuo conto","tip_1_t":"Condividi IBAN","tip_1_d":"In Profilo trovi IBAN e carta – copia o condividi.","tip_2_t":"Sicurezza","tip_2_d":"Facoltativo: biometria e 2FA in Profilo → Sicurezza.","tip_3_t":"Primo bonifico","tip_3_d":"Dopo l'identificazione completa: Invia → SEPA o contatto.","tip_next":"Avanti","tip_start":"Apri il banking","tip_skip":"Salta","onboarding":"Introduzione rapida","review_queue":"In coda di verifica","review_queue_d":"Documento e biometria vengono controllati secondo gli standard bancari. Tieni aperta questa finestra.","pin_set":"PIN salvato","pin_change":"Cambia PIN","pin_new":"Nuovo PIN a 4 cifre","pin_save":"Salva PIN","pin_invalid":"Il PIN deve avere 4 cifre","twofa_on":"2FA attivata","twofa_off":"2FA disattivata","twofa_logic":"All'accesso viene mostrato un codice di conferma su questo dispositivo.","pwd_change":"Cambia password","pwd_current":"Password attuale","pwd_new":"Nuova password","pwd_ok":"Password salvata","pwd_wrong":"La password attuale è errata","devices_title":"Questo dispositivo","devices_body":"È attiva solo la sessione corrente del browser. Uscendo termini l'accesso qui.","admin_kyc_hint":"L'identità può essere sbloccata dall'assistenza","setting_on":"Attivato","setting_off":"Disattivato","sidebar_home":"Home","sidebar_card":"Carta","sidebar_spaces":"Spaces","sidebar_profile":"Profilo","sidebar_insights":"Analisi","space_vacation":"Fondo vacanze","space_emergency":"Fondo emergenze","space_goals":"Nuovi obiettivi","of_target":"{pct}% dell'obiettivo","of_amount":"di {amount}","pct_of_target":"% dell'obiettivo","card_pin_setup_title":"Imposta il PIN della carta virtuale","card_pin_setup_sub":"Crea un PIN a 4 cifre per la carta virtuale e per Apple Pay / Google Pay. Gratis.","card_pin_save":"Salva PIN","card_pin_saved":"PIN salvato","card_pin_saved_body":"Carta virtuale pronta per Apple Pay / Google Pay","card_physical_title":"Ordina la carta fisica","card_physical_sub":"Costo 5,00 € dal tuo saldo. Conferma con PIN o biometria. Ti avviseremo quando la carta sarà spedita.","card_physical_btn":"Ordina la carta","card_physical_hint":"Costo 5,00 € dopo l'autorizzazione. Notifica alla spedizione.","card_auth_title":"Autorizza l'ordine","card_auth_sub":"Conferma con il PIN della carta virtuale o la biometria per addebitare 5,00 €.","card_auth_btn":"Autorizza 5,00 €","card_auth_or":"o","card_auth_bio":"Conferma con Face ID / impronta digitale","card_auth_pin_opt":"Conferma con il PIN","card_auth_busy":"Autorizzazione…","card_continue_pin":"Continua · conferma con il PIN","card_pin_first":"Imposta prima il PIN virtuale","card_need_balance":"Servono almeno 5,00 € sul saldo","card_wrong_pin":"PIN errato","card_ordered_toast":"Carta ordinata","card_ordered_body":"Ti avviseremo quando la carta sarà pronta. Possono volerci alcune settimane.","card_order_failed":"Ordine non riuscito","card_pin_save_fail":"Impossibile salvare il PIN","virtual_pin_title":"PIN della carta virtuale","virtual_pin_sub":"Protegge i pagamenti online e il wallet. Nessun costo.","doc_type_label":"Tipo di documento","ocr_name_label":"Nome","ocr_doc_no":"N. documento","ocr_valid_until":"Valido fino al","ocr_review_pending":"Inviato per la verifica – approvazione della banca in attesa","set_pin_btn":"Imposta PIN","stmt_verify_title":"Verifica richiesta","stmt_verify_body":"Completa la verifica dell'identità per scaricare gli estratti conto.","period_7d":"Ultimi 7 giorni","period_30d":"Ultimi 30 giorni","period_month":"Mese corrente","period_prev_month":"Mese precedente","period_custom":"Periodo personalizzato","select_dates":"Seleziona le date","download_pdf":"Scarica PDF","receipt":"Ricevuta","from_label":"Da","method_label":"Metodo","date_label":"Data","close":"Chiudi","reply":"Rispondi","re_transfer":"Re: bonifico ","open_transfer":"Apri il bonifico","cancel":"Annulla","from_prefix":"Da: ","hero_badge":"BaFin · Protezione dei depositi fino a 100.000 €","trust_deposit":"Protezione dei depositi","trust_license":"Licenza bancaria completa","trust_realtime":"In tempo reale","trust_live":"Live"}
+    it: {"nav_accounts":"Conti","nav_banking":"Banking","nav_save":"Risparmia","nav_invest":"Investi","nav_credit":"Credito","nav_travel":"Viaggi","login":"Accedi","continue_btn":"Continua","start_ident":"Avvia l'identificazione","reg_account_title":"Il tuo accesso","reg_account_sub":"E-mail e una password sicura per il tuo conto.","reg_phone_hint":"Incluso il prefisso internazionale","reg_zip_label":"CAP","reg_city_label":"Città","reg_doc_country":"Documenti accettati:","upload_hint":"Tocca per selezionare o trascina qui un file","doc_id_de":"Carta d'identità","doc_id_at":"Carta d'identità","doc_id_ch":"Carta d'identità","doc_id_be":"Carta d'identità","doc_id_pl":"Carta d'identità","doc_id_it":"Carta d'identità","doc_passport":"Passaporto","doc_license":"Patente di guida","face_center":"Posiziona il viso nell'inquadratura","country_title":"Paese di residenza","country_sub":"Seleziona il paese in cui hai la residenza fiscale e vuoi tenere il conto.","country_hint":"Disponibile in alcuni mercati europei selezionati","country_de":"Germania","country_be":"Belgio","country_ch":"Svizzera","country_at":"Austria","country_pl":"Polonia","country_it":"Italia","face_looking":"Ricerca del tuo viso…","face_found":"Viso rilevato – resta nell'inquadratura","face_hold":"Resta fermo…","face_ok":"Posizione OK – selfie sbloccato","face_required":"Attendi finché il viso non viene rilevato","open_account":"Apri il conto","hero_title":"La banca che amerai","hero_sub":"Banking, risparmio e controllo in un'unica app – con licenza bancaria tedesca, protezione dei depositi e verifica dell'identità. Scegli il tuo piano e apri il conto in digitale.","features_title":"Tutto ciò che ti serve","features_sub":"Apri il conto in pochi minuti – completamente digitale, senza andare in filiale.","feat1_t":"Conto corrente gratuito","feat1_d":"Nessun canone mensile. Nessun costo nascosto.","feat2_t":"Bonifici istantanei","feat2_d":"Invia e ricevi denaro in tempo reale.","feat3_t":"Spaces per risparmiare","feat3_d":"Metti da parte i soldi per i tuoi obiettivi – in automatico.","open_now":"Apri il conto ora","footer_rights":"Tutti i diritti riservati.","geo_notice":"Le app di Google Play Store e App Store sono disponibili solo per i cittadini della Germania.","n26_app":"App N26","mobile_banking":"Mobile banking","back":"Indietro","step_of":"Passo","reg_title":"Apri un conto","reg_sub":"Crea il tuo conto N26 in pochi minuti.","first_name":"Nome","last_name":"Cognome","email":"E-mail","password":"Password","password_confirm":"Conferma password","next":"Continua","required":"Obbligatorio","invalid_email":"E-mail non valida","min_password":"Min. 6 caratteri","password_mismatch":"Le password non coincidono","personal_title":"Dati personali","personal_sub":"Ci servono ancora alcuni dati.","phone":"Numero di telefono","birth":"Data di nascita","street":"Via e numero civico","zip":"CAP","city":"Città","agree_prefix":"Accetto i","agree_terms":"Termini","agree_and":"e l'","agree_privacy":"Informativa sulla privacy","agree_of":"di N26.","please_accept":"Accetta","id_check_title":"1. Verifica dell'identità","id_check_sub":"Carica un passaporto, una carta d'identità o una patente. La verifica parte automaticamente.","choose_doc":"Scegli il documento d'identità","doc_formats":"JPG, PNG o PDF · max. 10 MB","start_check":"Avvia la verifica","checklist_1":"Carica documento","checklist_2":"Avvia la verifica e attendi","checklist_3":"Dopo l'approvazione passa alla video identificazione","video_title":"2. Video ID e selfie","video_sub":"Avvia la fotocamera, segui le istruzioni e scatta un selfie. Poi parte il controllo biometrico.","start_camera":"Avvia la fotocamera","take_selfie":"Scatta un selfie","selfie_done":"Selfie e movimento acquisiti","start_bio":"Avvia il controllo biometrico","finish_verify":"Completa la verifica","continue_video":"Passa alla video identificazione","camera_error":"Fotocamera non disponibile. Controlla le autorizzazioni o continua senza fotocamera.","hint_left":"Gira lentamente la testa a sinistra…","hint_right":"Ora gira a destra…","hint_ready":"Guarda dritto – pronto per il selfie","hint_captured":"✓ Movimento e selfie acquisiti","vlist_1":"Avvia la fotocamera","vlist_2":"Gira la testa a sinistra e a destra","vlist_3":"Scatta un selfie","vlist_4":"Attendi il controllo biometrico","check_done":"Controllo completato","can_continue":"Puoi continuare.","progress":"Avanzamento","verify_note":"La verifica dell'identità può richiedere alcuni minuti. Attendi il completamento di tutti i passaggi.","phase_doc_1":"Documento ricevuto","phase_doc_1d":"Il file viene caricato in modo sicuro…","phase_doc_2":"Controllo di autenticità","phase_doc_2d":"Verifichiamo elementi di sicurezza e formato…","phase_doc_3":"Estrazione dei dati","phase_doc_3d":"Estraiamo nome, data di nascita e numero del documento…","phase_doc_4":"Confronto","phase_doc_4d":"I dati vengono confrontati con quelli del modulo…","phase_doc_5":"Approvato","phase_doc_5d":"Parte 1 della verifica dell'identità completata.","phase_sf_1":"Salvataggio della registrazione","phase_sf_1d":"Selfie e sequenza di movimento vengono salvati…","phase_sf_2":"Riconoscimento facciale","phase_sf_2d":"Le caratteristiche biometriche vengono analizzate…","phase_sf_3":"Controllo di vitalità","phase_sf_3d":"Movimenti della testa e vitalità vengono verificati…","phase_sf_4":"Corrispondenza con il documento","phase_sf_4d":"Il viso viene confrontato con la foto del documento…","phase_sf_5":"Verifica OK","phase_sf_5d":"Video identificazione completata con successo.","welcome_title":"Benvenuto in N26!","welcome_sub":"Identità verificata. Il tuo conto è pronto – puoi usare subito il banking.","status_verified":"Verificato","balance_label":"Saldo: ","go_banking":"Vai al banking online","name_label":"Nome","status_label":"Stato","login_title":"Accedi","login_sub":"Accedi con il tuo conto N26.","sign_in":"Accedi","signing_in":"Accesso in corso…","no_account":"Non hai ancora un conto?","register_now":"Registrati ora","account_not_found":"Conto non trovato. Registrati prima.","wrong_password":"Password errata.","email_exists":"Questa e-mail è già registrata. Accedi.","your_password":"La tua password","welcome":"Benvenuto","my_card":"La mia carta","spaces":"Spaces","profile":"Profilo","main_account":"Conto principale","available_balance":"Saldo disponibile","income":"Entrate","spending":"Uscite","send":"Invia","request":"Richiedi","insights":"Analisi","transactions":"Transazioni","no_transactions":"Ancora nessuna transazione","no_tx_hint":"I tuoi primi bonifici appariranno qui.","digital_card":"Carta digitale","card_settings":"Impostazioni carta","active":"Attiva","inactive":"Non attiva","activate_card":"Attiva la carta","online_pay":"Pagamenti online","contactless":"Contactless","atm":"Prelievi al bancomat","abroad":"Pagamenti all'estero","activate_card_desc":"Carta fisica e digitale","online_pay_desc":"E-commerce e app","contactless_desc":"NFC / Apple Pay / Google Pay","atm_desc":"Prelievi di contanti","abroad_desc":"Fuori dall'UE","activate_now":"Attiva la carta ora","card_limit":"Limite della carta","spent_month":"Spesi questo mese","card_active_hint":"La tua carta è attiva. Le impostazioni valgono subito.","card_inactive_hint":"Attiva la carta quando ricevi quella fisica.","per_day_contactless":"al giorno · contactless","card_activated_toast":"Carta attivata","card_activated_desc":"Pagamenti online e contactless abilitati","total_saved":"Totale risparmiato","your_spaces":"I tuoi Spaces","across_spaces":"In {n} Spaces","account_card":"Conto e carta","notifications":"Notifiche","no_notifications":"Nessuna notifica","clear":"Cancella","personal_data":"Dati personali","security":"Sicurezza","limits_features":"Limiti e funzioni","help_support":"Aiuto e assistenza","logout":"Esci","copy":"Copia","copied":"Copiato","iban_copied":"IBAN copiato","card_copied":"Numero della carta copiato","card_number":"Numero della carta","see_all":"Vedi tutto","account_standard":"Standard · verificato","address_stored":"Salvato dai dati di registrazione","personal_note":"Le modifiche ai dati personali richiedono una nuova verifica dell'identità.","app_pin":"Blocco app / PIN","app_pin_desc":"PIN a 4 cifre per l'app","show":"Mostra","hide":"Nascondi","twofa":"Accesso a due fattori","twofa_desc":"E-mail + conferma sul dispositivo","change_password":"Cambia password","logged_devices":"Dispositivi connessi","password_reset_sent":"Il link di reimpostazione è stato inviato alla tua e-mail","only_this_device":"Solo questo dispositivo è connesso","limit_transfer":"Bonifico / giorno","limit_cash":"Contanti / giorno","limit_contactless":"Contactless senza PIN","limit_card":"Limite carta / giorno","limits_note":"I limiti si applicano al tuo conto e possono essere modificati su richiesta.","request_limit":"Richiedi aumento del limite","limit_requested":"Aumento richiesto – verifica entro 1–2 giorni lavorativi","faq1_q":"Come invio denaro?","faq1_a":"Home → Invia → scegli contatto o SEPA → importo.","faq2_q":"Che cos'è uno Space?","faq2_a":"Sottoconti per risparmiare verso obiettivi (vacanza, fondo emergenze…).","faq3_q":"Blocco AML?","faq3_a":"Importi in entrata più elevati possono essere trattenuti. Dopo il caricamento, il team compliance li verifica manualmente e rilascia i fondi.","faq4_q":"Carta smarrita?","faq4_a":"In Carta disattiva la carta, poi contatta l'assistenza.","start_chat":"Avvia la chat con l'assistenza","support_reply":"Ti risponderemo a breve.","send_money":"Invia denaro","choose_type":"Tipo di bonifico","type_contact":"A un contatto","type_sepa":"Bonifico SEPA","type_intl":"Internazionale","type_contact_d":"Ai contatti salvati","type_sepa_d":"IBAN nell'area SEPA (UE/SEE)","type_intl_d":"All'estero con SWIFT/BIC","choose_recipient":"Scegli il destinatario","search_contacts":"Cerca contatti…","no_contacts":"Ancora nessun contatto","add_contact":"Aggiungi contatto","contact_name":"Nome","contact_iban_optional":"IBAN (facoltativo)","save_contact":"Salva","enter_amount":"Inserisci l'importo","amount_eur":"Importo (EUR)","note_optional":"Causale (facoltativa)","available":"Disponibile","continue":"Continua","confirm_transfer":"Conferma il bonifico","you_send":"Stai inviando","to":"a","confirm_send":"Conferma e invia","back_btn":"Indietro","sepa_title":"Bonifico SEPA","recipient_name":"Nome del destinatario","iban":"IBAN","bic_optional":"BIC (facoltativo)","reference":"Causale","sepa_hint":"Bonifici SEPA in EUR nell'UE/SEE – di solito entro 1 giorno lavorativo.","intl_title":"Bonifico internazionale","country":"Paese","swift_bic":"SWIFT / BIC","account_or_iban":"Numero di conto o IBAN","currency":"Valuta","fee":"Commissione","fee_intl":"Commissione internazionale","total_debit":"Addebito totale","intl_hint":"I bonifici internazionali possono richiedere 1–5 giorni lavorativi. Le commissioni vengono detratte dal tuo saldo.","insufficient":"Fondi insufficienti","invalid_amount":"Inserisci un importo valido","invalid_iban":"IBAN non valido","transfer_ok":"Bonifico riuscito","request_money":"Richiedi denaro","select_contact":"Seleziona contatto","live":"LIVE","off":"OFF","aria_next":"Avanti","aria_prev":"Indietro","home":"Home","card":"Carta","stats":"Statistiche","aml_title":"Controllo AML – importo trattenuto","aml_hold":"Blocco","aml_body":"Una parte del tuo saldo è temporaneamente trattenuta per i controlli antiriciclaggio (AML). Carica un documento di verifica. L'importo viene rilasciato dopo la verifica manuale.","aml_deadline":"Scadenza: 15 ottobre 2026","aml_upload":"Carica documento","aml_checking":"Verifica in corso…","aml_locked":"Temporaneamente bloccato","aml_total":"Saldo totale","aml_available":"Disponibile","aml_toast":"Blocco AML","aml_toast_body":"temporaneamente bloccato – carica un documento","aml_released":"AML rilasciato","aml_released_body":"Saldo di nuovo pienamente disponibile","aml_docs_check":"I documenti sono in verifica…","aml_docs_ok":"Documenti accettati. Rilascio in corso…","money_received":"Denaro ricevuto","from":"da","upgrade_metal":"Passa a un piano superiore","learn_more":"Scopri di più","n26_metal":"N26 Metal","space_deposit":"Versa su","deposit":"Versamento","add_to":"Aggiungi a","spending_insights":"Analisi delle spese","net":"Netto","by_category":"Per categoria","no_data":"Ancora nessun dato.","no_data_hint":"Le statistiche compaiono quando hai delle transazioni.","today":"Oggi","yesterday":"Ieri","this_week":"Questa settimana","pending":"In sospeso","transfer_cat":"Bonifico","show_num":"Mostra","hide_num":"Nascondi","card_holder":"Titolare della carta","expires":"Scade","kyc_doc_type":"Tipo di documento","kyc_id_card":"Carta d'identità","kyc_passport":"Passaporto","kyc_license":"Patente di guida","kyc_front":"Fronte","kyc_back":"Retro","kyc_upload_front":"Carica il fronte","kyc_upload_back":"Carica il retro","kyc_ocr_title":"Dati estratti","kyc_ocr_confirm":"Conferma i dati","kyc_ocr_hint":"Controlla i dati. Ricarica il documento se qualcosa non è corretto.","kyc_match_score":"Punteggio di corrispondenza","kyc_video_later":"Completa la video identificazione più tardi","kyc_video_later_hint":"Puoi aprire il conto. Bonifici e altre funzioni si sbloccano dopo la video identificazione.","kyc_limited_status":"Limitato","kyc_account_locked_title":"Conto in verifica","kyc_account_locked_body":"I dati del conto e della carta si sbloccano quando la verifica dell'identità è confermata. Riceverai una notifica.","kyc_wait_notify":"Resta aggiornato – ti avviseremo qui non appena sarà approvato.","card_order_title":"Ordina la carta","card_order_sub":"Inserisci l'indirizzo di consegna. Costo 5,00 €. La tua carta virtuale resta invariata.","card_pin_label":"PIN della carta","card_pin_confirm":"Conferma il PIN","card_pin_mismatch":"I PIN non coincidono","card_pin_len":"Il PIN deve avere 4 cifre","card_delivery_title":"Indirizzo di consegna","card_order_fee":"Costo della carta","card_order_pay":"Paga e ordina","card_order_success":"Carta ordinata","card_order_success_body":"La tua carta fisica è in produzione. Ti avviseremo quando sarà pronta e spedita – possono volerci alcune settimane. La carta virtuale resta attiva.","card_order_pending":"Carta fisica ordinata","card_order_eta":"Ti avviseremo quando la carta sarà pronta e spedita. Possono volerci alcune settimane.","card_not_ready":"Dati della carta disponibili dopo l'approvazione dell'identità","iban_hidden":"Nascondi IBAN","kyc_pending_status":"In verifica","wallet_apple":"Aggiungi ad Apple Wallet","wallet_google":"Aggiungi a Google Wallet","wallet_offline_banner":"Nessuna connessione – controlla la rete","offline_retry":"Riprova","connecting":"Contatto con l'emittente della carta…","wallet_connecting":"Contatto con l'emittente della carta…","wallet_check_card":"Verifica di carta e limiti…","wallet_check_device":"Verifica della sicurezza del dispositivo…","wallet_security":"Verifica dei requisiti di sicurezza…","wallet_tokenizing":"Creazione del numero di carta protetto…","wallet_sending":"Invio dei dati al Wallet…","wallet_pending_title":"Richiesta inviata","wallet_pending_body":"La tua richiesta è stata inviata alla banca ed è in attesa di conferma.","wallet_success":"Carta aggiunta","wallet_success_body":"La tua carta è pronta per i pagamenti contactless.","wallet_done":"Fatto","wallet_preview":"N26 Debit","wallet_processing":"Elaborazione","wallet_rejected_toast":"Richiesta Wallet rifiutata","wallet_revoked_toast":"Carta rimossa dal Wallet","wallet_approved_toast":"Carta attivata nel Wallet","sec_title":"Conferma il pagamento","sec_sub":"Conferma il bonifico con il PIN della carta o la biometria.","sec_pin_label":"PIN di conferma","sec_pin_wrong":"PIN errato","sec_pin_set":"Crea un PIN di conferma a 4 cifre","sec_pin_confirm_set":"Conferma il PIN","sec_bio":"Face ID / Touch ID","sec_or":"o","sec_processing":"Elaborazione del pagamento…","sec_success":"Il denaro è in arrivo","sec_success_body":"Il tuo bonifico è stato autorizzato.","sec_amount_to":"a","kyc_pending_banner":"Identità in verifica","kyc_pending_body":"Stiamo verificando i tuoi documenti. L'accesso completo sarà disponibile dopo l'approvazione.","kyc_doc_reject":"Documento non riconosciuto","kyc_doc_reject_body":"Impossibile verificare il file. Carica una foto nitida dell'intero documento.","kyc_doc_too_small":"Immagine troppo piccola. Carica una foto nitida (almeno 320 px, documento intero nell'inquadratura).","doc_mask_hint":"Carica una foto nitida del documento. Tutti gli angoli devono essere visibili.","doc_mask_id":"Carta d'identità – fronte, in orizzontale","doc_mask_id_back":"Carta d'identità – retro","doc_mask_passport":"Passaporto – pagina dei dati (foto + MRZ)","doc_mask_license":"Patente – fronte","doc_mask_tip":"Buona luce, senza flash, tutti gli angoli visibili.","doc_selected":"File selezionato – avvia ora l'identificazione","kyc_doc_analyzing":"Verifica del documento…","kyc_full_status":"Completamente verificato","kyc_banner_title":"Completa la verifica dell'identità","kyc_banner_body":"Video ID in sospeso. Bonifici e Spaces sono temporaneamente limitati.","kyc_banner_cta":"Continua ora","kyc_locked_title":"Funzione bloccata","kyc_locked_body":"Completa prima la verifica dell'identità (video ID).","kyc_complete_title":"Video identificazione","kyc_step_face":"Guarda dritto nella fotocamera","kyc_step_left":"Gira lentamente la testa a sinistra","kyc_step_right":"Gira lentamente la testa a destra","kyc_step_selfie":"Scatta un selfie","kyc_face_ok":"Viso rilevato","kyc_liveness_ok":"Vitalità confermata","kyc_bio_match":"Corrispondenza con il documento","kyc_session_timer":"Sessione","kyc_continue_account":"Apri il conto","kyc_restricted_welcome":"Il tuo conto è aperto. Completa il video ID per abilitare i bonifici.","kyc_done_toast":"Identità confermata","kyc_done_toast_body":"Tutte le funzioni sono sbloccate.","kyc_doc_required":"Scegli il tipo di documento e carica un file","kyc_confirm_data":"Conferma i dati e avvia il controllo","id_number":"Numero del documento","valid_until":"Valido fino al","land_trust_t":"La banca di cui si fidano milioni di persone","land_trust_d":"N26 è una banca tedesca con licenza bancaria completa e protezione dei depositi fino a 100.000 €. Avvisi in tempo reale, controllo della carta e verifiche dell'identità secondo standard bancari proteggono il tuo denaro – in un'app di cui si fidano milioni di persone.","land_free_t":"Banking. Gratis, senza costi nascosti.","land_free_d":"Apri il tuo conto corrente in digitale in pochi passaggi chiari. Carta virtuale, bonifici e Spaces – senza filiale. Nessun costo nascosto con il piano Standard – hai il pieno controllo di limiti e sicurezza.","land_shared_t":"Finanze condivise, semplicemente","land_shared_d":"Gli obiettivi comuni hanno bisogno di salvadanai chiari. Con gli Spaces metti da parte soldi per viaggi, imprevisti o progetti. Panoramica live, obiettivi e progressi – senza fogli di calcolo né caos sul conto principale.","land_metal_t":"Ottieni di più dal tuo denaro","land_metal_d":"Metal significa design premium e vantaggi extra. Più flessibilità, funzioni prioritarie e una carta adatta alla vita di tutti i giorni. Il primo mese è gratis – poi un canone mensile chiaro, senza sorprese.","land_invest_t":"Banking e risparmio in un'unica app","land_invest_d":"Banking quotidiano e risparmio in un solo posto: entrate, uscite e Spaces a colpo d'occhio. Vedi dove vanno i soldi, fissa obiettivi e mantieni il controllo – senza destreggiarti tra cinque app.","land_travel_t":"La carta ideale per viaggiare","land_travel_d":"Paga in viaggio, blocca la carta, regola i limiti – tutto nell'app. Condizioni eque all'estero, contactless e online – con misure di sicurezza che controlli tu quando qualcosa non torna.","land_plans_t":"Scegli il tuo conto","land_plans_d":"Due modelli chiari. Standard resta gratuito. Metal: 2 mesi gratis, poi 16 € / mese con vantaggi premium. Entrambi con IBAN tedesco e apertura digitale.","land_plan_std":"Standard","land_plan_std_d":"Conto corrente gratuito – senza canoni mensili","land_plan_go":"Go","land_plan_go_d":"Viaggi e limiti extra","land_plan_metal":"Metal","land_plan_metal_d":"Premium Metal – 2 mesi gratis, poi 16 € / mese","land_faq_t":"FAQ","land_sec_t":"Sicurezza di livello bancario","land_sec_d":"Notifica a ogni movimento, 3D Secure per i pagamenti online, Video-Ident e controllo dei documenti. Decidi tu quando la carta è online o contactless – livello bancario, senza appuntamento in filiale.","land_cta_t":"Pronto per il banking moderno?","land_cta_d":"Apri il conto in digitale – passaggi chiari e pieno controllo.","choose_plan":"Scegli il piano","plan_std_price":"Gratis","plan_metal_price":"16,00 €","plan_std_price_note":"al mese · completamente gratis","plan_metal_price_note":"2 mesi gratis · poi 16,00 € / mese","plan_feature_iban":"IBAN tedesco","plan_feature_card":"Mastercard digitale","plan_feature_spaces":"Spaces per risparmiare","plan_feature_metal":"Design Metal e priorità","plan_feature_limits":"Limiti più alti","hero_visual_caption":"Premium Banking","hero_visual_sub":"Carta Metal · IBAN tedesco · in tempo reale","menu_open":"Menu","menu_close":"Chiudi","mobile_disclaimer":"L'app N26 offre funzioni estese ed è disponibile solo per i cittadini tedeschi. Il sito web e il banking online si possono usare anche con un permesso di soggiorno in Germania.","aml_pending":"In verifica","aml_pending_body":"Il tuo documento è stato inviato ed è in verifica manuale. I fondi restano bloccati fino al termine della verifica.","aml_pending_toast":"Documento inviato","aml_pending_toast_body":"Stato: in verifica – rilascio dopo l'approvazione manuale","aml_rejected":"Documento rifiutato","aml_rejected_body":"Carica un altro documento.","limit_exceeded":"Limite giornaliero raggiunto","limit_exceeded_body":"Max. {amount} al giorno. Vedi i limiti nelle impostazioni.","space_withdraw":"Preleva","space_withdraw_to":"Sul conto principale","card_status_ordered":"Ordinata","card_status_shipped":"In arrivo","card_status_active":"Attiva","statement_download":"Scarica l'estratto conto","statement_ready":"Estratto conto pronto","kyc_required_title":"Verifica richiesta","kyc_required_statement":"Gli estratti conto sono disponibili solo a verifica dell'identità completata.","wallet_policy_title":"Condizioni d'uso del Wallet","wallet_policy_accept":"Accetto le condizioni","wallet_policy_continue":"Continua","wallet_policy_read":"Leggi il testo completo","wallet_cancel":"Annulla","wallet_info_title":"Aggiungi la carta al Wallet","wallet_info_body":"La tua carta virtuale verrà tokenizzata in modo sicuro. I dati della carta non vengono mai condivisi con gli esercenti.","wallet_policy_text":"Aggiungendo la carta confermi di essere il titolare del conto e di usare la carta solo per pagamenti leciti. La tokenizzazione avviene sul tuo dispositivo. N26 non memorizza i dati biometrici del wallet del tuo dispositivo. Puoi rimuovere la carta dal wallet del dispositivo in qualsiasi momento.","first_transfer_cta":"Invia il primo bonifico","aml_step_hold":"Importo trattenuto","aml_step_submitted":"Documento inviato","aml_step_review":"Verifica manuale","aml_step_done":"Rilasciato","card_pay_sim":"Pagamento","card_pay_ok":"Pagamento approvato","card_pay_blocked":"Pagamento rifiutato","card_pay_blocked_body":"Carta disattivata o pagamenti online disabilitati.","card_pay_ok_body":"{amount}","notif_money":"Denaro ricevuto","notif_aml_hold":"Blocco AML","notif_aml_release":"AML rilasciato","notif_aml_pending":"Documento in verifica","notif_aml_reject":"Documento rifiutato","notif_kyc_done":"Identità confermata","security_device":"Questo dispositivo","security_last_login":"Ultimo accesso","incoming_transfer":"Bonifico in entrata","iban_show":"Mostra IBAN","remaining_today":"Oggi restano {amount}","last_updated":"Ultimo aggiornamento","just_now":"proprio ora","app_version":"Versione 2.4.1 · Build 19.10.2026","security_feed":"Attività di sicurezza","sec_login":"Accesso effettuato sull'app web","sec_device_now":"Questo dispositivo · attivo","confirm_details":"Controlla i dettagli","amount_label":"Importo","fee_label":"Commissione","total_label":"Totale","transfer_processing":"Elaborazione del bonifico…","loading_home":"Caricamento del conto…","mask_show":"Mostra","mask_hide":"Nascondi","bio_title":"Accesso biometrico","bio_desc":"Face ID / impronta digitale per azioni critiche","bio_enable":"Attiva la biometria","bio_disable":"Disattiva la biometria","bio_enabled":"Biometria attiva","bio_disabled":"Biometria disattivata","bio_prompt":"Conferma con la biometria","bio_ok":"Biometria confermata","bio_fail":"Biometria non riuscita o annullata","bio_unsupported":"Biometria non supportata su questo dispositivo","bio_required_transfer":"Importi elevati richiedono la conferma biometrica","share_iban":"Condividi IBAN","share_ok":"Condiviso","share_fail":"Condivisione non disponibile – copiato negli appunti","hash_label":"Checksum SHA-256","hash_note":"Firma crittografica dei dati dell'estratto conto","pwa_install":"Installa l'app","pwa_installed":"Installata come app","pwa_hint":"Aggiungi alla schermata Home per usarla a schermo intero senza barra del browser","vibrate_on":"Feedback aptico","vibrate_desc":"Vibra alle conferme","tx_pending":"Elaborazione","tx_completed":"Completato","tx_processing":"Il bonifico è in elaborazione…","tx_clearing":"Regolamento · SEPA","tx_review":"In verifica","tx_rejected":"Rifiutato","tx_review_toast":"Bonifico in verifica","tx_review_body":"Ti avviseremo al termine della verifica.","tx_sent_toast":"Il bonifico è in elaborazione","tx_sent_body":"Il destinatario riceverà presto i fondi.","tx_self":"Non puoi inviare al tuo stesso IBAN","tx_offline":"Nessuna connessione","tx_offline_body":"Il bonifico non è stato inviato. Riprova.","tx_booked":"Contabilizzato","network_wait":"Connessione al data center…","auth_verifying":"Verifica delle credenziali…","action_processing":"Elaborazione…","welcome_full_title":"Conto aperto","welcome_limited_title":"Conto aperto – identificazione parziale","welcome_full_body":"Il tuo conto corrente è attivo. IBAN e carta sono pronti. Puoi inviare denaro e usare gli Spaces.","welcome_limited_body":"Il tuo conto è aperto. Completa il Video-Ident per bonifici e Spaces – oppure chiedi all'assistenza di sbloccarlo.","account_ready":"Il tuo conto","tip_1_t":"Condividi IBAN","tip_1_d":"In Profilo trovi IBAN e carta – copia o condividi.","tip_2_t":"Sicurezza","tip_2_d":"Facoltativo: biometria e 2FA in Profilo → Sicurezza.","tip_3_t":"Primo bonifico","tip_3_d":"Dopo l'identificazione completa: Invia → SEPA o contatto.","tip_next":"Avanti","tip_start":"Apri il banking","tip_skip":"Salta","onboarding":"Introduzione rapida","review_queue":"In coda di verifica","review_queue_d":"Documento e biometria vengono controllati secondo gli standard bancari. Tieni aperta questa finestra.","pin_set":"PIN salvato","pin_change":"Cambia PIN","pin_new":"Nuovo PIN a 4 cifre","pin_save":"Salva PIN","pin_invalid":"Il PIN deve avere 4 cifre","twofa_on":"2FA attivata","twofa_off":"2FA disattivata","twofa_logic":"All'accesso viene mostrato un codice di conferma su questo dispositivo.","pwd_change":"Cambia password","pwd_current":"Password attuale","pwd_new":"Nuova password","pwd_ok":"Password salvata","pwd_wrong":"La password attuale è errata","devices_title":"Questo dispositivo","devices_body":"È attiva solo la sessione corrente del browser. Uscendo termini l'accesso qui.","admin_kyc_hint":"L'identità può essere sbloccata dall'assistenza","setting_on":"Attivato","setting_off":"Disattivato","sidebar_home":"Home","sidebar_card":"Carta","sidebar_spaces":"Spaces","sidebar_profile":"Profilo","sidebar_insights":"Analisi","space_vacation":"Fondo vacanze","space_emergency":"Fondo emergenze","space_goals":"Nuovi obiettivi","of_target":"{pct}% dell'obiettivo","of_amount":"di {amount}","pct_of_target":"% dell'obiettivo","card_pin_setup_title":"Imposta il PIN della carta virtuale","card_pin_setup_sub":"Crea un PIN a 4 cifre per la carta virtuale e per Apple Pay / Google Pay. Gratis.","card_pin_save":"Salva PIN","card_pin_saved":"PIN salvato","card_pin_saved_body":"Carta virtuale pronta per Apple Pay / Google Pay","card_physical_title":"Ordina la carta fisica","card_physical_sub":"Costo 5,00 € dal tuo saldo. Conferma con PIN o biometria. Ti avviseremo quando la carta sarà spedita.","card_physical_btn":"Ordina la carta","card_physical_hint":"Costo 5,00 € dopo l'autorizzazione. Notifica alla spedizione.","card_auth_title":"Autorizza l'ordine","card_auth_sub":"Conferma con il PIN della carta virtuale o la biometria per addebitare 5,00 €.","card_auth_btn":"Autorizza 5,00 €","card_auth_or":"o","card_auth_bio":"Conferma con Face ID / impronta digitale","card_auth_pin_opt":"Conferma con il PIN","card_auth_busy":"Autorizzazione…","card_continue_pin":"Continua · conferma con il PIN","card_pin_first":"Imposta prima il PIN virtuale","card_need_balance":"Servono almeno 5,00 € sul saldo","card_wrong_pin":"PIN errato","card_ordered_toast":"Carta ordinata","card_ordered_body":"Ti avviseremo quando la carta sarà pronta. Possono volerci alcune settimane.","card_order_failed":"Ordine non riuscito","card_pin_save_fail":"Impossibile salvare il PIN","virtual_pin_title":"PIN della carta virtuale","virtual_pin_sub":"Protegge i pagamenti online e il wallet. Nessun costo.","doc_type_label":"Tipo di documento","ocr_name_label":"Nome","ocr_doc_no":"N. documento","ocr_valid_until":"Valido fino al","ocr_review_pending":"Inviato per la verifica – approvazione della banca in attesa","set_pin_btn":"Imposta PIN","stmt_verify_title":"Verifica richiesta","stmt_verify_body":"Completa la verifica dell'identità per scaricare gli estratti conto.","period_7d":"Ultimi 7 giorni","period_30d":"Ultimi 30 giorni","period_month":"Mese corrente","period_prev_month":"Mese precedente","period_custom":"Periodo personalizzato","select_dates":"Seleziona le date","download_pdf":"Scarica PDF","receipt":"Ricevuta","from_label":"Da","method_label":"Metodo","date_label":"Data","close":"Chiudi","reply":"Rispondi","re_transfer":"Re: bonifico ","open_transfer":"Apri il bonifico","cancel":"Annulla","from_prefix":"Da: ","hero_badge":"BaFin · Protezione dei depositi fino a 100.000 €","trust_deposit":"Protezione dei depositi","trust_license":"Licenza bancaria completa","trust_realtime":"In tempo reale","trust_live":"Live"}
     };
 
     window.__N26_LANG = window.__N26_LANG || 'de';
@@ -8623,7 +8755,7 @@ const analyzeDocumentImage = function(file, docType) {
         return function() { if (ro) ro.disconnect(); window.removeEventListener('resize', onR); window.removeEventListener('orientationchange', onR); };
       }, []);
       return (
-        <div ref={cardRef} className={`bal-card ${balFlash > 0 ? 'bal-flash' : ''} ${balFlash < 0 ? 'bal-flash-dn' : ''} relative overflow-hidden rounded-2xl teal-gradient p-6 text-white soft-card balance-pop ${amlHoldActive ? 'ring-2 ring-white/40 ring-offset-2 ring-offset-transparent' : ''}`}>
+        <div ref={cardRef} className={`bal-card ${balFlash > 0 ? 'bal-flash' : ''} ${balFlash < 0 ? 'bal-flash-dn' : ''} relative overflow-hidden rounded-2xl teal-gradient p-5 text-white soft-card balance-pop ${amlHoldActive ? 'ring-2 ring-white/40 ring-offset-2 ring-offset-transparent' : ''}`}>
           {balFlash !== 0 ? <div key={balFlashK} className={'bal-tint ' + (balFlash > 0 ? 'up' : 'dn')} /> : null}
           <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10" />
           <div className="bal-shine pointer-events-none absolute inset-0" />
@@ -8639,7 +8771,7 @@ const analyzeDocumentImage = function(file, docType) {
                 <LucideIcon name={visible ? 'Eye' : 'EyeOff'} className="h-4 w-4" />
               </button>
             </div>
-            <div className="mt-6 relative">
+            <div className="mt-4 relative">
               {balDelta ? <span key={balDelta.k} className={'bal-delta ' + (balDelta.v > 0 ? 'up' : 'dn')}>{(balDelta.v > 0 ? '+' : '−') + (visible && canReveal ? formatCurrency(Math.abs(balDelta.v)) : (balDelta.v > 0 ? '▲' : '▼'))}</span> : null}
               <p className="text-xs font-medium uppercase tracking-wide text-white/60">
                 {amlHoldActive ? (t ? t('available_balance') : 'Available') : (t ? t('available_balance') : 'Available Balance')}
@@ -8653,42 +8785,21 @@ const analyzeDocumentImage = function(file, docType) {
                   </span>
                 )}
               </p>
-              {amlHoldActive && (
-                <div className="aml-bal-panel mt-3 rounded-xl bg-white/10 ring-1 ring-white/15 px-3 py-2.5 space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-white/70">{t ? t('aml_total') : 'Total'}</span>
-                    <span className="font-medium tabular-nums">{visible ? formatCurrency(totalBalance != null ? totalBalance : balance) : '••••'}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-white/90 font-medium inline-flex items-center gap-1"><LucideIcon name="Lock" className="h-3.5 w-3.5" /> {t ? t('aml_locked') : 'AML'}</span>
-                    <span className="font-medium tabular-nums text-white">{visible ? formatCurrency(amlHoldAmount) : '••••'}</span>
-                  </div>
-                  <div className="flex justify-between text-xs border-t border-white/15 pt-1.5">
-                    <span className="text-white/90 font-medium">{t ? t('aml_available') : 'Available'}</span>
-                    <span className="font-semibold tabular-nums">{visible ? formatCurrency(balance) : '••••'}</span>
-                  </div>
+              <div className="aml-bal-panel mt-3 rounded-xl bg-white/10 ring-1 ring-white/15 px-3 py-2 space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-white/70">{t ? t('aml_total') : 'Total'}</span>
+                  <span className="font-medium tabular-nums">{visible ? formatCurrency(totalBalance != null ? totalBalance : balance) : '••••'}</span>
                 </div>
-              )}
-            </div>
-            {lastUpdated && (
-              <p className="mt-3 text-[10px] text-white/45">
-                {t ? t('last_updated') : 'Updated'}: {lastUpdated}
-              </p>
-            )}
-            <div className="bal-stats mt-5">
-              <div className="flex items-center gap-2">
-                <div className="rounded-full bg-white/15 p-1.5"><LucideIcon name="TrendingUp" className="h-3.5 w-3.5" /></div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wide text-white/50">{t ? t('income') : 'Income'}</p>
-                  <p className="text-sm font-semibold tabular-nums">{visible ? formatCurrency(income) : '••••'}</p>
+                <div className="flex justify-between text-xs">
+                  <span className="text-white/70">{t ? t('aml_available') : 'Available'}</span>
+                  <span className="font-medium tabular-nums">{visible ? formatCurrency(balance) : '••••'}</span>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="rounded-full bg-white/15 p-1.5"><LucideIcon name="TrendingDown" className="h-3.5 w-3.5" /></div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wide text-white/50">{t ? t('spending') : 'Spending'}</p>
-                  <p className="text-sm font-semibold tabular-nums">{visible ? formatCurrency(spending) : '••••'}</p>
-                </div>
+                {amlHoldActive && (
+                  <div className="flex justify-between text-xs border-t border-white/15 pt-1">
+                    <span className="text-white/90 font-medium inline-flex items-center gap-1"><LucideIcon name="Lock" className="h-3.5 w-3.5" /> {t ? t('aml_locked') : 'Temporarily frozen'}</span>
+                    <span className="font-semibold tabular-nums text-white">{visible ? formatCurrency(amlHoldAmount) : '••••'}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -9533,10 +9644,10 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
     function QuickActions({ onSend, onRequest, onInsights, onSpaces, t, remainingToday }) {
       const [pl, setPl] = useState(null);
       const actions = [
-        { key: 'send', label: t('send'), fn: onSend, g: <><g className="qa-mv"><path d="M12 18.5v-10" /><path d="m7.5 13 4.5-4.5 4.5 4.5" /></g><path d="M6.5 5h11" /></> },
-        { key: 'request', label: t('request'), fn: onRequest, g: <><g className="qa-mv"><path d="M12 5.5v10" /><path d="m7.5 11 4.5 4.5 4.5-4.5" /></g><path d="M6.5 19h11" /></> },
-        { key: 'insights', label: t('insights'), fn: onInsights, g: <><path className="qa-b1" d="M7 18v-5" /><path className="qa-b2" d="M12 18V7" /><path className="qa-b3" d="M17 18v-8" /></> },
-        { key: 'spaces', label: t('spaces'), fn: onSpaces, g: <><g className="qa-pig"><path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.2 3.2 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1Z" /><path d="M16 10h.01" /><path d="M2 8v1a2 2 0 0 0 2 2h1" /></g><circle className="qa-coin" cx="12.5" cy="-1.5" r="1.7" fill="currentColor" stroke="none" /></> },
+        { key: 'send', label: t('send'), fn: onSend, g: <g className="qa-mv"><path d="M7 17 17 7" /><path d="M8.5 7H17v8.5" /></g> },
+        { key: 'request', label: t('request'), fn: onRequest, g: <g className="qa-mv"><path d="M17 7 7 17" /><path d="M15.5 17H7V8.5" /></g> },
+        { key: 'insights', label: t('insights'), fn: onInsights, g: <><path d="M12 3.5a8.5 8.5 0 1 0 8.5 8.5H12z" /><path className="qa-slice" d="M15 3.9A8.5 8.5 0 0 1 20.1 9H15z" /></> },
+        { key: 'spaces', label: t('spaces'), fn: onSpaces, g: <g className="qa-pig"><rect x="4" y="4" width="6.5" height="6.5" rx="1.8" /><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8" /><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8" /><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8" /></g> },
       ];
       const run = function(act) {
         if (pl) return;
@@ -9544,20 +9655,15 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
         setTimeout(function() { setPl(null); act.fn(); }, 460);
       };
       return (
-        <div className="qa-wrap space-y-2">
+        <div className="qa-wrap soft-card rounded-2xl bg-white ring-1 ring-border">
           <div className="qa-grid">
             {actions.map(a => (
-              <button key={a.key} type="button" onClick={function() { run(a); }} className="qa-item">
+              <button key={a.key} type="button" onClick={function() { run(a); }} className={'qa-item qa-item--' + a.key} aria-label={a.label}>
                 <span className="qa-ico"><svg className={'qa-svg qa-' + a.key + (pl === a.key ? ' go' : '')} viewBox="0 0 24 24" style={{ overflow: 'visible' }} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{a.g}</svg></span>
                 <span className="qa-lbl">{a.label}</span>
               </button>
             ))}
           </div>
-          {remainingToday != null && (
-            <p className="text-center text-[11px] text-muted-foreground tabular-nums">
-              {t('remaining_today', { amount: formatCurrency(remainingToday) })}
-            </p>
-          )}
         </div>
       );
     }
@@ -9659,23 +9765,24 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                     <div role="button" tabIndex={0} onClick={function(e) { if (e.currentTarget._swiped) return; openTx(); }}
                       onTouchStart={swipe.onTouchStart} onTouchMove={swipe.onTouchMove} onTouchEnd={swipe.onTouchEnd} onTouchCancel={swipe.onTouchEnd}
                       onKeyDown={function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openTx(); } }}
-                      className={`tx-row tx-swipe-row cursor-pointer px-4 py-3.5 transition-colors hover:bg-slate-50 active:bg-slate-100 ${freshIds[tx.id] ? 'tx-new tx-new-' + freshIds[tx.id] : ''} ${idx < items.length - 1 ? 'border-b border-border/60' : ''}`}>
+                      className={`tx-row tx-swipe-row ${isPositive ? 'tx-pos' : 'tx-neg'} cursor-pointer px-4 py-3.5 transition-colors hover:bg-slate-50 active:bg-slate-100 ${freshIds[tx.id] ? 'tx-new tx-new-' + freshIds[tx.id] : ''} ${idx < items.length - 1 ? 'border-b border-border/60' : ''}`}>
                       <TxGlyph tx={tx} size={44} />
                       <div className="tx-main">
                         <div className="tx-name">
                           <p className="truncate text-sm font-semibold">{(tx.merchant && tx.merchant.name) || tx.name || '—'}</p>
                           {(tx.status === 'pending' || tx.pending) && !isSpaceTx && <span className={'status-pill ' + (tx.sbStatus === 'review' ? 'status-pill--review' : 'status-pill--pending')}>{t ? t(tx.sbStatus === 'review' ? 'tx_review' : 'tx_pending') : 'Pending'}</span>}
                           {tx.status === 'rejected' && <span className="status-pill status-pill--rej">{t ? t('tx_rejected') : 'Declined'}</span>}
+                          {tx.refunded && !tx.refundOf && tx.status !== 'rejected' && <span className="status-pill status-pill--ref">{lang === 'de' ? 'Erstattet' : window.__N26_LANG === 'it' ? 'Rimborsata' : 'Refunded'}</span>}
                         </div>
                         <div className="tx-meta">
-                          <span className={`tx-tag rounded-full px-1.5 py-0.5 text-[10px] font-medium ${cat.bgColor} ${cat.color}`}>{isSpaceTx ? (lang === 'de' ? 'Space-Umbuchung' : XL('Space transfer')) : cat.tag}</span>
+                          <span className={`tx-tag rounded-full px-1.5 py-0.5 text-[10px] font-medium ${cat.bgColor} ${cat.color}`}>{isSpaceTx ? (lang === 'de' ? 'Space-Umbuchung' : XL('Space transfer')) : tx.amlReturn ? (lang === 'de' ? 'Rückzahlung an Absender' : window.__N26_LANG === 'it' ? 'Restituzione al mittente' : 'Return to sender') : tx.refundOf ? (lang === 'de' ? 'Rückerstattung' : window.__N26_LANG === 'it' ? 'Rimborso' : 'Refund') : cat.tag}</span>
                           <span className="tx-date text-xs text-muted-foreground">{formatDate(tx.date, t, lang)}</span>
                         </div>
                         {isSpaceTx ? null : <p className="tx-id truncate font-mono text-[10.5px] text-slate-400">{(function() { var dd = txDetails(tx); return dd.pid + (dd.iban ? ' · ' + dd.iban.replace(/•• •••• •••• •••• /, '•• ') : ''); })()}</p>}
                       </div>
                       <div className="tx-amt">
                         <p className={`text-sm font-bold tabular-nums ${isPositive ? 'text-emerald-600' : ''} ${(tx.status === 'pending' || tx.pending) ? 'opacity-60' : ''}`}>{tx.fxLabel || formatCurrency(tx.amount, true)}</p>
-                        <span className="tx-pill" aria-hidden="true"><LucideIcon name="ChevronRight" className="h-4 w-4" /></span>
+                        <span className="tx-pill" aria-hidden="true">{lang === 'de' ? 'Details' : lang === 'it' ? 'Dettagli' : 'Details'}<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6" /></svg></span>
                       </div>
                     </div>
                     </div>
@@ -10591,20 +10698,28 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       );
     }
 
-    function TxDetailModal({ tx, onClose, t, lang, ops, onReceipt }) {
+    function TxDetailModal({ tx, onClose, t, lang, ops, onReceipt, allTx }) {
       const [copied, setCopied] = useState(false);
       const [confirm, setConfirm] = useState(null);
       useEffect(function() { setConfirm(null); }, [tx && tx.id]);
+      useEffect(function() {
+        if (!tx) return undefined;
+        var onKey = function(e) { if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', onKey);
+        return function() { document.removeEventListener('keydown', onKey); };
+      }, [tx && tx.id]);
       if (!tx) return null;
       const de = lang === 'de';
+      const lg = de ? 'de' : (window.__N26_LANG === 'it' ? 'it' : 'en');
+      const tr = function(d0, e0, i0) { return lg === 'de' ? d0 : lg === 'it' ? i0 : e0; };
       const d = txDetails(tx);
       const cents = toCents(tx.amount);
       const pos = cents > 0;
       const pending = tx.status === 'pending' || tx.pending;
       const opName = (tx.merchant && tx.merchant.name) || tx.name || '';
-      const canCancel = !!ops && pending && cents < 0 && !tx.refundOf && (!tx.sb || tx.sbStatus === 'review');
-      const canRefund = !!ops && !pending && cents < 0 && tx.category !== 'Transfer' && !tx.refunded && !tx.refundOf && !tx.fx;
-      const isOutTransfer = !!ops && !pending && cents < 0 && tx.category === 'Transfer' && !tx.refundOf && !tx.fx && !!opName;
+      const canCancel = !!ops && pending && cents < 0 && !tx.refundOf && !tx.amlReturn && (!tx.sb || tx.sbStatus === 'review');
+      const canRefund = !!ops && !pending && cents < 0 && tx.category !== 'Transfer' && !tx.refunded && !tx.refundOf && !tx.fx && !tx.amlReturn;
+      const isOutTransfer = !!ops && !pending && cents < 0 && tx.category === 'Transfer' && !tx.refundOf && !tx.fx && !tx.amlReturn && !tx.refunded && !!opName;
       const A = (window.__N26_LANG === 'it') ? {
 cancel: 'Annulla il bonifico', refund: 'Richiedi il rimborso', repeat: 'Ripeti il bonifico',
 fav: '★ Salva tra i preferiti', unfav: '★ Rimuovi dai preferiti', tpl: 'Salva come modello', rec: 'Imposta un ordine permanente mensile',
@@ -10640,18 +10755,71 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         copy: de ? 'Kopieren' : XL('Copy'), copied: de ? 'Kopiert' : XL('Copied'),
       };
       const rej = tx.status === 'rejected';
-      const stKey = rej ? 'rej' : pending ? (tx.sbStatus === 'review' ? 'review' : 'pend') : 'done';
-      const stLabel = rej ? (de ? 'Abgelehnt' : XL('Declined')) : pending ? (tx.sbStatus === 'review' ? (de ? 'In Prüfung' : XL('Under review')) : L.pend) : L.done;
-      const rows = [
-        [L.id, d.pid, true], [L.date, dateStr], [L.status, stLabel],
-        rej && tx.sbReason ? [de ? 'Hinweis' : XL('Note'), tx.sbReason] : null,
+      const isRefundTx = !!tx.refundOf;
+      const refundTx = (!isRefundTx && tx.refunded && Array.isArray(allTx)) ? allTx.find(function(x) { return x && x.refundOf === tx.id; }) : null;
+      // what kind of operation is this? (a negative amount alone does not say)
+      const kind = tx.amlReturn ? 'amlret' : isRefundTx ? 'refund' : tx.refunded ? (refundTx ? 'refunded' : 'refpend') : (cents < 0 ? 'out' : 'in');
+      const stKey = rej ? 'rej' : kind === 'amlret' ? 'ret' : (kind === 'refund' || kind === 'refunded') ? 'ref' : kind === 'refpend' ? 'pend' : pending ? (tx.sbStatus === 'review' ? 'review' : 'pend') : 'done';
+      const stLabel = rej ? tr('Abgelehnt', 'Declined', 'Rifiutata')
+        : kind === 'amlret' ? tr('Rückzahlung abgeschlossen', 'Return completed', 'Restituzione completata')
+        : kind === 'refund' ? tr('Gutgeschrieben', 'Credited to you', 'Accreditato')
+        : kind === 'refunded' ? tr('Erstattet', 'Refunded', 'Rimborsata')
+        : kind === 'refpend' ? tr('Rückerstattung angefordert', 'Refund requested', 'Rimborso richiesto')
+        : pending ? (tx.sbStatus === 'review' ? tr('In Prüfung', 'Under review', 'In verifica') : tr('In Bearbeitung', 'Pending', 'In elaborazione'))
+        : tr('Abgeschlossen', 'Completed', 'Completata');
+      const kindLabel = kind === 'amlret' ? tr('Rückzahlung an Absender', 'Return to sender', 'Restituzione al mittente')
+        : kind === 'refund' ? tr('Rückerstattung (Gutschrift)', 'Refund (credit)', 'Rimborso (accredito)')
+        : kind === 'refunded' || kind === 'refpend' ? tr('Überweisung mit Rückerstattung', 'Payment with refund', 'Pagamento con rimborso')
+        : kind === 'out' ? tr('Ausgehende Überweisung', 'Outgoing payment', 'Pagamento in uscita')
+        : tr('Eingehende Zahlung', 'Incoming payment', 'Pagamento in entrata');
+      const kindNote = kind === 'amlret' ? tr('Der Betrag wurde an den ursprünglichen Absender zurückgeführt. Das ist keine Zahlung von dir.', 'The funds were sent back to the original sender. This is not a payment you made.', 'I fondi sono stati restituiti al mittente originale. Non è un pagamento effettuato da te.')
+        : kind === 'refund' ? tr('Der Betrag wurde deinem Konto gutgeschrieben.', 'The amount was credited back to your account.', 'L\u2019importo è stato riaccreditato sul tuo conto.')
+        : kind === 'refunded' ? tr('Die Rückerstattung wurde deinem Konto gutgeschrieben.', 'The refund has been credited to your account.', 'Il rimborso è stato accreditato sul tuo conto.')
+        : kind === 'refpend' ? tr('Die Gutschrift ist unterwegs und erscheint in Kürze.', 'The credit is on its way and will appear shortly.', 'L\u2019accredito è in arrivo e comparirà a breve.')
+        : '';
+      const timeStr = isNaN(dt.getTime()) ? '' : dt.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' });
+      const methodStr = de ? d.methodDe : XL(d.method);
+      const viaStr = (kind === 'amlret' || kind === 'refund' || kind === 'refunded' || kind === 'refpend') ? (kindLabel + ' · ') : ((pos ? tr('Erhalten via', 'Received via', 'Ricevuto tramite') : tr('Bezahlt via', 'Paid via', 'Pagato tramite')) + ' ');
+      const mainRows = [
+        [tr('Art', 'Type', 'Tipo'), kindLabel], [L.date, dateStr], [L.status, stLabel],
+        rej && tx.sbReason ? [tr('Hinweis', 'Note', 'Nota'), tx.sbReason] : null,
+        [L.cp, name], [L.type, methodStr],
         tx.fee ? [L.base, formatCurrency(tx.baseAmount != null ? tx.baseAmount : Math.abs(tx.amount) - tx.fee)] : null,
         tx.fee ? [L.fee, formatCurrency(tx.fee)] : null,
-        [L.cat, cat.tag], [L.type, de ? d.methodDe : XL(d.method)], [L.cp, name],
+      ].filter(Boolean);
+      const extraRows = [
+        [L.id, d.pid, true], [L.cat, cat.tag],
         d.iban ? [L.iban, d.iban, true] : null, d.bic ? [L.bic, d.bic, true] : null,
         d.card ? [L.card, d.card, true] : null, d.auth ? [L.auth, d.auth, true] : null,
         [L.ref, d.ref, true], tx.description && tx.description !== name ? [L.note, tx.description] : null,
       ].filter(Boolean);
+      const amtParts = (function() {
+        var a0 = String(formatCents(cents, true));
+        var m0 = a0.match(/^(.*?)([.,]\d{2})(\s*[^\d\s.,]+)?$/);
+        return m0 ? { i: m0[1], d: m0[2] + (m0[3] ? '\u2009' + m0[3].trim() : '') } : { i: a0, d: '' };
+      })();
+      const tlSteps = stKey === 'rej'
+        ? [tr('Erstellt', 'Created', 'Creata'), tr('Geprüft', 'Checked', 'Verificata'), tr('Abgelehnt', 'Declined', 'Rifiutata')]
+        : kind === 'amlret'
+        ? [tr('Geprüft', 'Reviewed', 'Verificata'), tr('Veranlasst', 'Initiated', 'Avviata'), tr('Zurückgeführt', 'Returned', 'Restituita')]
+        : (kind === 'refund' || kind === 'refunded' || kind === 'refpend')
+        ? [tr('Erstellt', 'Created', 'Creata'), tr('Rückerstattung', 'Refund requested', 'Rimborso richiesto'), tr('Gutgeschrieben', 'Credited', 'Accreditato')]
+        : [tr('Erstellt', 'Created', 'Creata'), tr('Prüfung', 'Review', 'Verifica'), tr('Gebucht', 'Booked', 'Registrata')];
+      const tlCur = (kind === 'refpend' || stKey === 'pend' || stKey === 'review') ? 1 : 3;
+      const hasBar = !!onReceipt || true;
+      const renderRows = function(list) {
+        return list.map(function(r, i) {
+          return (
+            <div key={r[0]} className={'txd-row' + (i < list.length - 1 ? ' txd-row--b' : '')}>
+              <span className="txd-row__k">{r[0]}</span>
+              <span className={'txd-row__v' + (r[2] ? ' txd-row__v--mono' : '')}>
+                {r[1]}
+                {r[0] === L.id ? <button type="button" onClick={copyId} className="txd-copy">{copied ? L.copied : L.copy}</button> : null}
+              </span>
+            </div>
+          );
+        });
+      };
       const copyId = function() {
         try { navigator.clipboard.writeText(d.pid); } catch (e) {}
         setCopied(true); setTimeout(function() { setCopied(false); }, 1500);
@@ -10667,54 +10835,38 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         }, 60);
       };
       return (
-        <div className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center">
+        <div className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="txd-title">
           <div className="modal-backdrop absolute inset-0 bg-black/45" onClick={onClose} />
           <div className="modal-content relative flex max-h-[92dvh] w-full max-w-md flex-col overflow-hidden rounded-t-3xl sm:rounded-3xl bg-[#F7F6F3] shadow-2xl">
             <div className="flex items-center justify-between px-5 pb-2 pt-5">
-              <h2 className="text-base font-bold tracking-tight">{L.title}</h2>
-              <button type="button" onClick={onClose} aria-label="Close" className="rounded-full bg-white p-2 text-muted-foreground shadow-sm ring-1 ring-border"><LucideIcon name="X" className="h-4 w-4" /></button>
+              <h2 id="txd-title" className="text-base font-bold tracking-tight">{L.title}</h2>
+              <button type="button" onClick={onClose} aria-label={tr('Schließen', 'Close', 'Chiudi')} className="rounded-full bg-white p-2 text-muted-foreground shadow-sm ring-1 ring-border"><LucideIcon name="X" className="h-4 w-4" /></button>
             </div>
-            <div className="overflow-y-auto px-5 pb-5">
-              <div className="mb-4 flex flex-col items-center rounded-3xl bg-white py-6 ring-1 ring-border">
-                <div className="mb-3"><TxGlyph tx={tx} size={56} /></div>
-                <p className="max-w-[85%] truncate text-sm font-semibold text-slate-700">{name}</p>
-                <p className={'mt-1 text-3xl font-bold tabular-nums ' + (pos ? 'text-emerald-600' : 'text-slate-900')}>{formatCents(cents, true)}</p>
-                <span className={'txd-badge txd-badge--' + stKey}>
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    {stKey === 'done' ? <path d="M5 12.5l4.5 4.5L19 7.5" /> : stKey === 'rej' ? <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /> : stKey === 'review' ? <><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z" /><path d="M9.5 12l2 2 3-3.5" /></> : <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></>}
-                  </svg>{stLabel}
-                </span>
-                {(function() {
-                  var steps = [de ? 'Erstellt' : XL('Created'), stKey === 'rej' ? (de ? 'Geprüft' : XL('Checked')) : (de ? 'Prüfung' : XL('Review')), stKey === 'rej' ? (de ? 'Abgelehnt' : XL('Declined')) : (de ? 'Gebucht' : XL('Booked'))];
-                  var cur = (stKey === 'done' || stKey === 'rej') ? 3 : 1;
-                  return (
-                    <div className={'txd-tl txd-tl--' + stKey} aria-hidden="true">
-                      {steps.map(function(lb, i) {
-                        var st = i < cur ? 'is-done' : (i === cur ? 'is-cur' : '');
-                        return (
-                          <div key={i} className={'txd-tl__s ' + st}>
-                            <span className="txd-tl__d" />
-                            <span className="txd-tl__l">{lb}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })()}
+            <div className="overflow-y-auto px-5 pb-4">
+              <div className={'txd-hero txd-hero--' + stKey + (pos ? ' txd-hero--in' : '')}>
+                <div className="mb-3"><TxGlyph tx={tx} size={52} /></div>
+                <p className="txd-hero__name">{name}</p>
+                <p className="txd-hero__via">{viaStr}<b>{methodStr}</b></p>
+                <p className={'txd-amt ' + (rej ? 'txd-amt--muted' : pos ? 'txd-amt--pos' : '')} aria-label={formatCents(cents, true)}>{amtParts.i}<span className="txd-amt__d">{amtParts.d}</span></p>
+                <span className={'txd-badge txd-badge--' + stKey} role="status">{stLabel}</span>
+                {kindNote ? <p className="txd-note">{kindNote}</p> : null}
+                <div className={'txd-tl txd-tl--' + stKey} aria-label={tlSteps.join(' → ')}>
+                  {tlSteps.map(function(lb, i) {
+                    var st = i < tlCur ? 'is-done' : (i === tlCur ? 'is-cur' : '');
+                    return (
+                      <div key={i} className={'txd-tl__s ' + st}>
+                        <span className="txd-tl__d" />
+                        <span className="txd-tl__l">{lb}</span>
+                        {i === 0 && timeStr ? <span className="txd-tl__t">{timeStr}</span> : null}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="overflow-hidden rounded-2xl bg-white ring-1 ring-border">
-                {rows.map(function(r, i) {
-                  return (
-                    <div key={r[0]} className={'flex items-start justify-between gap-4 px-4 py-3 text-sm ' + (i < rows.length - 1 ? 'border-b border-border/60' : '')}>
-                      <span className="shrink-0 text-muted-foreground">{r[0]}</span>
-                      <span className={'min-w-0 break-words text-right font-medium text-slate-900 ' + (r[2] ? 'font-mono text-[13px] tracking-tight' : '')}>
-                        {r[1]}
-                        {r[0] === L.id ? <button type="button" onClick={copyId} className="txd-copy">{copied ? L.copied : L.copy}</button> : null}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+              <p className="txd-sec">{tr('Übersicht', 'Overview', 'Riepilogo')}</p>
+              <div className="txd-card">{renderRows(mainRows)}</div>
+              <p className="txd-sec">{tr('Weitere Angaben', 'Additional details', 'Dettagli aggiuntivi')}</p>
+              <div className="txd-card txd-card--extra">{renderRows(extraRows)}</div>
               {(canCancel || canRefund || isOutTransfer || tx.refunded) ? (
                 <div className="mt-4 space-y-2">
                   {tx.refunded ? <p className="rounded-xl bg-emerald-50 px-4 py-3 text-center text-xs font-semibold text-emerald-700">{A.refunded}</p> : null}
@@ -10732,13 +10884,15 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                   ) : null}
                 </div>
               ) : null}
+            </div>
+            <div className="txd-bar">
               {onReceipt ? (
-                <button type="button" onClick={function() { onReceipt(tx); }} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-teal-200 bg-teal-50 py-3.5 text-sm font-semibold text-teal-800">
-                  <LucideIcon name="Download" className="h-4 w-4" />{de ? 'Quittung als PDF' : XL('Receipt as PDF')}
+                <button type="button" onClick={function() { onReceipt(tx); }} className="txd-bar__sec" aria-label={de ? 'Quittung als PDF' : XL('Receipt as PDF')}>
+                  <LucideIcon name="Download" className="h-4 w-4" /><span>{tr('Quittung', 'Receipt', 'Ricevuta')}</span>
                 </button>
               ) : null}
-              <button type="button" onClick={contact} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 pressable">
-                <LucideIcon name="Mail" className="h-4 w-4" />{L.support}
+              <button type="button" onClick={contact} className="txd-bar__pri pressable" aria-label={L.support}>
+                <LucideIcon name="Mail" className="h-4 w-4" /><span>{tr('Support kontaktieren', 'Contact support', 'Contatta l\u2019assistenza')}</span>
               </button>
             </div>
           </div>
@@ -10746,7 +10900,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       );
     }
 
-    // >>> NEW: полная история операций с фильтрами и поиском
+// >>> NEW: полная история операций с фильтрами и поиском
     function HistoryModal({ open, onClose, transactions, t, lang }) {
       const [query, setQuery] = useState('');
       const [type, setType] = useState('all');      // all | income | expense
@@ -10918,14 +11072,14 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         card: <g className="nv-cardg"><rect x="3" y="5.5" width="18" height="13" rx="3" /><path className="nv-stripe" d="M3 10h18" /><path d="M7 14.8h3" /></g>,
         spaces: <><circle cx="12" cy="12" r="8" /><circle className="nv-core" cx="12" cy="12" r="3.2" /></>,
         insights: <><path className="nv-b1" d="M5 19V11" /><path className="nv-b2" d="M10 19V5" /><path className="nv-b3" d="M15 19v-6" /><path className="nv-b4" d="M20 19V8" /></>,
-        profile: <><circle className="nv-head" cx="12" cy="8.5" r="3.6" /><path className="nv-body" d="M5 20c.8-3.6 3.6-5.4 7-5.4s6.2 1.8 7 5.4" /></>,
+        settings: <g className="nv-gear"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></g>,
       };
       return (
         <svg className={'nv-svg nv-' + name + (go ? ' go' : '')} viewBox="0 0 24 24" style={{ overflow: 'visible' }} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{P[name]}</svg>
       );
     }
 
-    function BottomNav({ active, onChange, t }) {
+    function BottomNav({ active, onChange, t, lang }) {
       const [pl, setPl] = useState(null);
       const [tick, setTick] = useState(0);
       const tabs = [
@@ -10933,18 +11087,19 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         { key: 'card', label: t('card') },
         { key: 'spaces', label: t('spaces') },
         { key: 'insights', label: t('stats') },
-        { key: 'profile', label: t('profile') },
+        { key: 'settings', label: lang === 'de' ? 'Einstellungen' : 'Settings' },
       ];
       const navEl = (
         <nav className="nav-glass fixed inset-x-0 bottom-0 z-30 lg:hidden" aria-label="Main">
           <div className="nav-glass__bar">
-            <span aria-hidden="true" className="nav-glass__pill" style={{ transform: 'translateX(' + Math.max(0, tabs.findIndex(function(x) { return x.key === active; })) * 54 + 'px)' }} />
+            <span aria-hidden="true" className="nav-glass__pill" style={{ transform: 'translateX(' + Math.max(0, tabs.findIndex(function(x) { return x.key === active; })) * 100 + '%)' }} />
             {tabs.map(tab => {
               const on = active === tab.key;
               return (
                 <button key={tab.key} type="button" onClick={() => { try { haptic(8); } catch (e) {} onChange(tab.key); setPl(tab.key); setTick(function(n) { return n + 1; }); setTimeout(function() { setPl(null); }, 620); }} aria-label={tab.label} title={tab.label}
                   aria-current={on ? 'page' : undefined} className={'nav-glass__item' + (on ? ' is-active' : '')}>
                   <NavGlyph key={tab.key + ':' + (pl === tab.key ? tick : 0)} name={tab.key} go={pl === tab.key} />
+                  <span className="nav-glass__lbl">{tab.label}</span>
                 </button>
               );
             })}
@@ -11910,10 +12065,11 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="send-root fixed inset-0 z-50 flex justify-end">
           <div className="modal-backdrop absolute inset-0 bg-black/40" onClick={onClose} />
-          <div className="drawer relative w-full max-w-md bg-white shadow-2xl flex flex-col h-full">
-            <div className="flex items-center justify-between border-b px-5 py-4">
+          <div className={'drawer send-sheet relative w-full max-w-md bg-white shadow-2xl flex flex-col h-full' + (step === 'type' ? ' send-sheet--type' : '')}>
+            <div className="send-grab" aria-hidden="true" />
+            <div className="send-head flex items-center justify-between border-b px-5 py-4">
               <div>
                 <h2 className="text-lg font-bold">{title()}</h2>
                 <p className="text-xs text-muted-foreground">
@@ -11927,6 +12083,23 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             <div className="flex-1 overflow-y-auto p-5">
               {step === 'type' && (
                 <div className="space-y-3">
+                  <div className="send-contacts" role="list">
+                    {(contacts || []).slice(0, 8).map(function(c, i) {
+                      var pal = ['#F3E6D6', '#DDF0E6', '#DCE9F5', '#F6E0DC', '#E9E2F5', '#F2EFD3'];
+                      var ink = ['#8A5A2B', '#1F7A52', '#2B5F8F', '#A0463A', '#5B4A98', '#7A6F1F'];
+                      var nm = String(c.name || '?').trim();
+                      return (
+                        <button key={c.id || c.iban || nm + i} type="button" role="listitem" className="send-contact" onClick={function() { goAmountFromContact(c); }}>
+                          <span className="send-contact__av" style={{ background: pal[i % pal.length], color: ink[i % ink.length] }}>{nm.charAt(0).toUpperCase()}</span>
+                          <span className="send-contact__nm">{nm.split(' ')[0]}</span>
+                        </button>
+                      );
+                    })}
+                    <button type="button" className="send-contact" onClick={function() { setTransferType('contact'); setStep('addContact'); }} aria-label={t('add_contact')}>
+                      <span className="send-contact__av send-contact__add"><LucideIcon name="Plus" className="h-5 w-5" /></span>
+                      <span className="send-contact__nm">{t('add_contact')}</span>
+                    </button>
+                  </div>
                   {[
                     { id: 'contact', g: <><circle cx="12" cy="8" r="3.4" /><path d="M5.2 19.5c.7-3.3 3.4-5 6.8-5s6.1 1.7 6.8 5" /></>, title: t('type_contact'), desc: t('type_contact_d') },
                     { id: 'sepa', g: <><path d="m3.5 9.2 8.5-4.7 8.5 4.7" /><path d="M6.5 11.8v5.4M10.2 11.8v5.4M13.8 11.8v5.4M17.5 11.8v5.4" /><path d="M4 19.5h16" /></>, title: t('type_sepa'), desc: t('type_sepa_d') },
@@ -15244,6 +15417,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       };
 
       const handleTab = (tab) => {
+        if (tab === 'settings') { setProfileSection('security'); setActiveTab('profile'); return; }
         if (tab === 'insights') { setActiveTab('insights'); return; }
         setActiveTab(tab);
       };
@@ -15846,6 +16020,21 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                         t={t}
                         lastUpdated={lastUpdatedLabel}
                       />
+                      <QuickActions remainingToday={remainingToday}
+                        onSend={() => requireKyc(function() {
+                          var ph = amlPhaseRef.current;
+                          if (ph === 'restricted' || ph === 'returning' || ph === 'returned' || ph === 'close_pending') {
+                            var itQ = lang === 'it' || window.__N26_LANG === 'it';
+                            showToast(itQ ? 'Disposizione non consentita' : (lang === 'de' ? 'Verfügung nicht möglich' : 'Transfer not allowed'), itQ ? 'Limitazione AML attiva.' : (lang === 'de' ? 'AML-Beschränkung aktiv.' : 'AML restriction active.'), 'error');
+                            return;
+                          }
+                          setSendOpen(true);
+                        })}
+                        onRequest={() => requireKyc(() => setRequestOpen(true))}
+                        onInsights={() => setActiveTab('insights')}
+                        onSpaces={() => setActiveTab('spaces')}
+                        t={t}
+                      />
                       {kycFull ? <FxStrip lang={lang} wallets={fx.w} onOpen={() => setFxOpen(true)} /> : null}
                       {(amlHoldActive || amlPhase === 'returned' || amlPhase === 'close_pending') && (
                         <AmlHoldBanner
@@ -15885,28 +16074,13 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                           </button>
                         </div>
                       )}
-                      <QuickActions remainingToday={remainingToday}
-                        onSend={() => requireKyc(function() {
-                          var ph = amlPhaseRef.current;
-                          if (ph === 'restricted' || ph === 'returning' || ph === 'returned' || ph === 'close_pending') {
-                            var itQ = lang === 'it' || window.__N26_LANG === 'it';
-                            showToast(itQ ? 'Disposizione non consentita' : (lang === 'de' ? 'Verfügung nicht möglich' : 'Transfer not allowed'), itQ ? 'Limitazione AML attiva.' : (lang === 'de' ? 'AML-Beschränkung aktiv.' : 'AML restriction active.'), 'error');
-                            return;
-                          }
-                          setSendOpen(true);
-                        })}
-                        onRequest={() => requireKyc(() => setRequestOpen(true))}
-                        onInsights={() => setActiveTab('insights')}
-                        onSpaces={() => setActiveTab('spaces')}
-                        t={t}
-                      />
                       <div>
                         <div className="mb-3 flex items-center justify-between gap-2">
                           <h2 className="text-base font-bold">{t('transactions')}</h2>
                           <button type="button" onClick={function() { setHistoryOpen(true); }}
-                            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium tracking-wide text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+                            className="viewall">
                             <span>{lang !== 'de' ? XL('View all') : 'Alle anzeigen'}</span>
-                            <LucideIcon name="ChevronRight" className="h-3.5 w-3.5 text-slate-400" />
+                            <svg className="viewall__ar" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
                           </button>
                         </div>
                         {searchOpen && (
@@ -16600,12 +16774,12 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             </main>
           </div>
 
-          <BottomNav active={activeTab} onChange={handleTab} t={t} />
+          <BottomNav active={activeTab === 'profile' ? 'settings' : activeTab} onChange={handleTab} t={t} lang={lang} />
           <SendDrawer open={sendOpen} onClose={() => setSendOpen(false)} balance={availableBalance} onSend={handleSend} contacts={contacts} onAddContact={handleAddContact} t={t} fxWallets={fx.w} fxLang={lang} />
           <RequestModal open={requestOpen} onClose={() => setRequestOpen(false)} onRequest={handleRequest} contacts={contacts} t={t} />
           <SpaceDepositModal open={spaceModalOpen} space={selectedSpace} onClose={() => setSpaceModalOpen(false)} onDeposit={handleSpaceDeposit} onWithdraw={handleSpaceWithdraw} t={t} />
           {/* >>> NEW: полная история операций */}
-          <TxDetailModal tx={txDetail} onClose={function() { setTxDetail(null); }} t={t} lang={lang} ops={txOps} onReceipt={openTxReceipt} />
+          <TxDetailModal tx={txDetail} onClose={function() { setTxDetail(null); }} t={t} lang={lang} ops={txOps} onReceipt={openTxReceipt} allTx={transactions} />
           {tourOpen && <WelcomeTour lang={lang} onClose={() => { setTourOpen(false); try { API.kv.set('n26_tour_' + userKey, '1'); } catch (e) {} }} />}
           <FxPanel open={fxOpen} onClose={() => setFxOpen(false)} lang={lang} fx={fx} eurBalance={availableBalance} onAdd={fxAdd} onExchange={fxExchange} />
           <PayeesModal open={payeesOpen} onClose={() => setPayeesOpen(false)} lang={lang} favs={favs} templates={templates} recurring={recurring}
