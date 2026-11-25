@@ -4057,7 +4057,25 @@ window.n26ShowDoc = function(html) {
 @keyframes nv-spin{0%{transform:rotate(0)}60%{transform:rotate(100deg)}100%{transform:rotate(90deg)}}
 .nv-gear{transform-origin:50% 50%;transform-box:fill-box}
 .nv-svg.go.nv-settings .nv-gear{animation:nv-spin .6s cubic-bezier(.34,1.4,.5,1)}
-</style></head>
+</style>
+<style id="n26-spaces-photo-art-direction">
+.sp-root .sp-card{border-radius:20px!important;box-shadow:0 1px 2px rgba(16,24,40,.025);}
+.sp-root .sp-card>button{gap:13px!important;padding:13px!important;align-items:center!important;}
+.sp-card-photo{position:relative;display:block;flex:0 0 104px;width:104px;height:104px;overflow:hidden;border-radius:15px;background:#edf2ef;}
+.sp-card-photo picture,.sp-template-photo picture{display:block;width:100%;height:100%;}
+.sp-card-photo img,.sp-template-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+.sp-photo-progress{position:absolute;left:7px;bottom:7px;padding:4px 7px;border-radius:99px;background:rgba(255,255,255,.92);color:#174b43;font-size:10px;font-weight:700;line-height:1;}
+.sp-mini-progress{height:4px;width:100%;max-width:180px;margin-top:8px;border-radius:99px;background:#e9efec;overflow:hidden;}
+.sp-mini-progress span{display:block;height:100%;border-radius:99px;background:#087e73;}
+.sp-template-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.sp-template{display:flex;min-width:0;flex-direction:column;gap:6px;padding:6px;border-radius:14px;background:#fff;text-align:left;box-shadow:inset 0 0 0 1px #e7ebe8;transition:box-shadow .16s,background .16s;}
+.sp-template.is-active{background:#f0f7f4;box-shadow:inset 0 0 0 1.5px #087e73;}
+.sp-template-photo{display:block;width:100%;aspect-ratio:1.55;overflow:hidden;border-radius:10px;background:#eef2ef;}
+.sp-template-label{padding:0 3px 2px;font-size:11px;line-height:1.25;font-weight:650;color:#24332f;overflow-wrap:anywhere;}
+@media(max-width:380px){.sp-card-photo{flex-basis:88px;width:88px;height:88px}.sp-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sp-root .sp-card>button{gap:10px!important;padding:11px!important}}
+</style>
+
+</head>
 <body>
   <div id="root"></div>
 
@@ -10548,7 +10566,23 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
       { cls: 'from-emerald-400 to-green-500', a: '#34d399', b: '#22c55e' },
       { cls: 'from-sky-400 to-blue-500', a: '#38bdf8', b: '#3b82f6' },
     ];
-    const SPACE_GLYPHS = ['car', 'home', 'gift', 'laptop', 'plane', '\u{1F3AF}'];
+    const SPACE_GLYPHS = ['plane', '\u{1F6E1}\uFE0F', 'home', 'car', 'gift', '\u{1F3AF}'];
+    const SPACE_IMAGE_BY_GLYPH = { plane: 'travel', '\u{1F6E1}\uFE0F': 'emergency', home: 'home', car: 'car', gift: 'shopping', laptop: 'shopping', '\u{1F3AF}': 'savings' };
+    function spaceImageFor(sp) {
+      var g = sp && sp.emoji;
+      if (SPACE_IMAGE_BY_GLYPH[g]) return SPACE_IMAGE_BY_GLYPH[g];
+      var n = String((sp && (sp.name || sp.nameKey)) || '').toLowerCase();
+      if (/travel|trip|urlaub|reise|vacation/.test(n)) return 'travel';
+      if (/emergency|sicher|notfall|reserve/.test(n)) return 'emergency';
+      if (/home|house|haus|wohnung|deposit/.test(n)) return 'home';
+      if (/car|auto|wagen/.test(n)) return 'car';
+      if (/shop|gift|shopping|einkauf/.test(n)) return 'shopping';
+      return 'savings';
+    }
+    function SpacePhoto({ kind, className }) {
+      var file = kind || 'savings';
+      return <picture className={className || ''}><source srcSet={'./spaces-assets/' + file + '.webp'} type="image/webp" /><img src={'./spaces-assets/' + file + '.png'} alt="" loading="lazy" decoding="async" /></picture>;
+    }
     function spaceTheme(cls) { return SPACE_THEMES.find(function(x) { return x.cls === cls; }) || SPACE_THEMES[0]; }
 
     function SpacesTab({ spaces, setSpaces, onAdd, t, lang, showToast, requireKyc }) {
@@ -10597,19 +10631,18 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 
       return (
         <div className="sp-root space-y-4 lg:max-w-4xl">
-          <div className="sp-rise relative overflow-hidden rounded-[28px] p-5 text-white" style={{ background: 'linear-gradient(150deg,#042f2e 0%,#0b5d54 55%,#0fb89b 130%)', boxShadow: '0 22px 40px -24px rgba(4,47,46,.7)' }}>
-            <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-12 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
-            <p className="relative text-[13px] text-white/75">{t('total_saved')}</p>
-            <p className="relative mt-1 text-[32px] font-semibold leading-none tracking-tight tabular-nums min-[380px]:text-[40px] sm:text-[46px]">{formatCurrency(shown / 100)}</p>
-            <p className="relative mt-2 text-xs text-white/70">{t('across_spaces', { n: spaces.length })} · {de ? 'Gesamtziel ' : XL('Total goal ')}{formatCurrency(goal)} · {totalPct}%</p>
+          <div className="sp-rise relative overflow-hidden rounded-[24px] border border-[#E5EAE7] p-5 text-slate-900" style={{ background: '#F1F6F3' }}>
+            <p className="relative text-[12px] font-medium text-slate-500">{t('total_saved')}</p>
+            <p className="relative mt-1 text-[32px] font-semibold leading-none tracking-tight tabular-nums min-[380px]:text-[40px] sm:text-[44px]">{formatCurrency(shown / 100)}</p>
+            <p className="relative mt-2 text-xs text-slate-500">{t('across_spaces', { n: spaces.length })} · {de ? 'Gesamtziel ' : XL('Total goal ')}{formatCurrency(goal)} · {totalPct}%</p>
             <div className="relative mt-4 flex h-2.5 w-full gap-1 overflow-hidden rounded-full">
               {spaces.map(function(sp) {
                 var th = spaceTheme(sp.color); var w = goal > 0 ? (Number(sp.target) / goal * 100) : 0; var f = sp.target > 0 ? Math.min(100, sp.current / sp.target * 100) : 0;
-                return <button key={sp.id} type="button" onClick={function() { setOpenId(openId === sp.id ? null : sp.id); }} aria-label={nameOf(sp)} className="relative h-full overflow-hidden rounded-full bg-white/15" style={{ width: w + '%', minWidth: 8 }}><span className="absolute inset-y-0 left-0 rounded-full transition-all duration-700" style={{ width: f + '%', background: 'linear-gradient(90deg,' + th.a + ',' + th.b + ')' }} /></button>;
+                return <button key={sp.id} type="button" onClick={function() { setOpenId(openId === sp.id ? null : sp.id); }} aria-label={nameOf(sp)} className="relative h-full overflow-hidden rounded-full bg-[#DCE7E1]" style={{ width: w + '%', minWidth: 8 }}><span className="absolute inset-y-0 left-0 rounded-full transition-all duration-700" style={{ width: f + '%', background: '#087E73' }} /></button>;
               })}
             </div>
             <div className="relative mt-3 flex flex-wrap gap-x-4 gap-y-1">
-              {spaces.map(function(sp) { var th = spaceTheme(sp.color); return <span key={sp.id} className="flex items-center gap-1.5 text-[11px] text-white/75"><span className="h-2 w-2 rounded-full" style={{ background: th.a }} />{nameOf(sp)}</span>; })}
+              {spaces.map(function(sp) { var th = spaceTheme(sp.color); return <span key={sp.id} className="flex items-center gap-1.5 text-[11px] text-slate-500"><span className="h-2 w-2 rounded-full" style={{ background: th.a }} />{nameOf(sp)}</span>; })}
             </div>
           </div>
 
@@ -10622,7 +10655,17 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 
           {creating && (
             <div className="sp-rise rounded-3xl bg-white p-4 ring-1 ring-black/[0.05] space-y-3">
-              <p className="text-sm font-semibold text-slate-900">{de ? 'Neuen Space anlegen' : XL('Create a new Space')}</p>
+              <div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold text-slate-900">{de ? 'Neuen Space anlegen' : XL('Create a new Space')}</p><span className="text-[11px] text-slate-400">{de ? 'Vorlage wählen' : XL('Choose a template')}</span></div>
+              <div className="sp-template-grid">
+                {[
+                  { id: 'travel', name: de ? 'Reisen' : XL('Travel'), target: '2500', glyph: 'plane', image: 'travel', theme: 0 },
+                  { id: 'emergency', name: de ? 'Notgroschen' : XL('Emergency fund'), target: '5000', glyph: '\u{1F6E1}\uFE0F', image: 'emergency', theme: 4 },
+                  { id: 'home', name: de ? 'Neues Zuhause' : XL('New home'), target: '15000', glyph: 'home', image: 'home', theme: 2 },
+                  { id: 'car', name: de ? 'Neues Auto' : XL('New car'), target: '8000', glyph: 'car', image: 'car', theme: 5 },
+                  { id: 'shopping', name: de ? 'Shopping' : XL('Shopping'), target: '600', glyph: 'gift', image: 'shopping', theme: 3 },
+                  { id: 'savings', name: de ? 'Langfristiges Sparen' : XL('Long-term savings'), target: '3000', glyph: '\u{1F3AF}', image: 'savings', theme: 1 }
+                ].map(function(tpl) { var active = draft.name === tpl.name; return <button key={tpl.id} type="button" onClick={function() { setDraft({ name: tpl.name, target: tpl.target, theme: tpl.theme, glyph: tpl.glyph }); }} className={'sp-template' + (active ? ' is-active' : '')}> <span className="sp-template-photo"><SpacePhoto kind={tpl.image} /></span><span className="sp-template-label">{tpl.name}</span></button>; })}
+              </div>
               <input value={draft.name} maxLength={24} onChange={function(e) { var v = e.target.value; setDraft(function(d) { return Object.assign({}, d, { name: v }); }); }} placeholder={de ? 'Name, z. B. Neues Auto' : XL('Name, e.g. New car')} className="w-full rounded-xl border border-border bg-white px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-teal-500" />
               <input value={draft.target} inputMode="decimal" onChange={function(e) { var v = e.target.value; setDraft(function(d) { return Object.assign({}, d, { target: v }); }); }} placeholder={de ? 'Sparziel in €' : XL('Goal in €')} className="w-full rounded-xl border border-border bg-white px-3 py-3 text-sm tabular-nums outline-none focus:ring-2 focus:ring-teal-500" />
               <div className="flex flex-wrap gap-2 p-0.5">{SPACE_GLYPHS.map(function(g) { var on = draft.glyph === g; return <button key={g} type="button" aria-label={g} onClick={function() { setDraft(function(d) { return Object.assign({}, d, { glyph: g }); }); }} className={'sp-glyph' + (on ? ' on' : '')}><SpaceGlyph emoji={g} /></button>; })}</div>
@@ -10640,18 +10683,12 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
               return (
                 <div key={sp.id} className={'sp-card sp-rise overflow-hidden rounded-3xl bg-white ring-1 transition-shadow ' + (isOpen ? 'ring-teal-500/40 shadow-xl sm:col-span-2' : 'ring-black/[0.05] hover:shadow-lg')} style={{ '--d': (idx * 60) + 'ms' }}>
                   <button type="button" onClick={function() { setOpenId(isOpen ? null : sp.id); setEditId(null); setDelArm(null); }} aria-expanded={isOpen} className="flex w-full items-center gap-4 p-4 text-left">
-                    <div className="relative h-[84px] w-[84px] shrink-0">
-                      <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-                        <defs><linearGradient id={'spg-' + sp.id} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={th.a} /><stop offset="1" stopColor={th.b} /></linearGradient></defs>
-                        <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#EEF1F3" strokeWidth="3.6" />
-                        <circle cx="18" cy="18" r="15.9155" fill="none" stroke={'url(#spg-' + sp.id + ')'} strokeWidth="3.6" strokeLinecap="round" strokeDasharray={pct + ' ' + (100 - pct)} style={{ transition: 'stroke-dasharray .9s cubic-bezier(.22,1,.36,1)' }} />
-                      </svg>
-                      <div className={'absolute inset-[14px] flex items-center justify-center rounded-full bg-gradient-to-br text-white ' + sp.color}><SpaceGlyph emoji={sp.emoji} /></div>
-                    </div>
+                    <div className="sp-card-photo"><SpacePhoto kind={spaceImageFor(sp)} /><span className="sp-photo-progress">{pct}%</span></div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2"><p className="truncate text-[15px] font-semibold text-slate-900">{nameOf(sp)}</p>{reached && <span className="sp-shine shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">{de ? 'Ziel erreicht' : XL('Goal reached')}</span>}</div>
                       <p className="mt-0.5 text-lg font-bold tabular-nums text-slate-900">{formatCurrency(sp.current)}</p>
-                      <p className="text-xs text-slate-500 tabular-nums">{de ? 'von ' : XL('of ')}{formatCurrency(sp.target)} · {pct}%</p>
+                      <p className="text-xs text-slate-500 tabular-nums">{de ? 'von ' : XL('of ')}{formatCurrency(sp.target)}</p>
+                      <div className="sp-mini-progress"><span style={{ width: pct + '%' }} /></div>
                     </div>
                     <LucideIcon name="ChevronRight" className={'h-5 w-5 shrink-0 text-slate-400 transition-transform ' + (isOpen ? 'rotate-90' : '')} />
                   </button>
@@ -10660,7 +10697,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                     <div className="sp-rise border-t border-black/[0.05] p-4 space-y-4">
                       <div>
                         <div className="relative h-3 rounded-full bg-slate-100">
-                          <div className="absolute inset-y-0 left-0 rounded-full transition-all duration-700" style={{ width: pct + '%', background: 'linear-gradient(90deg,' + th.a + ',' + th.b + ')' }} />
+                          <div className="absolute inset-y-0 left-0 rounded-full transition-all duration-700" style={{ width: pct + '%', background: '#087E73' }} />
                           {[25, 50, 75].map(function(m) { return <span key={m} className="absolute top-1/2 h-4 w-0.5 -translate-y-1/2 bg-white" style={{ left: m + '%' }} />; })}
                         </div>
                         <div className="mt-2 flex justify-between text-[10px] font-semibold tabular-nums">
