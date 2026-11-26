@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet" />
   <meta name="theme-color" content="#00A88E" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -433,7 +433,7 @@
             n26: '#00A88E',
             'n26-dark': '#008C76',
           },
-          fontFamily: { sans: ['Plus Jakarta Sans','-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial','sans-serif'] },
+          fontFamily: { sans: ['Plus Jakarta Sans','sans-serif'], mono: ['Plus Jakarta Sans','sans-serif'], serif: ['Plus Jakarta Sans','sans-serif'] },
         },
       },
     };
@@ -444,7 +444,7 @@
       margin: 0;
       overflow-x: hidden;
       max-width: 100vw;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family:Plus Jakarta Sans,sans-serif;
       -webkit-font-smoothing: antialiased;
     }
     #root { overflow-x: hidden; max-width: 100vw; }
@@ -487,7 +487,7 @@
       100% { background-position: -100% 0; }
     }
     .iban-mono {
-      font-family: 'SF Mono', 'Roboto Mono', ui-monospace, Menlo, monospace;
+      font-family:Plus Jakarta Sans,sans-serif;
       letter-spacing: 0.04em;
       font-variant-numeric: tabular-nums;
       overflow-wrap: anywhere;
@@ -937,7 +937,7 @@
     .bank-card--fallback.bank-card--physical { background: linear-gradient(145deg, #1e3a8a, #1d4ed8 48%, #1e40af); }
     .bank-card__t { position: absolute; margin: 0; line-height: 1.15; white-space: nowrap; }
     .bank-card__fb { left: 5.5%; top: 8%; font-size: calc(4.4 * var(--cqw)); font-weight: 800; letter-spacing: 0.06em; }
-    .bank-card__mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+    .bank-card__mono { font-family:Plus Jakarta Sans,sans-serif; font-variant-numeric: tabular-nums; }
     .bank-card__num { left: 5.5%; top: 46%; font-size: max(16px, calc(5.6 * var(--cqw))); font-weight: 600; letter-spacing: 0.1em; line-height: 1; }
     .bank-card__toggle {
       position: absolute; left: 5.5%; top: 60%;
@@ -1217,8 +1217,8 @@
     
     /* ========== N26 Premium UI — Typography, surfaces, components ========== */
     :root {
-      --n26-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      --n26-mono: 'SF Mono', 'Roboto Mono', ui-monospace, Menlo, Consolas, monospace;
+      --n26-font: 'Plus Jakarta Sans', sans-serif;
+      --n26-mono: 'JetBrains Mono', monospace;
       --n26-ink: #0f172a;
       --n26-ink-2: #1E293B;
       --n26-ink-3: #475569;
@@ -1291,7 +1291,7 @@
 
     /* IBAN */
     .iban-mono, .font-mono, .iban-wrap {
-      font-family: var(--n26-mono) !important;
+      font-family:Plus Jakarta Sans,sans-serif !important;
       font-feature-settings: "tnum" 1;
       letter-spacing: 0.045em;
       overflow-wrap: anywhere;
@@ -2246,7 +2246,7 @@
     }
 
   
-    /* ===== Unified look with landing (Inter, warm neutrals, pill CTAs) ===== */
+    /* ===== Unified look with landing (Plus Jakarta Sans, warm neutrals, pill CTAs) ===== */
     body { background: #F7F6F3; color: var(--n26-ink); }
     .app-logo { height: 2.75rem; width: auto; }
     @media (min-width: 640px) { .app-logo { height: 3.25rem; } }
@@ -2281,7 +2281,7 @@
     header.backdrop-blur-xl { background: rgba(255,255,255,0.95); }
     @media (max-width: 767px) { input, select, textarea { font-size: 16px !important; } }
   
-    /* ===== Registration & verification: refined typography and surfaces (Inter, same family as landing) ===== */
+    /* ===== Registration & verification: refined typography and surfaces (Plus Jakarta Sans, same family as landing) ===== */
     .reg-root { font-feature-settings: "kern" 1, "calt" 1; }
     .reg-root header.backdrop-blur-xl { background: rgba(255,255,255,0.92); border-bottom: 1px solid rgba(15,23,42,0.06); }
     .reg-root header .h-1 { height: 4px; }
@@ -2662,12 +2662,13 @@ button:not(:disabled):not(.no-press):active{transform:scale(.955);filter:brightn
   })();
   </script>
 <style id="n26-typography-final">
-/* ===== N26 unified typography (final layer: wins over earlier rules) ===== */
+/* ===== Single typography: Plus Jakarta Sans everywhere (UI, numbers, IBAN, cards, print) ===== */
 :root{
-  --n26-font:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --n26-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
+  --n26-font:'Plus Jakarta Sans',sans-serif;
+  --n26-mono: 'JetBrains Mono', monospace;
 }
-html,body,#root,button,input,select,textarea,.font-sans{font-family:var(--n26-font)!important}
+*,*::before,*::after,html,body,#root,button,input,select,textarea,option,.font-sans,.font-serif{font-family:var(--n26-font)!important}
+svg text,svg tspan{font-family:var(--n26-font)!important}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{font-size:15px;line-height:1.5;letter-spacing:0;font-kerning:normal;font-synthesis:none;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-weight:400}
@@ -2691,7 +2692,7 @@ button svg,button i{flex-shrink:0}
 .text-xs{letter-spacing:0}
 /* Numbers & IBAN keep their own rules */
 .tabular-nums,.balance-pop{font-variant-numeric:tabular-nums lining-nums;white-space:nowrap;overflow-wrap:normal}
-.iban-mono,.font-mono,.iban-wrap,.bank-card__mono{font-family:var(--n26-mono)!important;overflow-wrap:anywhere;word-break:break-all}
+.iban-mono,.font-mono,.iban-wrap,.bank-card__mono,.txd-row__v--mono,.amx-trig-id,.amx-tp-ref,.amx-more b,.mono,code,kbd,samp,pre{font-family:var(--n26-mono)!important;font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1;letter-spacing:.03em;overflow-wrap:anywhere;word-break:break-all}
 /* Flex children must be allowed to shrink so text wraps instead of overflowing */
 main *,.landing-root *,.reg-root *{min-width:0}
 main svg,.landing-root svg,.reg-root svg,button img{min-width:auto}
@@ -3100,7 +3101,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .txd-tl--rej .txd-tl__s:last-child .txd-tl__d{background:#EF4444;border-color:#EF4444;animation:none;box-shadow:none}
 .txd-tl__l{font-size:10.5px;font-weight:600;color:#94A3B8;letter-spacing:.01em;white-space:nowrap}
 .txd-tl__s.is-done .txd-tl__l,.txd-tl__s.is-cur .txd-tl__l{color:#334155}
-.txd-copy{margin-left:8px;padding:3px 9px;border-radius:999px;font:600 10.5px system-ui,sans-serif;color:#0f766e;background:#F0FDFA;box-shadow:inset 0 0 0 1px rgba(15,118,110,.18)}
+.txd-copy{margin-left:8px;padding:3px 9px;border-radius:999px;font:600 10.5px Plus Jakarta Sans,sans-serif;color:#0f766e;background:#F0FDFA;box-shadow:inset 0 0 0 1px rgba(15,118,110,.18)}
 .txd-copy:active{transform:scale(.95)}
 
 /* ---- profile security ---- */
@@ -3211,7 +3212,7 @@ label[for="n26-aml-file-input"]{background:#0F766E!important;color:#fff!importan
 .txd-row--b{border-bottom:1px solid rgba(15,23,42,.06)}
 .txd-row__k{flex:none;color:#64748b}
 .txd-row__v{min-width:0;text-align:right;font-weight:600;color:#0f172a;overflow-wrap:anywhere}
-.txd-row__v--mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:500;letter-spacing:-.01em}
+.txd-row__v--mono{font-family:Plus Jakarta Sans,sans-serif;font-size:12.5px;font-weight:500;letter-spacing:-.01em}
 .txd-card--extra .txd-row{padding:11px 16px;font-size:13px}
 .txd-card--extra .txd-row__v{font-weight:500;color:#334155}
 .txd-bar{display:flex;gap:10px;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:#F7F6F3;border-top:1px solid rgba(15,23,42,.07)}
@@ -3573,9 +3574,9 @@ window.n26ShowDoc = function(html) {
     bar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;background:#fff;border-bottom:1px solid #e2e8f0';
     var close = document.createElement('button'); close.type = 'button';
     close.textContent = '← ' + (de ? 'Zurück' : XL('Back'));
-    close.style.cssText = 'border:0;background:#0f766e;color:#fff;font:600 14px system-ui;padding:10px 16px;border-radius:12px;cursor:pointer';
+    close.style.cssText = 'border:0;background:#0f766e;color:#fff;font:600 14px Plus Jakarta Sans,sans-serif;padding:10px 16px;border-radius:12px;cursor:pointer';
     var x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close');
-    x.style.cssText = 'border:0;background:#f1f5f9;color:#334155;font:600 16px system-ui;width:40px;height:40px;border-radius:50%;cursor:pointer';
+    x.style.cssText = 'border:0;background:#f1f5f9;color:#334155;font:600 16px Plus Jakarta Sans,sans-serif;width:40px;height:40px;border-radius:50%;cursor:pointer';
     var fr = document.createElement('iframe'); fr.srcdoc = html;
     fr.style.cssText = 'flex:1;width:100%;border:0;background:#fff';
     var done = function() { try { document.removeEventListener('keydown', esc); w.remove(); document.body.style.overflow = ''; } catch (e) {} };
@@ -3640,7 +3641,7 @@ window.n26ShowDoc = function(html) {
 /* deadline info: separate neutral block */
 .amx-dl{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:4px 6px 6px}
 .amx-dl .amx-cons-btn{border:0;background:transparent;padding:8px 6px}
-.amx-dl .amx-cons-i{background:#e2e8f0;color:#475569;font-style:italic;font-family:Georgia,serif}
+.amx-dl .amx-cons-i{background:#e2e8f0;color:#475569;font-style:italic;font-family:Plus Jakarta Sans,sans-serif}
 .amx-dl .amx-cons-t{color:#334155}
 .amx-dl .amx-warn{border:1px solid #e2e8f0;border-left:1px solid #e2e8f0;background:#fff}
 .amx-dl .amx-warn-t{color:#334155}
@@ -3734,7 +3735,7 @@ window.n26ShowDoc = function(html) {
 .amx-trig-r{margin:6px 0 0;font-size:12.5px;line-height:1.4;color:#334155}
 .amx-trig-l{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
 .amx-trig-l li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;padding:8px 10px;background:#fff;border:1px solid #eef2f6;border-radius:9px;font-size:12px}
-.amx-trig-id{grid-column:1/-1;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#0f766e;font-weight:600;word-break:break-all}
+.amx-trig-id{grid-column:1/-1;font-family:Plus Jakarta Sans,sans-serif;font-size:11px;color:#0f766e;font-weight:600;word-break:break-all}
 .amx-trig-n{color:#0f172a;font-weight:600;min-width:0;overflow-wrap:anywhere}
 .amx-trig-a{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
 .amx-trig-d{grid-column:1/-1;color:#64748b;font-size:11px}
@@ -3874,7 +3875,7 @@ window.n26ShowDoc = function(html) {
 .amx-tp.late .amx-tp-val{color:#b91c1c}
 .amx-tp .amx-dx-bar{margin:10px 0 9px;height:4px;background:#e5e9ef}
 .amx-tp-sub{font-size:12px;color:#64748b}
-.amx-tp-ref{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.02em;color:#64748b}
+.amx-tp-ref{font-family:Plus Jakarta Sans,sans-serif;font-size:11px;letter-spacing:.02em;color:#64748b}
 .amx-tp-acc{display:flex;align-items:center;gap:9px;width:100%;margin-top:12px;padding:12px 0 0;border:0;border-top:1px solid #e5e9ef;background:none;font:inherit;text-align:left;cursor:pointer}
 .amx-tp-i{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:none;border:1.5px solid #64748b;border-radius:50%;font:italic 700 11px/1 Georgia,'Times New Roman',serif;color:#475569}
 .amx-tp-at{flex:1;font-size:13px;font-weight:600;color:#334155}
@@ -3883,7 +3884,7 @@ window.n26ShowDoc = function(html) {
 .amx-cons-l li::before{content:'';position:absolute;left:2px;top:.62em;width:5px;height:5px;border-radius:50%;background:#94a3b8}
 .amx-more{margin-top:14px;padding:12px;border-radius:12px;background:#fff;border:1px solid #e5e9ef}
 .amx-more p{margin:0 0 10px;font-size:12.5px;line-height:1.55;color:#475569}
-.amx-more b{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#0f172a}
+.amx-more b{font-family:Plus Jakarta Sans,sans-serif;font-size:12px;color:#0f172a}
 .amx-more .amx-ghost{border-radius:10px;min-height:42px}
 .amx-tp-warn{background:#fffbeb;color:#b45309}
 .amx-late-note{padding:12px 14px;border:1px solid #fecaca;border-radius:12px;background:#fef2f2}
@@ -4075,7 +4076,88 @@ window.n26ShowDoc = function(html) {
 @media(max-width:380px){.sp-card-photo{flex-basis:88px;width:88px;height:88px}.sp-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sp-root .sp-card>button{gap:10px!important;padding:11px!important}}
 </style>
 
-</head>
+
+<style id="n26-card-controls-refinement">
+.card-controls-panel{padding:2px 0 0}
+.card-controls-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 2px 4px}
+.card-controls-kicker{font-size:9px;font-weight:800;letter-spacing:.16em;color:#82909d;margin:0 0 4px}
+.card-controls-heading h3{font-size:17px;line-height:1.2;font-weight:750;letter-spacing:-.035em;color:#101820;margin:0}
+.card-controls-state{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;border:1px solid #dcefe9;background:#f3faf7;color:#176b55;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:750}
+.card-controls-state i{display:block;width:6px;height:6px;border-radius:50%;background:#20a47b;box-shadow:0 0 0 3px rgba(32,164,123,.12)}
+.card-controls-state.is-frozen{border-color:#f3d9d9;background:#fff7f7;color:#a63b3b}
+.card-controls-state.is-frozen i{background:#d65b5b;box-shadow:0 0 0 3px rgba(214,91,91,.12)}
+.card-controls-panel .fz-btn{border-radius:22px;padding:15px 16px;box-shadow:0 8px 24px -19px rgba(15,23,42,.34)}
+.card-controls-panel .fz-btn__t{letter-spacing:-.02em}
+.card-controls-panel .fz-btn__s{max-width:34ch}
+.card-controls-panel .rounded-2xl.bg-white.p-5{border:1px solid rgba(15,23,42,.065);box-shadow:0 8px 24px -20px rgba(15,23,42,.28)}
+@media(max-width:420px){.card-controls-heading h3{font-size:16px}.card-controls-state{padding:6px 8px;font-size:9px}.card-controls-panel .fz-btn{padding:13px 12px;gap:11px}}
+</style>
+
+<style id="n26-card-hub-refinement">
+.card-hub-hero{padding:14px 14px 12px;border:1px solid rgba(15,23,42,.065);border-radius:26px;background:linear-gradient(155deg,#fff 0%,#f8faf9 100%);box-shadow:0 14px 34px -30px rgba(15,23,42,.32)}
+.card-hub-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:13px 2px 0}
+.card-hub-action{display:inline-flex;align-items:center;gap:9px;color:#14201e;font-size:12px;font-weight:700}
+.card-hub-action>svg{color:#98a39f}.card-hub-action__icon{display:grid;place-items:center;width:32px;height:32px;border-radius:11px;background:#edf5f2;color:#087e70}
+.card-hub-status{display:inline-flex;align-items:center;gap:7px;color:#61706c;font-size:10px;font-weight:700;white-space:nowrap}
+.card-hub-status__dot{width:7px;height:7px;border-radius:50%;background:#20a47b;box-shadow:0 0 0 3px rgba(32,164,123,.12)}.card-hub-status__dot.is-frozen{background:#d65b5b;box-shadow:0 0 0 3px rgba(214,91,91,.12)}
+.card-details-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;justify-content:center;padding:16px;background:rgba(8,18,17,.48);backdrop-filter:blur(7px)}
+.card-details-sheet{width:100%;max-width:460px;max-height:88vh;overflow:auto;border:1px solid rgba(255,255,255,.75);border-radius:27px;background:#fff;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.22);animation:card-sheet-in .24s cubic-bezier(.2,.8,.2,1)}
+.card-details-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:22px}.card-details-head h3{margin:2px 0 0;color:#101b19;font-size:21px;font-weight:750;letter-spacing:-.045em}.card-details-head button{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#f2f5f4;color:#53615d}
+.card-details-kicker{font-size:9px;font-weight:800;letter-spacing:.16em;color:#82918b}.card-details-lock{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:10px 4px 4px}.card-details-lock__icon{display:grid;place-items:center;width:54px;height:54px;border-radius:18px;background:#edf6f2;color:#087e70;margin-bottom:4px}.card-details-pin{width:150px;height:48px;margin-top:5px;border:1px solid #dce5e1;border-radius:14px;text-align:center;font-size:20px;letter-spacing:.35em;outline:none}.card-details-pin:focus{border-color:#087e70;box-shadow:0 0 0 3px rgba(8,126,112,.1)}.card-details-primary{width:100%;max-width:260px;margin-top:5px;padding:13px 16px;border-radius:14px;background:#087e70;color:#fff;font-size:13px;font-weight:750}.card-details-primary:disabled{opacity:.4;cursor:not-allowed}
+.card-details-values{display:flex;flex-direction:column;gap:0}.card-details-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 2px;border-bottom:1px solid #edf0ee}.card-details-row>div{display:flex;min-width:0;flex-direction:column;gap:5px}.card-details-row span{font-size:10px;font-weight:650;color:#87938e}.card-details-row strong{overflow-wrap:anywhere;color:#17211e;font-size:14px;font-weight:700;letter-spacing:.015em}.card-details-row button{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#f2f6f4;color:#087e70}.card-details-row button:disabled{opacity:.35}.card-details-foot{margin:14px 0 0;color:#8b9691;font-size:10px;line-height:1.5}
+.card-controls-panel{margin-top:2px}.card-controls-panel .fz-btn{border:1px solid rgba(15,23,42,.06);background:linear-gradient(120deg,#fff,#f8faf9)}
+.wallet-row{gap:12px!important}.wallet-btn{min-height:64px!important;border-radius:18px!important;box-shadow:0 8px 22px -19px rgba(15,23,42,.5)!important}.wallet-btn__logo{max-height:29px!important;object-fit:contain}.wallet-btn--google{border:1px solid #e5e9e7!important}.wallet-btn--apple{border:1px solid #111!important}
+@keyframes card-sheet-in{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(min-width:640px){.card-details-overlay{align-items:center}.card-details-sheet{border-radius:27px}}
+@media(max-width:380px){.card-hub-hero{padding:10px;border-radius:22px}.card-hub-actions{align-items:flex-start;flex-direction:column}.card-details-sheet{padding:19px;border-radius:24px}}
+</style>
+
+<style id="n26-card-ui-polish">
+.card-hub-action{min-height:46px;gap:11px;padding:8px 13px;border-radius:15px;font-size:13px;font-weight:700;color:#15211d;background:#fff;border:1px solid rgba(15,23,42,.08);box-shadow:0 5px 16px -14px rgba(15,23,42,.45)}
+.card-hub-action__icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:#eaf4f0;color:#087e70;flex:none}
+.card-details-action-icon{display:block;width:20px;height:20px;object-fit:contain;flex:none}.card-action-arrow{font-size:25px;line-height:1;color:#87938e;margin-left:auto;font-weight:400}
+.card-hub-status{min-height:34px;padding:7px 11px;border:1px solid #e5ece8;border-radius:999px;background:#f7faf8;color:#53635c;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:8px}.card-hub-status__dot{width:9px;height:9px;flex:none;border-radius:50%;background:#14966e;box-shadow:0 0 0 3px rgba(20,150,110,.13)}.card-hub-status__dot.is-frozen{background:#c84d4d;box-shadow:0 0 0 3px rgba(200,77,77,.13)}
+.card-details-head button.card-details-close{width:42px;height:42px;border:0;border-radius:50%;display:grid;place-items:center;background:#f0f4f2;color:#26352f;font-size:29px;line-height:1;font-weight:400;padding:0}
+.card-details-lock__icon{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:#eaf4f0;color:#087e70;margin-bottom:8px}.pin-shield-mark{width:42px;height:42px;border:2px solid currentColor;border-radius:13px;display:grid;place-items:center;font-size:12px;font-weight:850;letter-spacing:.04em;position:relative}.pin-shield-mark:after{content:"";position:absolute;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);bottom:-5px;background:#eaf4f0}
+.card-details-primary{min-height:50px;font-size:14px;border-radius:15px}.card-details-row{min-height:76px;padding:16px 2px}.card-details-row button{width:auto;min-width:76px;height:42px;padding:0 12px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;font-weight:750;letter-spacing:.01em}.card-copy-label{display:inline-block;line-height:1}
+@media(max-width:420px){.card-hub-actions{gap:8px}.card-hub-action{padding:7px 9px;gap:8px;font-size:12px}.card-hub-status{font-size:10px;padding:6px 8px}.card-details-row button{min-width:68px;padding:0 9px}}
+.card-details-lock>p{max-width:36ch;margin-left:auto;margin-right:auto}.card-details-row>div{overflow-wrap:anywhere}.card-details-row strong{word-break:normal}
+@media(max-width:420px){.card-details-sheet{width:100%;max-height:90dvh;padding:18px}.card-details-head h3{overflow-wrap:anywhere}.card-details-lock{padding-left:2px;padding-right:2px}.card-details-row{gap:8px}.card-details-row>div{max-width:calc(100% - 82px)}}
+</style>
+<style id="design-system-final">
+/* ===== Final design layer: single source of truth (loaded last, wins deterministically) =====
+   Fonts: Plus Jakarta Sans (text) + JetBrains Mono (IBAN, references, codes) + tabular numerals for money. */
+:root{
+  --ds-bg:#F5F7F6; --ds-surface:#FFFFFF; --ds-text:#1F2933; --ds-text-2:#52606D; --ds-line:#E3E8E6;
+  --ds-teal:#0F5F54; --ds-teal-hover:#0B4A41; --ds-teal-soft:#E6F1EE; --ds-radius:10px;
+}
+body{background:var(--ds-bg);color:var(--ds-text)}
+h1,h2,h3,h4,.text-slate-900,.text-slate-800,.text-foreground{color:var(--ds-text)}
+.text-slate-500,.text-slate-600,.text-muted-foreground{color:var(--ds-text-2)}
+
+/* Money & balances: tabular numerals */
+.balance-pop,.bal-num,.bal-int,.tx-amt,.tx-amt *,.txd-amt,.tabular-nums,[class*="amount"],[class*="balance"]{
+  font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1}
+.bal-num .bal-sep{font-variant-numeric:proportional-nums;font-feature-settings:"tnum" 0}
+
+/* IBAN / requisites / codes: monospaced, calm, never overflow */
+.iban-mono,.font-mono,.iban-wrap,.bank-card__mono,.txd-row__v--mono,.amx-trig-id,.amx-tp-ref,.amx-more b,.mono,code,kbd,samp,pre{
+  font-family:var(--n26-mono)!important;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1,"zero" 0;
+  font-weight:500;letter-spacing:0;overflow-wrap:anywhere;word-break:break-all}
+
+/* Buttons: rectangular, moderately rounded (no pills / bubbles) */
+button:not([role="switch"]):not([class*="switch"]):not([class*="toggle"]):not([class*="dot"]):not([class*="rounded-full"]):not([class*="rounded-[999"]):not(.nav-glass__item):not(.qa-item):not(.viewall),
+[role="button"]:not([role="switch"]):not([class*="rounded-full"]),input[type="submit"],input[type="button"],
+a[class*="rounded-full"][class*="px-"],a[class*="btn"]{border-radius:var(--ds-radius)!important}
+.nav-glass__bar{border-radius:20px!important}
+.nav-glass__pill,.nav-glass__item{border-radius:14px!important}
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),select,textarea{border-radius:var(--ds-radius)}
+
+/* Accents: deep teal-green instead of black/other brand colours on primary actions */
+button.bg-slate-900,a.bg-slate-900,button.bg-black,a.bg-black{background:var(--ds-teal)!important;color:#fff!important}
+button.bg-slate-900:hover,a.bg-slate-900:hover{background:var(--ds-teal-hover)!important}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ds-teal);outline-offset:2px}
+</style></head>
 <body>
   <div id="root"></div>
 
@@ -5420,6 +5502,9 @@ window.n26ShowDoc = function(html) {
 
     window.__N26_LANG = window.__N26_LANG || 'de';
     const XL_MAP = {"it":{"Back":"Indietro","Help":"Aiuto","Contact support":"Contatta l'assistenza","New message":"Nuovo messaggio","Fingerprint / face unlock":"Sblocco con impronta digitale / viso","Biometrics (Windows Hello / Touch ID)":"Biometria (Windows Hello / Touch ID)","Biometrics unavailable":"Biometria non disponibile","The page must be opened over HTTPS.":"La pagina deve essere aperta tramite HTTPS.","Biometrics are not available in the installed app on this iOS version. Open N26 in Safari or update iOS.":"La biometria non è disponibile nell'app installata con questa versione di iOS. Apri N26 in Safari o aggiorna iOS.","This browser does not support biometrics. Update the browser.":"Questo browser non supporta la biometria. Aggiorna il browser.","No biometrics set up":"Biometria non configurata","Set up Touch ID, Face ID or fingerprint in your device settings.":"Configura Touch ID, Face ID o l'impronta digitale nelle impostazioni del dispositivo.","Cancelled":"Annullato","Confirmation cancelled or timed out. Try again.":"Conferma annullata o scaduta. Riprova.","Biometrics blocked":"Biometria bloccata","Domain or HTTPS does not match the request.":"Il dominio o l'HTTPS non corrisponde alla richiesta.","Not supported":"Non supportato","This device cannot use biometrics here. Use your PIN.":"Questo dispositivo non può usare la biometria qui. Usa il PIN.","Biometrics failed":"Biometria non riuscita","The photo is blurry. Place the document on a flat surface, tap to focus and take the photo again.":"La foto è sfocata. Appoggia il documento su una superficie piana, tocca per mettere a fuoco e scatta di nuovo.","The photo is too dark. Please retake it in good light without shadows.":"La foto è troppo scura. Scattala di nuovo con buona luce e senza ombre.","This looks like a bank card, not an identity document. Please upload a photo of your ID card, passport or driving licence.":"Sembra una carta di pagamento, non un documento d'identità. Carica una foto della carta d'identità, del passaporto o della patente.","No identity document was detected in the photo. Lay the document flat, use good light so the text is readable and capture it fully.":"Nessun documento d'identità rilevato nella foto. Appoggia il documento in piano, usa una buona luce per rendere leggibile il testo e inquadralo per intero.","Front and back are the same file. Please upload a separate photo for the back side.":"Fronte e retro sono lo stesso file. Carica una foto separata per il retro.","Too many attempts. Please wait ":"Troppi tentativi. Attendi ","Resend available in ":"Reinvio disponibile tra ","Limit reached (3 emails per hour). Try again in ":"Limite raggiunto (3 e-mail all'ora). Riprova tra ","Too many requests from this device. Please try again later.":"Troppe richieste da questo dispositivo. Riprova più tardi.","Please enter the 4-digit code":"Inserisci il codice a 4 cifre","Too many wrong attempts. Please wait ":"Troppi tentativi errati. Attendi ","Code expired (15 min). Please resend.":"Codice scaduto (15 min). Invialo di nuovo.","Too many wrong attempts. Please wait 15 min.":"Troppi tentativi errati. Attendi 15 min.","Wrong code. Please try again.":"Codice errato. Riprova.","Please enter a valid email address.":"Inserisci un indirizzo e-mail valido.","This email address is already registered.":"Questo indirizzo e-mail è già registrato.","Password: at least 8 characters with a letter and a number.":"Password: almeno 8 caratteri con una lettera e un numero.","The passwords do not match.":"Le password non coincidono.","First name: at least 2 letters, no digits.":"Nome: almeno 2 lettere, nessuna cifra.","Last name: at least 2 letters, no digits.":"Cognome: almeno 2 lettere, nessuna cifra.","Check your date of birth – you must be at least 18.":"Controlla la data di nascita – devi avere almeno 18 anni.","Please enter street and house number.":"Inserisci via e numero civico.","Please enter your city.":"Inserisci la tua città.","Please accept the terms and the privacy policy.":"Accetta i termini e l'informativa sulla privacy.","Summary":"Riepilogo","Saved automatically":"Salvato automaticamente","Please check your answers":"Controlla le tue risposte","Edit":"Modifica","Submit answers":"Invia le risposte","about 2 min":"circa 2 min","Review":"Revisione","Next":"Avanti","New reply from support":"Nuova risposta dell'assistenza","View":"Visualizza","en-GB":"it-IT","Time expired":"Tempo scaduto","This format is not supported. Please choose PDF, JPG or PNG.":"Questo formato non è supportato. Scegli PDF, JPG o PNG.","The file is too large (max. 15 MB).":"Il file è troppo grande (max. 15 MB).","The amount stays on hold. Without proof it cannot be released.":"L'importo resta bloccato. Senza documentazione non può essere rilasciato.","Once time runs out, the amount may be returned to the sender.":"Allo scadere del tempo l'importo può essere restituito al mittente.","Transfers, card payments and withdrawals may be restricted for your entire account.":"Bonifici, pagamenti con carta e prelievi possono essere limitati per l'intero conto.","If you do not cooperate, the account may be closed. We may be legally required to report the matter.":"Se non collabori, il conto può essere chiuso. Potremmo essere tenuti per legge a segnalare il caso.","Need more time? Write to us before it runs out. In justified cases the time can be extended. Please quote your case number ":"Serve più tempo? Scrivici prima che scada. In casi giustificati il tempo può essere prorogato. Indica il tuo numero di pratica ","Request more time":"Richiedi più tempo","Additional document requested":"Documento aggiuntivo richiesto","We need one more document for your payment.":"Ci serve ancora un documento per il tuo pagamento.","Transaction":"Transazione","Reason for the review":"Motivo della verifica","Documents under review":"Documenti in verifica","Proof required":"Documentazione richiesta","temporarily on hold":"temporaneamente bloccato","We received your details and document and are reviewing them. You do not need to do anything else. We will get in touch once the review is complete.":"Abbiamo ricevuto i tuoi dati e il tuo documento e li stiamo verificando. Non devi fare altro. Ti contatteremo al termine della verifica.","Submitted":"Inviato","Under review":"In verifica","Manual review by our team":"Verifica manuale da parte del nostro team","Result":"Esito","Usually within 1–2 business days":"Di solito entro 1–2 giorni lavorativi","Document: ":"Documento: ","You received larger payments. We are legally required to verify the source of such amounts (proof of funds). We need two short answers and one supporting document, which takes about 5 minutes. The rest of your balance stays fully available.":"Hai ricevuto pagamenti di importo elevato. Siamo tenuti per legge a verificare l'origine di tali importi (prova della provenienza dei fondi). Servono due brevi risposte e un documento giustificativo, circa 5 minuti. Il resto del tuo saldo resta pienamente disponibile.","Continue":"Continua","Submit proof":"Invia la documentazione","Time to submit":"Tempo per l'invio","Expired on ":"Scaduto il ","Until ":"Fino al ","What happens if time runs out":"Cosa succede se il tempo scade","The time has run out. Please still submit the proof as soon as possible or contact support.":"Il tempo è scaduto. Invia comunque la documentazione il prima possibile o contatta l'assistenza.","Some account functions have been restricted":"Alcune funzioni del conto sono state limitate","are temporarily on hold":"sono temporaneamente bloccati","Please read the details of the review. We will then guide you through the proof in two short steps: first details about the payment, then a document. You have 48 hours.":"Leggi i dettagli della verifica. Poi ti guideremo nella documentazione in due brevi passaggi: prima i dati sul pagamento, poi un documento. Hai 48 ore.","Start review":"Avvia la verifica","Later":"Più tardi","Close":"Chiudi","Proof of funds":"Prova della provenienza dei fondi","Step 1: Details about the payment":"Passo 1: Dati sul pagamento","Please answer truthfully. Your answers stay saved if you close this window.":"Rispondi con sincerità. Le tue risposte restano salvate se chiudi questa finestra.","Continue to document":"Continua con il documento","Step 2: Upload a document":"Passo 2: Carica un documento","Suitable documents for your answers":"Documenti adatti alle tue risposte","Checking…":"Verifica in corso…","Received":"Ricevuto","Upload your document":"Carica il tuo documento","PDF, JPG or PNG · max. 15 MB":"PDF, JPG o PNG · max. 15 MB","Take photo":"Scatta una foto","Other document":"Altro documento","Choose file":"Scegli un file","All four corners are visible":"Tutti e quattro gli angoli sono visibili","Name, date and amount clearly readable":"Nome, data e importo ben leggibili","Encrypted – only the compliance team can see it":"Cifrato – solo il team compliance può vederlo","All submitted":"Tutto inviato","Thank you. We are reviewing your documents and will get back to you. Nothing else is needed.":"Grazie. Stiamo verificando i tuoi documenti e ti ricontatteremo. Non serve altro.","Transactions":"Transazioni","Search":"Cerca","Clear":"Cancella","All":"Tutte","In":"Entrate","Out":"Uscite","Month":"Mese","entries":"voci","Physical card":"Carta fisica","Your Standard plan includes the virtual Mastercard. With N26 You or N26 Metal you can also order a physical card.":"Il tuo piano Standard include la Mastercard virtuale. Con N26 You o N26 Metal puoi ordinare anche una carta fisica.","Order Metal card":"Ordina la carta Metal","Detecting device":"Rilevamento del dispositivo","Active":"Attiva","In review":"In verifica","Device card no.":"N. carta del dispositivo","Requested":"Richiesta","Pay contactless with your device. Card limits and freeze apply here too.":"Paga in contactless con il tuo dispositivo. Anche qui valgono i limiti e il blocco della carta.","We are reviewing your request. You will be notified once the card is active.":"Stiamo verificando la tua richiesta. Riceverai una notifica quando la carta sarà attiva.","Tap again to confirm":"Tocca di nuovo per confermare","Remove from wallet":"Rimuovi dal wallet","Cancel request":"Annulla la richiesta","Added":"Aggiunta","Please enter a name.":"Inserisci un nome.","Goal: €10 – €1,000,000":"Obiettivo: 10 € – 1.000.000 €","Maximum 8 Spaces.":"Massimo 8 Spaces.","Space created":"Space creato","Goal updated":"Obiettivo aggiornato","Please withdraw the balance first.":"Preleva prima il saldo.","Space deleted":"Space eliminato","Total goal ":"Obiettivo totale ","In progress":"In corso","Reached":"Raggiunto","Cancel":"Annulla","New Space":"Nuovo Space","Create a new Space":"Crea un nuovo Space","Name, e.g. New car":"Nome, ad es. Auto nuova","Goal in €":"Obiettivo in €","Create Space":"Crea Space","Goal reached":"Obiettivo raggiunto","of ":"di ","Congratulations – you reached your goal!":"Complimenti – hai raggiunto il tuo obiettivo!","Still ":"Ancora "," to go":" al traguardo","Savings planner":"Pianificatore di risparmio","month":"mese","Monthly amount":"Importo mensile","Goal in ":"Obiettivo in ","New goal in €":"Nuovo obiettivo in €","Save":"Salva","Deposit / Withdraw":"Versa / Preleva","Edit goal":"Modifica obiettivo","Delete?":"Eliminare?","Delete":"Elimina","No Spaces in this view":"Nessuno Space in questa vista","Show all":"Mostra tutti","Transaction details":"Dettagli della transazione","Transaction ID":"ID transazione","Date & time":"Data e ora","Completed":"Completata","Pending":"In sospeso","Category":"Categoria","Payment type":"Tipo di pagamento","Sender":"Mittente","Recipient":"Destinatario","Reference":"Causale","Purpose":"Scopo","Card":"Carta","Authorisation code":"Codice di autorizzazione","Contact support about this transaction":"Contatta l'assistenza per questa transazione","Fee":"Commissione","Amount":"Importo","Copy":"Copia","Copied":"Copiato","Declined":"Rifiutata","Note":"Nota","I have a question about this transaction:":"Ho una domanda su questa transazione:","Amount: ":"Importo: ","Date: ":"Data: ","Counterparty: ":"Controparte: ","Transaction ":"Transazione ","Receipt as PDF":"Ricevuta in PDF","All transactions":"Tutte le transazioni","Search name, category or amount":"Cerca nome, categoria o importo","Last 7 days":"Ultimi 7 giorni","Last 30 days":"Ultimi 30 giorni","Last 90 days":"Ultimi 90 giorni","All time":"Sempre","No matching transactions found.":"Nessuna transazione corrispondente trovata.","transactions":"transazioni","Continue to confirmation":"Vai alla conferma","Confirmation required":"Conferma richiesta","Confirm with PIN":"Conferma con il PIN","Sent":"Inviato","Bank review":"Verifica della banca","Activated":"Attivato","Top category: ":"Categoria principale: ","Busiest weekday: ":"Giorno più intenso: "," in this period":" in questo periodo","Top counterparty: ":"Controparte principale: ","Month-end forecast":"Previsione a fine mese"," at this pace":" a questo ritmo","vs previous period":"rispetto al periodo precedente","You are spending less – nice.":"Stai spendendo meno – ottimo.","Spending is up compared to before.":"Le spese sono aumentate rispetto a prima.","More income than before.":"Più entrate di prima.","Less income than before.":"Meno entrate di prima.","Insights":"Analisi","Reset":"Reimposta","7 days":"7 giorni","30 days":"30 giorni","90 days":"90 giorni","Spending":"Spese","Income":"Entrate","Spent":"Speso","previous ":"precedente ","Avg / day":"Media / giorno","Net":"Netto","Items":"Voci","Highlights":"In evidenza","Per week":"Per settimana","Per day":"Per giorno","before":"prima","Tap or drag across the chart":"Tocca o trascina sul grafico","No data in this period":"Nessun dato in questo periodo","Previous period":"Periodo precedente","Current":"Attuale","By weekday":"Per giorno della settimana","Peak day: ":"Giorno di picco: ","Categories":"Categorie","Category chart":"Grafico delle categorie","Total":"Totale","Largest item":"Voce più grande","No items":"Nessuna voce","Freeze card":"Blocca la carta","Unfreeze card":"Sblocca la carta","Card is frozen – all card payments are declined.":"La carta è bloccata – tutti i pagamenti con carta vengono rifiutati.","One tap blocks the card instantly. Re-enable any time.":"Un tocco blocca subito la carta. Puoi riattivarla in qualsiasi momento.","Card limits":"Limiti della carta","Daily limit (payments)":"Limite giornaliero (pagamenti)","Online payments":"Pagamenti online","ATM withdrawals":"Prelievi al bancomat","used today":"usato oggi","Enter amounts between 0 and €10,000.":"Inserisci importi tra 0 e 10.000 €.","Card limits saved":"Limiti della carta salvati","Card frozen":"Carta bloccata","Card unfrozen":"Carta sbloccata","Card payments are enabled again.":"I pagamenti con carta sono di nuovo abilitati.","Payees & payments":"Beneficiari e pagamenti","Favourites":"Preferiti","Templates":"Modelli","Standing orders":"Ordini permanenti","Nothing saved yet.":"Ancora nulla di salvato.","Send":"Invia","Name":"Nome","Amount (€)":"Importo (€)","Save template":"Salva modello","As standing order":"Come ordine permanente","weekly":"settimanale","monthly":"mensile","Next run":"Prossima esecuzione","Pause":"Pausa","Resume":"Riprendi","Name, valid IBAN and amount > 0 required.":"Servono nome, IBAN valido e importo > 0.","Currencies":"Valute","Exchange":"Cambio","Set up":"Configura","Set up multi-currency":"Configura il multivaluta","Currency":"Valuta","Add a currency first.":"Aggiungi prima una valuta.","Enter a valid amount (e.g. 100.00).":"Inserisci un importo valido (ad es. 100,00).","Exchange failed.":"Cambio non riuscito.","Currencies & exchange":"Valute e cambio","Main account":"Conto principale","Add currency":"Aggiungi valuta","Amount in EUR":"Importo in EUR","Amount in ":"Importo in ","Rate (live)":"Tasso (live)","You pay":"Paghi","You get":"Ricevi","Exchange now":"Cambia ora","Rates update continuously. Fee 0.5% (min. €0.50).":"I tassi si aggiornano continuamente. Commissione 0,5% (min. 0,50 €).","Recent exchanges":"Cambi recenti","Verification confirmed!":"Verifica confermata!","Your account is unlocked. Here is a quick tour of your bank.":"Il tuo conto è sbloccato. Ecco un breve tour della tua banca.","Turn on features":"Attiva le funzioni","You can change everything later in Profile.":"Puoi cambiare tutto più tardi nel Profilo.","Haptic feedback":"Feedback aptico","Vibration on actions (not on all iPhones)":"Vibrazione alle azioni (non su tutti gli iPhone)","Set up Face ID / Touch ID in Profile under Security.":"Configura Face ID / Touch ID nel Profilo, in Sicurezza.","Skip":"Salta","Transfer sent":"Bonifico inviato","Transfer completed":"Bonifico completato","Return · transfer declined":"Storno · bonifico rifiutato","Transfer declined":"Bonifico rifiutato"," returned":" restituito"," has been returned":" è stato restituito","Rate ":"Tasso ","Amount too small.":"Importo troppo piccolo.","Not enough balance (incl. fee).":"Saldo insufficiente (commissione inclusa).","Currency exchange EUR → ":"Cambio valuta EUR → ","Currency exchanged":"Valuta cambiata","Exchange done":"Cambio eseguito","Amount too small (fee exceeds result).":"Importo troppo piccolo (la commissione supera il risultato).","Currency exchange ":"Cambio valuta ","Transfer":"Bonifico","en":"it","Receipt ready":"Ricevuta pronta","No transactions in the selected period.":"Nessuna transazione nel periodo selezionato.","Save as PDF / Print":"Salva come PDF / Stampa","€0 / month":"0 € / mese","€9.90 / month":"9,90 € / mese","€16.90 / month":"16,90 € / mese","Back to login":"Torna all'accesso","Choose your plan":"Scegli il tuo piano","You can change it any time later.":"Potrai cambiarlo in qualsiasi momento.","Are you still there?":"Sei ancora lì?","For your security you will be signed out automatically due to inactivity.":"Per la tua sicurezza verrai disconnesso automaticamente per inattività.","You were signed out due to inactivity.":"Sei stato disconnesso per inattività.","Your session has expired. Please sign in again.":"La tua sessione è scaduta. Accedi di nuovo.","en-US":"it-IT","Provider":"Fornitore","Germany":"Germania","Represented by the Management Board":"Rappresentata dal Consiglio di amministrazione","The Management Board of N26 Bank AG.":"Il Consiglio di amministrazione di N26 Bank AG.","Contact":"Contatti","Phone (Germany)":"Telefono (Germania)","Commercial register":"Registro delle imprese","Local Court of Charlottenburg (Berlin)":"Tribunale locale di Charlottenburg (Berlino)","VAT ID":"Partita IVA","Supervisory authority":"Autorità di vigilanza","Deposit protection":"Protezione dei depositi","1. Controller":"1. Titolare del trattamento","Data protection":"Protezione dei dati","2. Data we process":"2. Dati che trattiamo","Identity and KYC data (name, date of birth, ID document, video identification)":"Dati di identità e KYC (nome, data di nascita, documento d'identità, video identificazione)","Contact data (e-mail, phone, address)":"Dati di contatto (e-mail, telefono, indirizzo)","Account and transaction data (IBAN, payments, balances, limits)":"Dati del conto e delle transazioni (IBAN, pagamenti, saldi, limiti)","Device and security data for fraud prevention":"Dati del dispositivo e di sicurezza per la prevenzione delle frodi","Support communications":"Comunicazioni con l'assistenza","3. Purposes and legal bases":"3. Finalità e basi giuridiche","Contract performance (Art. 6 (1)(b) GDPR): account, cards, transfers.":"Esecuzione del contratto (art. 6 par. 1 lett. b GDPR): conto, carte, bonifici.","Legal obligations (Art. 6 (1)(c)): AML/KYC, tax, BaFin requirements.":"Obblighi legali (art. 6 par. 1 lett. c): AML/KYC, fiscalità, requisiti BaFin.","Legitimate interests (Art. 6 (1)(f)): IT security, fraud detection, product improvement.":"Legittimi interessi (art. 6 par. 1 lett. f): sicurezza IT, rilevamento delle frodi, miglioramento del prodotto.","Consent (Art. 6 (1)(a)) where required — withdrawable at any time.":"Consenso (art. 6 par. 1 lett. a) ove richiesto – revocabile in qualsiasi momento.","4. Sharing":"4. Condivisione","5. Retention":"5. Conservazione","6. Your rights":"6. I tuoi diritti","7. Security":"7. Sicurezza","1. Provider and contract":"1. Fornitore e contratto","2. Eligibility":"2. Requisiti di idoneità","Legal age and completed identity verification (video ident / KYC).":"Maggiore età e verifica dell'identità completata (video identificazione / KYC).","We may refuse or close accounts where required by law (AML, sanctions, risk).":"Possiamo rifiutare o chiudere conti quando la legge lo richiede (AML, sanzioni, rischio).","3. Account and cards":"3. Conto e carte","4. Fees and plans":"4. Costi e piani","5. Security duties":"5. Obblighi di sicurezza","Keep PIN, passwords and devices confidential.":"Mantieni riservati PIN, password e dispositivi.","Report loss, theft or unauthorised use without undue delay.":"Segnala smarrimento, furto o uso non autorizzato senza indugio.","We may block payments or the account to prevent fraud or meet legal duties.":"Possiamo bloccare pagamenti o il conto per prevenire frodi o adempiere obblighi di legge.","6. Liability":"6. Responsabilità","7. Termination":"7. Recesso","8. Governing law":"8. Legge applicabile","Customer support":"Assistenza clienti","In-app chat":"Chat nell'app","available after login (priority plans typically 24/7)":"disponibile dopo l'accesso (piani prioritari di solito 24/7)","Postal address (head office)":"Indirizzo postale (sede principale)","Press":"Stampa","Complaints":"Reclami","Security alerts":"Avvisi di sicurezza","Back to homepage":"Torna alla homepage","No results":"Nessun risultato","Try a different name, category or amount.":"Prova un altro nome, categoria o importo.","Details":"Dettagli","Removed from wallet":"Rimossa dal wallet","Invalid phone number":"Numero di telefono non valido","Invalid postal code":"CAP non valido","Details saved":"Dettagli salvati","Limits saved":"Limiti salvati","Please upload one more proof.":"Carica ancora una documentazione.","AML deadline extended":"Scadenza AML prorogata","New deadline: ":"Nuova scadenza: ","Card blocked":"Carta bloccata","Contact support to unblock your card.":"Contatta l'assistenza per sbloccare la carta.","PIN locked":"PIN bloccato","Transfers locked. Try again in ":"Bonifici bloccati. Riprova tra ","Exchange EUR → ":"Cambio EUR → ","Enable Face ID / Touch ID":"Attiva Face ID / Touch ID","Biometrics enabled":"Biometria attivata","You can confirm transfers with Face ID / Touch ID":"Puoi confermare i bonifici con Face ID / Touch ID","Could not enable":"Impossibile attivare","You can try again in Profile":"Puoi riprovare nel Profilo","Enable now":"Attiva ora","Search transactions":"Cerca transazioni","Mark all as read":"Segna tutto come letto","Read all":"Leggi tutto","Settings":"Impostazioni","What to send me":"Cosa inviarmi","Money in & out":"Denaro in entrata e uscita","Security & alerts":"Sicurezza e avvisi","Info & tips":"Info e consigli","Unread":"Non lette","Money":"Denaro","Alerts":"Avvisi","View all":"Vedi tutto","Show less":"Mostra meno","Payees, templates & standing orders":"Beneficiari, modelli e ordini permanenti","Date of birth":"Data di nascita","Phone":"Telefono","Edit contact details":"Modifica i dati di contatto","ZIP":"CAP","City":"Città","This device/browser has no vibration support (iPhone: iOS 17.4+ required).":"Questo dispositivo/browser non supporta la vibrazione (iPhone: richiesto iOS 17.4+).","Save card limits":"Salva i limiti della carta","Reading document …":"Lettura del documento …","Under review…":"In verifica…","Welcome":"Benvenuto","Step ":"Passo ","Your progress was restored. Please re-enter your password and documents.":"I tuoi progressi sono stati ripristinati. Inserisci di nuovo la password e i documenti.","Start over":"Ricomincia","This email is already registered. Please sign in.":"Questa e-mail è già registrata. Accedi.","At least 8 characters":"Almeno 8 caratteri","Confirm your email":"Conferma la tua e-mail","Verification code":"Codice di verifica","Code valid: ":"Codice valido: ","expired":"scaduto","Resend in ":"Reinvio tra ","Resend available":"Reinvio possibile","Confirm code":"Conferma il codice","Sending…":"Invio in corso…","Resend code":"Invia di nuovo il codice","At least 18 years old":"Almeno 18 anni","Example Street 12":"Via Esempio 12","Front and back":"Fronte e retro","Data page":"Pagina dei dati","Tips for a good photo":"Consigli per una buona foto","All four corners visible · no glare · text clearly readable · document not expired.":"Tutti e quattro gli angoli visibili · nessun riflesso · testo ben leggibile · documento non scaduto.","A driving licence is not accepted as proof of identity in this country.":"In questo paese la patente non è accettata come documento d'identità.","Welcome to N26":"Benvenuto in N26","Country":"Paese","Video ID pending":"Video ID in sospeso","Go to account":"Vai al conto","Space transfer":"Trasferimento Space","Virtual card":"Carta virtuale","Virtual card only":"Solo carta virtuale","Enable virtual card for payments":"Abilita la carta virtuale per i pagamenti","Card PIN is not set up":"Il PIN della carta non è impostato","Card blocked — contact support":"Carta bloccata – contatta l'assistenza","PIN temporarily locked":"PIN temporaneamente bloccato","Incorrect PIN":"PIN errato","Biometrics unavailable — use PIN":"Biometria non disponibile – usa il PIN","Face ID / Touch ID not set up — use PIN":"Face ID / Touch ID non configurato – usa il PIN","Biometrics cancelled — use PIN":"Biometria annullata – usa il PIN","PIN mismatch":"I PIN non coincidono","Please enter a 4-digit PIN":"Inserisci un PIN a 4 cifre","Your card was blocked after another wrong PIN. Contact support to unblock it.":"La tua carta è stata bloccata dopo un altro PIN errato. Contatta l'assistenza per sbloccarla.","PIN on hold (30 min)":"PIN sospeso (30 min)","3 wrong PIN entries. Your card is on hold for 30 minutes. Another wrong PIN afterwards will block the card.":"3 PIN errati. La carta è sospesa per 30 minuti. Un altro PIN errato bloccherà la carta.","Biometrics not available on this device — use PIN":"Biometria non disponibile su questo dispositivo – usa il PIN","Face ID / Touch ID not set up — use PIN or enable in settings":"Face ID / Touch ID non configurato – usa il PIN o attivalo nelle impostazioni","Biometrics cancelled":"Biometria annullata","My card was blocked after wrong PIN entries. Please unblock it.":"La mia carta è stata bloccata dopo PIN errati. Per favore sbloccatela.","Unblock my card":"Sblocca la mia carta","Card colour":"Colore della carta","Black":"Nera","Blue":"Blu","White":"Bianca","Locked: ":"Bloccato: ","Card fee":"Costo della carta","Biometrics unavailable. Please use PIN.":"Biometria non disponibile. Usa il PIN.","Information according to § 5 DDG (German Digital Services Act) and applicable banking disclosure rules.":"Informazioni ai sensi del § 5 DDG (legge tedesca sui servizi digitali) e delle norme applicabili in materia di trasparenza bancaria.","N26 Bank AG holds a full German banking licence and is supervised by BaFin and the Deutsche Bundesbank.":"N26 Bank AG dispone di una licenza bancaria completa tedesca ed è vigilata dalla BaFin e dalla Deutsche Bundesbank.","Eligible deposits are protected up to €100,000 per customer by the German statutory deposit guarantee scheme (Entschädigungseinrichtung deutscher Banken GmbH).":"I depositi ammissibili sono protetti fino a 100.000 € per cliente dal sistema tedesco di garanzia dei depositi (Entschädigungseinrichtung deutscher Banken GmbH).","How N26 Bank AG (“N26”, “we”) processes personal data when you use our website, app and banking services — in line with the EU GDPR.":"Come N26 Bank AG («N26», «noi») tratta i dati personali quando utilizzi il nostro sito web, l’app e i servizi bancari, in conformità al GDPR dell’UE.","We share data only when necessary: payment schemes (e.g. Mastercard), SEPA infrastructure, KYC providers, deposit guarantee scheme and supervisory authorities.":"Condividiamo i dati solo quando necessario: circuiti di pagamento (ad es. Mastercard), infrastruttura SEPA, fornitori KYC, sistema di garanzia dei depositi e autorità di vigilanza.","Data is kept for the account relationship and statutory retention periods (often up to 10 years under German commercial and tax law).":"I dati vengono conservati per la durata del rapporto di conto e per i termini di conservazione previsti dalla legge (spesso fino a 10 anni secondo il diritto commerciale e tributario tedesco).","You may request access, rectification, erasure, restriction, portability and object to certain processing. You can complain to a supervisory authority (e.g. Berlin data protection authority).":"Puoi richiedere accesso, rettifica, cancellazione, limitazione e portabilità dei dati e opporti a determinati trattamenti. Puoi presentare reclamo a un’autorità di controllo (ad es. l’autorità di Berlino per la protezione dei dati).","Encryption in transit, access controls and monitoring consistent with expectations for a licensed digital bank.":"Crittografia in transito, controlli di accesso e monitoraggio in linea con le aspettative per una banca digitale autorizzata.","Summary of the framework for the N26 digital current account. The full customer agreement is provided during onboarding and in the app.":"Sintesi delle condizioni quadro del conto corrente digitale N26. Il contratto completo con il cliente ti viene fornito durante l’apertura del conto e nell’app.","Contracting party is N26 Bank AG, Voltairestraße 8, 10179 Berlin. Opening an account creates a framework agreement for payment services under German and EU law.":"La controparte contrattuale è N26 Bank AG, Voltairestraße 8, 10179 Berlino. L’apertura del conto crea un contratto quadro per servizi di pagamento ai sensi del diritto tedesco ed europeo.","German IBAN, SEPA transfers, virtual/physical Mastercard, Apple Pay / Google Pay (where available), Spaces and in-app controls. Features depend on your plan (Standard, You, Metal).":"IBAN tedesco, bonifici SEPA, Mastercard virtuale/fisica, Apple Pay / Google Pay (dove disponibili), Spaces e controlli nell’app. Le funzioni dipendono dal tuo piano (Standard, You, Metal).","Standard may have no monthly account fee; paid plans are charged as shown in the plan overview. Third-party ATM or FX fees may apply as disclosed.":"Il piano Standard può non avere canone mensile; i piani a pagamento vengono addebitati come indicato nella panoramica dei piani. Possono essere applicate commissioni di terzi per prelievi o cambio valuta, come indicato.","Statutory rules on unauthorised payment transactions apply. Other liability follows mandatory law.":"Si applicano le norme di legge sulle operazioni di pagamento non autorizzate. Ogni altra responsabilità segue il diritto imperativo.","You may terminate according to the customer agreement (typically in the app). We may terminate with statutory notice or immediately for cause.":"Puoi recedere secondo il contratto con il cliente (di norma nell’app). Noi possiamo recedere con il preavviso previsto dalla legge o immediatamente per giusta causa.","German law applies. Mandatory consumer protections of your country of residence remain unaffected where required by EU law.":"Si applica il diritto tedesco. Restano impregiudicate le tutele inderogabili del consumatore del tuo paese di residenza, ove richieste dal diritto dell’UE.","We are a digital bank. Most requests are handled in the app or by e-mail — without a branch visit.":"Siamo una banca digitale. La maggior parte delle richieste viene gestita nell’app o via e-mail, senza bisogno di andare in filiale.","If we cannot resolve your complaint satisfactorily, you may contact the German banks’ ombudsman scheme or BaFin. Details are in our complaints policy in the app and on request.":"Se non riusciamo a risolvere il tuo reclamo in modo soddisfacente, puoi rivolgerti al sistema di mediazione delle banche tedesche o alla BaFin. I dettagli sono nella nostra policy sui reclami nell’app e su richiesta.","N26 will never ask for your full PIN or password by e-mail or phone. Freeze your card instantly in the app if you suspect fraud.":"N26 non ti chiederà mai il PIN completo o la password via e-mail o telefono. Se sospetti una frode, blocca subito la carta nell’app.","Confirm adding the card with your card PIN or Face ID / Touch ID.":"Conferma l’aggiunta della carta con il PIN della carta o con Face ID / Touch ID.","Confirm transfers faster and more securely. Haptic feedback is already on.":"Conferma i bonifici in modo più rapido e sicuro. Il feedback aptico è già attivo.","Payslip":"Busta paga","Bank statement":"Estratto conto","Employment contract":"Contratto di lavoro","Purchase agreement":"Contratto di acquisto","Sales receipt":"Ricevuta di vendita","Sales agreement":"Contratto di vendita","Invoice":"Fattura","Rental agreement":"Contratto di affitto","Tax assessment":"Avviso di accertamento fiscale","Tax return":"Dichiarazione dei redditi","Gift agreement":"Atto di donazione","Certificate of inheritance":"Certificato ereditario","Loan agreement":"Contratto di prestito","ID card":"Carta d’identità","Passport":"Passaporto","The document is not legible":"Il documento non è leggibile","The document is incomplete":"Il documento è incompleto","Please upload one more proof":"Carica un ulteriore documento","Unusually high amount":"Importo insolitamente elevato","Amount above threshold":"Importo sopra la soglia","First-time incoming payment":"Primo pagamento in entrata","Payment from abroad":"Pagamento dall’estero","Multiple incoming payments from new senders":"Più pagamenti in entrata da nuovi mittenti","Frequent incoming payments":"Pagamenti in entrata frequenti","Multiple large incoming payments in a short time":"Più pagamenti elevati in entrata in poco tempo","Large incoming payment":"Pagamento in entrata elevato","Unusual transaction activity":"Attività di transazione insolita","Source of funds not verified":"Origine dei fondi non verificata","Multiple incoming payments":"Più pagamenti in entrata","in a short time":"in poco tempo","Unusual transaction pattern":"Schema di transazione insolito","review":"verifica","Extension request ":"Richiesta di proroga ","Review question ":"Domanda sulla verifica ","Document":"Documento","Currency exchange":"Cambio valuta","SEPA Credit Transfer":"Bonifico SEPA","International (SWIFT)":"Internazionale (SWIFT)","SEPA Instant":"Bonifico SEPA istantaneo","Account fee":"Costo del conto","Spaces transfer":"Trasferimento Spaces","Card payment":"Pagamento con carta","US dollar":"Dollaro statunitense","British pound":"Sterlina britannica","Swiss franc":"Franco svizzero","Polish zloty":"Złoty polacco","Yes, I'm here":"Sì, ci sono","Invalid number for selected country":"Numero non valido per il paese selezionato"}};
+    XL_MAP.it = Object.assign(XL_MAP.it || {}, {
+      'Card details':'Dettagli della carta','Card ready':'Carta disponibile','Card frozen':'Carta bloccata','Virtual card':'Carta virtuale','Physical card':'Carta fisica','Incorrect PIN':'PIN errato','Confirm with card PIN':'Conferma con il PIN della carta','Your card details will be visible for 30 seconds after confirmation.':'I dati della carta saranno visibili per 30 secondi dopo la conferma.','Confirm':'Conferma','Card number':'Numero della carta','Expiry date':'Data di scadenza','Expiry':'Scadenza','For your security, details are hidden again after 30 seconds.':'Per sicurezza, i dati verranno nascosti di nuovo dopo 30 secondi.','Payment settings':'Impostazioni di pagamento','Virtual card only':'Solo carta virtuale','Enable virtual card for payments':'Attiva la carta virtuale per i pagamenti','Added':'Aggiunta','Freeze card':'Blocca carta','Unfreeze card':'Sblocca carta','Card is frozen – all card payments are declined.':'La carta è bloccata: tutti i pagamenti vengono rifiutati.','One tap blocks the card instantly. Re-enable any time.':'Un tocco blocca subito la carta. Puoi riattivarla in qualsiasi momento.','Card limits':'Limiti della carta','Edit':'Modifica','Save':'Salva','Cancel':'Annulla','Daily limit (payments)':'Limite giornaliero (pagamenti)','Online payments':'Pagamenti online','ATM withdrawals':'Prelievi ATM','used today':'utilizzati oggi','Enter amounts between 0 and €10,000.':'Inserisci importi compresi tra 0 e 10.000 €.','Card limits saved':'Limiti della carta salvati','CARD MANAGEMENT':'GESTIONE CARTA','Security & limits':'Sicurezza e limiti','Frozen':'Bloccata','Active':'Attiva','Enter card PIN to unfreeze':'Inserisci il PIN della carta per sbloccarla','PIN required':'PIN richiesto','Set up a card PIN first. The card will remain frozen until then.':'Imposta prima un PIN della carta. Fino ad allora la carta resterà bloccata.','Card unfrozen':'Carta sbloccata','Card payments are enabled again.':'I pagamenti con carta sono nuovamente attivi.','Copy':'Copia','Copied':'Copiato','Close':'Chiudi'
+    });
     window.XL = function XL(s) {
       var l = window.__N26_LANG;
       if (l === 'it' && XL_MAP.it && XL_MAP.it[s] != null) return XL_MAP.it[s];
@@ -10360,7 +10445,39 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 
     function CardSection({ onWalletRemove, walletEmail, cardCtl, setCardCtl, ctlTx, ctlNotify, kycFull, cardPinSet, cardOrdered, cardHolder, userCard, userCvv, userExpiry, userIban, physicalCardNumber, physicalCvv, physicalExpiry, physicalCardTheme, lang, t, setPinSetupOpen, setCardOrderOpen, walletAppleAdded, walletGoogleAdded, walletApplePending, walletGooglePending, setWalletProvider, setWalletOpen, cardSettings, setCardSettings, showToast, haptic, plan }) {
       const [viewIdx, setViewIdx] = useState(0);
+      const [detailsOpen, setDetailsOpen] = useState(false);
+      const [detailsPin, setDetailsPin] = useState('');
+      const [detailsUnlocked, setDetailsUnlocked] = useState(false);
+      const [detailsError, setDetailsError] = useState('');
+      const cardIt = { wallet_processing:'Elaborazione in corso', activate_card:'Attiva la carta', setting_off:'Impostazione disattivata', contactless:'Pagamenti contactless', card_pin_first:'Imposta prima il PIN della carta', wallet_apple:'Aggiungi ad Apple Pay', wallet_google:'Aggiungi a Google Pay', copied:'Copiato', kyc_account_locked_title:'Verifica dell’identità richiesta', card_not_ready:'Completa la verifica per utilizzare la carta.', kyc_wait_notify:'Ti informeremo quando la verifica sarà completata.', card_pin_setup_title:'Imposta il PIN della carta', card_pin_setup_sub:'Crea un PIN per proteggere e gestire la tua carta.', set_pin_btn:'Imposta PIN', active:'Attiva', inactive:'Inattiva', online_pay:'Pagamenti online', online_pay_desc:'Consenti i pagamenti online', contactless_desc:'Consenti i pagamenti contactless', atm:'Prelievi ATM', atm_desc:'Consenti i prelievi di contanti', abroad:'Pagamenti all’estero', abroad_desc:'Consenti i pagamenti fuori dal paese' };
+      const tc = function(key) { return lang === 'it' && cardIt[key] ? cardIt[key] : t(key); };
       const isVirtual = viewIdx === 0 || !cardOrdered || !physicalCardNumber;
+      const selectedCard = isVirtual
+        ? { number: userCard, cvv: userCvv, expiry: userExpiry, iban: userIban }
+        : { number: physicalCardNumber, cvv: physicalCvv, expiry: physicalExpiry || userExpiry, iban: userIban };
+      useEffect(function() {
+        if (!detailsUnlocked) return undefined;
+        const timer = setTimeout(function() { setDetailsUnlocked(false); setDetailsOpen(false); setDetailsPin(''); }, 30000);
+        return function() { clearTimeout(timer); };
+      }, [detailsUnlocked]);
+      const verifyCardDetails = function() {
+        var stored = '';
+        try { stored = getStoredCardPin(walletEmail) || ''; } catch (e) {}
+        if (String(stored).length === 4 && String(detailsPin) === String(stored)) {
+          setDetailsError(''); setDetailsUnlocked(true); setDetailsPin('');
+          try { haptic(12); } catch (e) {}
+          return;
+        }
+        setDetailsPin(''); setDetailsError(lang === 'de' ? 'Falscher PIN' : XL('Incorrect PIN'));
+        try { haptic([30, 40, 30]); } catch (e) {}
+      };
+      const copyCardDetail = function(value, label) {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(String(value || '')).then(function() { showToast(label, tc('copied'), 'success'); }).catch(function() { showToast(label, '', 'warn'); });
+          } else { showToast(label, '', 'warn'); }
+        } catch (e) { showToast(label, '', 'warn'); }
+      };
 
       if (!kycFull) {
         return (
@@ -10368,20 +10485,20 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-700">
               <LucideIcon name="Lock" className="h-6 w-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900">{t('kyc_account_locked_title')}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">{t('card_not_ready')}</p>
-            <p className="mt-3 text-xs text-slate-500">{t('kyc_wait_notify')}</p>
+            <h3 className="text-base font-bold text-slate-900">{tc('kyc_account_locked_title')}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">{tc('card_not_ready')}</p>
+            <p className="mt-3 text-xs text-slate-500">{tc('kyc_wait_notify')}</p>
           </div>
         );
       }
       if (!cardPinSet) {
         return (
           <div className="rounded-3xl border border-teal-200 bg-white p-6 soft-card space-y-4">
-            <h3 className="text-base font-bold">{t('card_pin_setup_title')}</h3>
-            <p className="text-sm text-slate-500">{t('card_pin_setup_sub')}</p>
+            <h3 className="text-base font-bold">{tc('card_pin_setup_title')}</h3>
+            <p className="text-sm text-slate-500">{tc('card_pin_setup_sub')}</p>
             <button type="button" onClick={function() { setPinSetupOpen(true); }}
               className="w-full rounded-xl bg-teal-600 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20">
-              {t('set_pin_btn')}
+              {tc('set_pin_btn')}
             </button>
           </div>
         );
@@ -10417,11 +10534,34 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
 
       return (
         <div className="space-y-5">
-          <div className="relative">
-            <div className={cardCtl && cardCtl.frozen && isVirtual ? 'card-frozen' : ''}><CardCarousel t={t} cards={cards} onIndexChange={setViewIdx} /></div>
+          <div className="card-hub-hero">
+            <div className="relative">
+              <div className={cardCtl && cardCtl.frozen && isVirtual ? 'card-frozen' : ''}><CardCarousel t={t} cards={cards} onIndexChange={setViewIdx} /></div>
+            </div>
+            <div className="card-hub-actions">
+              <button type="button" className="card-hub-action" onClick={function() { setDetailsOpen(true); setDetailsUnlocked(false); setDetailsPin(''); setDetailsError(''); }}>
+                <span className="card-hub-action__icon" aria-hidden="true"><img className="card-details-action-icon" src="./card-details-icon.png" alt="" width="20" height="20" /></span>
+                <span>{lang === 'de' ? 'Kartendaten' : XL('Card details')}</span>
+                <span className="card-action-arrow" aria-hidden="true">›</span>
+              </button>
+              <div className="card-hub-status"><span className={'card-hub-status__dot' + ((isVirtual && cardCtl && cardCtl.frozen) ? ' is-frozen' : '')} />{isVirtual && cardCtl && cardCtl.frozen ? (lang === 'de' ? 'Karte gesperrt' : XL('Card frozen')) : (lang === 'de' ? 'Karte verfügbar' : XL('Card ready'))}</div>
+            </div>
           </div>
-          {isVirtual ? <CardControls ctl={cardCtl} setCtl={setCardCtl} txs={ctlTx} lang={lang} onNotify={ctlNotify} email={walletEmail} /> : null}
-
+          {detailsOpen ? (
+            <div className="card-details-overlay" role="dialog" aria-modal="true" aria-label={lang === 'de' ? 'Kartendaten' : XL('Card details')} onClick={function() { setDetailsOpen(false); setDetailsUnlocked(false); }}>
+              <div className="card-details-sheet" onClick={function(e) { e.stopPropagation(); }}>
+                <div className="card-details-head"><div><p className="card-details-kicker">N26 · {isVirtual ? (lang === 'de' ? 'VIRTUELL' : lang === 'it' ? 'VIRTUALE' : 'VIRTUAL') : (lang === 'de' ? 'PHYSISCH' : lang === 'it' ? 'FISICA' : 'PHYSICAL')}</p><h3>{lang === 'de' ? 'Kartendaten' : XL('Card details')}</h3></div><button type="button" className="card-details-close" aria-label={lang === 'de' ? 'Schließen' : (lang === 'it' ? 'Chiudi' : 'Close')} onClick={function() { setDetailsOpen(false); setDetailsUnlocked(false); }}>×</button></div>
+                {!detailsUnlocked ? (
+                  <div className="card-details-lock"><div className="card-details-lock__icon" aria-hidden="true"><span className="pin-shield-mark">PIN</span></div><p className="font-semibold">{lang === 'de' ? 'Mit Karten-PIN bestätigen' : XL('Confirm with card PIN')}</p><p className="text-xs text-slate-500">{lang === 'de' ? 'Deine Kartendaten werden nach der Bestätigung 30 Sekunden angezeigt.' : XL('Your card details will be visible for 30 seconds after confirmation.')}</p><input type="password" inputMode="numeric" autoComplete="off" maxLength={4} value={detailsPin} onChange={function(e) { setDetailsPin(e.target.value.replace(/\D/g, '').slice(0,4)); setDetailsError(''); }} onKeyDown={function(e) { if (e.key === 'Enter') verifyCardDetails(); }} placeholder="••••" className="card-details-pin" />{detailsError ? <p className="text-xs font-semibold text-rose-600">{detailsError}</p> : null}<button type="button" disabled={detailsPin.length !== 4} onClick={verifyCardDetails} className="card-details-primary">{lang === 'de' ? 'Bestätigen' : XL('Confirm')}</button></div>
+                ) : (
+                  <div className="card-details-values">
+                    {[{k:lang==='de'?'Kartennummer':XL('Card number'),type:'number',v:selectedCard.number,copy:lang==='de'?'Kartennummer':XL('Card number')},{k:lang==='de'?'Gültig bis':XL('Expiry date'),v:selectedCard.expiry,copy:lang==='de'?'Gültigkeit':XL('Expiry')},{k:'CVV',v:selectedCard.cvv,copy:'CVV'},{k:'IBAN',v:selectedCard.iban,copy:'IBAN'}].map(function(row) { return <div className="card-details-row" key={row.k}><div><span>{row.k}</span><strong>{row.type==='number' ? String(row.v||'').replace(/(.{4})/g,'$1 ').trim() : row.v || '—'}</strong></div><button type="button" disabled={!row.v} aria-label={(lang==='de'?'Kopieren: ':lang==='it'?'Copia: ':'Copy: ')+row.k} onClick={function() { copyCardDetail(row.v,row.copy); }}><span className="card-copy-label">{lang === 'de' ? 'Kopieren' : (lang === 'it' ? 'Copia' : 'Copy')}</span></button></div>; })}
+                    <p className="card-details-foot">{lang === 'de' ? 'Aus Sicherheitsgründen werden die Daten nach 30 Sekunden ausgeblendet.' : XL('For your security, details are hidden again after 30 seconds.')}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
           {!cardOrdered ? <PhysOrderCard plan={plan} lang={lang} t={t} onOrder={function() { setCardOrderOpen(true); }} /> : null}
 
           {isVirtual ? (
@@ -10432,9 +10572,9 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                 const showG = plat !== 'ios';
                 const de = lang === 'de';
                 const go = function(prov) {
-                  if (!cardSettings.activated) { showToast(t('activate_card'), t('setting_off'), 'warn'); return; }
-                  if (!cardSettings.contactless) { showToast(t('contactless'), t('setting_off'), 'warn'); return; }
-                  if (!cardPinSet) { try { showToast(t('card_pin_first'), '', 'warn'); } catch(e){} return; }
+                  if (!cardSettings.activated) { showToast(tc('activate_card'), tc('setting_off'), 'warn'); return; }
+                  if (!cardSettings.contactless) { showToast(tc('contactless'), tc('setting_off'), 'warn'); return; }
+                  if (!cardPinSet) { try { showToast(tc('card_pin_first'), '', 'warn'); } catch(e){} return; }
                   setWalletProvider(prov); setWalletOpen(true); haptic(12);
                 };
                 const btn = function(prov, added, pending) {
@@ -10443,7 +10583,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   const cls = 'wallet-btn ' + (apple ? 'wallet-btn--apple' : 'wallet-btn--google') + (locked ? ' is-added' : '');
                   const stateLabel = added
                     ? (de ? 'Hinzugefügt' : XL('Added'))
-                    : (pending ? t('wallet_processing') : null);
+                    : (pending ? tc('wallet_processing') : null);
                   const inner = (
                     <>
                       <img src={apple ? './apple-pay.png' : './google-pay.png'} alt={apple ? 'Apple Pay' : 'Google Pay'} className={'wallet-btn__logo' + (apple ? ' wallet-btn__logo--inv' : '')} width="200" height="40" />
@@ -10452,7 +10592,7 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   );
                   return locked
                     ? <div key={prov} className={cls} role="status">{inner}</div>
-                    : <button key={prov} type="button" className={cls} onClick={function() { go(prov); }} aria-label={apple ? t('wallet_apple') : t('wallet_google')}>{inner}</button>;
+                    : <button key={prov} type="button" className={cls} onClick={function() { go(prov); }} aria-label={apple ? tc('wallet_apple') : tc('wallet_google')}>{inner}</button>;
                 };
                 return (
                   <div className={'wallet-row' + (showA && showG ? ' wallet-row--two' : '')}>
@@ -10466,20 +10606,20 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
               <div className="rounded-2xl bg-white p-5 ring-1 ring-border">
                 <div className="flex items-center justify-between mb-1">
                   <div>
-                    <h3 className="text-sm font-semibold">{t('card_settings')}</h3>
+                    <h3 className="text-sm font-semibold">{lang === 'de' ? 'Zahlungseinstellungen' : XL('Payment settings')}</h3>
                     <p className="text-[11px] text-slate-500 mt-0.5">{lang === 'de' ? 'Nur virtuelle Karte' : XL('Virtual card only')}</p>
                   </div>
                   <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${cardSettings.activated ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}`}>
-                    {cardSettings.activated ? t('active') : t('inactive')}
+                    {cardSettings.activated ? tc('active') : tc('inactive')}
                   </span>
                 </div>
                 <div className="mt-4 space-y-1">
                   {[
-                    { key: 'activated', label: t('activate_card'), desc: lang === 'de' ? 'Virtuelle Karte für Zahlungen freischalten' : XL('Enable virtual card for payments') },
-                    { key: 'online', label: t('online_pay'), desc: t('online_pay_desc') },
-                    { key: 'contactless', label: t('contactless'), desc: t('contactless_desc') },
-                    { key: 'atm', label: t('atm'), desc: t('atm_desc') },
-                    { key: 'abroad', label: t('abroad'), desc: t('abroad_desc') },
+                    { key: 'activated', label: tc('activate_card'), desc: lang === 'de' ? 'Virtuelle Karte für Zahlungen freischalten' : XL('Enable virtual card for payments') },
+                    { key: 'online', label: tc('online_pay'), desc: tc('online_pay_desc') },
+                    { key: 'contactless', label: tc('contactless'), desc: tc('contactless_desc') },
+                    { key: 'atm', label: tc('atm'), desc: tc('atm_desc') },
+                    { key: 'abroad', label: tc('abroad'), desc: tc('abroad_desc') },
                   ].map(function(item) {
                     return (
                       <div key={item.key} className="flex items-center justify-between gap-3 py-2.5 border-b border-slate-100 last:border-0">
@@ -10494,10 +10634,11 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                               var next = Object.assign({}, s);
                               next[item.key] = !s[item.key];
                               if (item.key === 'activated' && next.activated) { next.online = true; next.contactless = true; }
+                              if (item.key === 'activated' && !next.activated) { next.online = false; next.contactless = false; }
                               return next;
                             });
                             try { haptic(10); } catch (eH) {}
-                            showToast(item.label, turnOn ? t('setting_on') : t('setting_off'));
+                            showToast(item.label, turnOn ? tc('setting_on') : tc('setting_off'));
                           }}
                           className={'n26-sw' + (cardSettings[item.key] ? ' is-on' : '')}>
                           <span className="n26-sw__k" />
@@ -10507,11 +10648,12 @@ function DigitalCard({ holderName = 'ALEX MORGAN', cardNumber, cvv, expiry, iban
                   })}
                 </div>
               </div>
+              <CardControls ctl={cardCtl} setCtl={setCardCtl} txs={ctlTx} lang={lang} onNotify={ctlNotify} email={walletEmail} haptic={haptic} />
             </>
           ) : (
             <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-700 shadow-sm">
-              <p className="font-semibold text-slate-900">{t('card_order_pending')}</p>
-              <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{t('card_order_eta')}</p>
+              <p className="font-semibold text-slate-900">{tc('card_order_pending')}</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{tc('card_order_eta')}</p>
               <div className="my-3 h-px bg-slate-100" />
               <p className="text-xs leading-relaxed text-slate-500">
                 {lang === 'de' ? 'Einstellungen und Wallets gelten für die virtuelle Karte. Steuerung der physischen Karte wird nach Zustellung freigeschaltet.' : XL('Settings and wallets apply to the virtual card. Physical card controls unlock after delivery.')}
@@ -12736,7 +12878,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       return d.toISOString();
     }
 
-    function CardControls({ ctl, setCtl, txs, lang, onNotify, email }) {
+    function CardControls({ ctl, setCtl, txs, lang, onNotify, email, haptic }) {
       const de = lang === 'de';
       const [gate, setGate] = useState(false);
       const [gPin, setGPin] = useState('');
@@ -12747,9 +12889,10 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       const [editing, setEditing] = useState(false);
       const [draft, setDraft] = useState({ daily: String(lim.daily), online: String(lim.online), atm: String(lim.atm) });
       const [err, setErr] = useState('');
-      const todayStr = new Date().toDateString();
+      // Card-control usage follows the bank's Berlin calendar day, not the device timezone.
+      const todayKey = berlinDateKey();
       const used = (txs || []).filter(function(x) {
-        return Number(x.amount) < 0 && x.category !== 'Transfer' && !x.refundOf && new Date(x.date).toDateString() === todayStr;
+        return Number(x.amount) < 0 && x.category !== 'Transfer' && !x.refundOf && berlinDateKeyFromIso(x.date) === todayKey;
       }).reduce(function(s, x) { return moneyAdd(s, Math.abs(Number(x.amount) || 0)); }, 0);
       const pct = lim.daily > 0 ? Math.min(100, Math.round((used / lim.daily) * 100)) : 0;
       const L = {
@@ -12777,13 +12920,14 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           }
         } catch (e1) {}
         if (String(pinStored).length === 4) { setGPin(''); setGErr(''); setGate(true); return; }
-        applyFreeze(false);
+        // Never silently unfreeze when no authentication factor is configured.
+        if (onNotify) onNotify(de ? 'PIN erforderlich' : XL('PIN required'), de ? 'Richte zuerst einen Karten-PIN ein. Die Karte bleibt bis dahin gesperrt.' : XL('Set up a card PIN first. The card will remain frozen until then.'), 'error');
       };
       const submitGate = function(v) {
         let pinStored = '';
         try { pinStored = getStoredCardPin(email) || ''; } catch (e0) {}
-        if (String(v) === String(pinStored)) { setGate(false); setGPin(''); setGErr(''); applyFreeze(false); haptic(12); return; }
-        setGPin(''); setGErr(de ? 'Falscher PIN' : XL('Incorrect PIN')); haptic([30, 40, 30]);
+        if (String(pinStored).length === 4 && String(v) === String(pinStored)) { setGate(false); setGPin(''); setGErr(''); applyFreeze(false); if (typeof haptic === 'function') haptic(12); return; }
+        setGPin(''); setGErr(de ? 'Falscher PIN' : XL('Incorrect PIN')); if (typeof haptic === 'function') haptic([30, 40, 30]);
       };
       const saveLimits = function() {
         const nv = {};
@@ -12796,7 +12940,11 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         if (onNotify) onNotify(L.saved, '', 'info');
       };
       return (
-        <div className="space-y-3">
+        <div className="card-controls-panel space-y-3">
+          <div className="card-controls-heading">
+            <div><p className="card-controls-kicker">{de ? 'KARTENVERWALTUNG' : XL('CARD MANAGEMENT')}</p><h3>{de ? 'Sicherheit & Limits' : XL('Security & limits')}</h3></div>
+            <span className={'card-controls-state' + (c.frozen ? ' is-frozen' : '')}><i />{c.frozen ? (de ? 'Gesperrt' : XL('Frozen')) : (de ? 'Aktiv' : XL('Active'))}</span>
+          </div>
           <button type="button" onClick={toggle} disabled={gBusy} aria-pressed={!!c.frozen}
             className={'fz-btn' + (c.frozen ? ' is-on' : '')}>
             <span className="fz-btn__ico">
@@ -15766,14 +15914,14 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           [L.id, det.pid],
         ].filter(Boolean);
         var rowsHtml = rows.map(function(r) { return '<tr><td class="k">' + esc(r[0]) + '</td><td class="v">' + esc(r[1]) + '</td></tr>'; }).join('');
-        var doc = '<!doctype html><html lang="' + (de ? 'de' : XL('en')) + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>N26 ' + L.title + ' ' + esc(det.pid) + '</title><style>'
-          + '@page{size:A4;margin:18mm 16mm}*{box-sizing:border-box}body{margin:0;font:12px/1.5 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:#0f172a;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
-          + '.bar{position:sticky;top:0;display:flex;justify-content:center;padding:10px;background:#0f172a}.bar button{font:600 13px Helvetica,Arial,sans-serif;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}@media print{.bar{display:none}}'
+        var doc = '<!doctype html><html lang="' + (de ? 'de' : XL('en')) + '"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"><meta name="viewport" content="width=device-width,initial-scale=1"><title>N26 ' + L.title + ' ' + esc(det.pid) + '</title><style>'
+          + '@page{size:A4;margin:18mm 16mm}*{box-sizing:border-box}body{margin:0;font:12px/1.5 Plus Jakarta Sans,sans-serif;color:#0f172a;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+          + '.bar{position:sticky;top:0;display:flex;justify-content:center;padding:10px;background:#0f172a}.bar button{font:600 13px Plus Jakarta Sans,sans-serif;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}@media print{.bar{display:none}}'
           + '.pg{max-width:640px;margin:0 auto;padding:20px 22px}.hd{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:2px solid #0f172a}.hd img{height:40px;width:auto}.hd .r{text-align:right}.hd h1{margin:0;font-size:20px}.hd p{margin:2px 0 0;color:#64748b;font-size:11px}'
-          + '.box{border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-top:16px}.kk{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#64748b}.vv{font-size:13px;font-weight:600;word-break:break-word}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}'
+          + '.box{border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-top:16px}.kk{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#64748b}.vv{font-size:13px;font-weight:600;word-break:break-word}.mono{font-family:Plus Jakarta Sans,sans-serif}'
           + '.amt{margin-top:16px;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center}.amt .n{font-size:30px;font-weight:800;letter-spacing:-.02em;color:' + (pos ? '#047857' : '#0f172a') + ';font-variant-numeric:tabular-nums}'
           + 'table{width:100%;border-collapse:collapse;margin-top:16px}td{padding:9px 8px;border-bottom:1px solid #eef2f6;vertical-align:top}td.k{width:38%;color:#64748b;font-size:11px}td.v{font-weight:600;word-break:break-word}'
-          + '.ft{margin-top:22px;padding-top:10px;border-top:1px solid #e2e8f0;color:#64748b;font-size:10px}.hash{margin-top:6px;word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:8.5px}'
+          + '.ft{margin-top:22px;padding-top:10px;border-top:1px solid #e2e8f0;color:#64748b;font-size:10px}.hash{margin-top:6px;word-break:break-all;font-family:Plus Jakarta Sans,sans-serif;font-size:8.5px}'
           + '</style></head><body><div class="bar"><button onclick="window.print()">' + L.print + '</button></div><div class="pg">'
           + '<div class="hd"><img src="./n26-logo.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(det.pid) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
           + '<div class="box"><div class="kk">' + L.holder + '</div><div class="vv">' + esc(holder || '—') + '</div><div class="kk" style="margin-top:10px">' + L.acc + '</div><div class="vv mono">' + esc(ibanSp) + '</div></div>'
@@ -17329,20 +17477,20 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
 : de
 ? { title: 'Kontoauszug', nr: 'Auszug Nr.', created: 'Erstellt am', holder: 'Kontoinhaber', period: 'Zeitraum', open: 'Anfangssaldo', cr: 'Summe Gutschriften', dr: 'Summe Belastungen', close: 'Endsaldo', date: 'Buchung', desc: 'Buchungstext', amt: 'Betrag', bal: 'Saldo', cnt: 'Anzahl Buchungen', foot: 'Dieser Kontoauszug wurde elektronisch erstellt und ist ohne Unterschrift gültig. Bitte prüfe ihn auf Richtigkeit und melde Abweichungen über den Support in der App.', sum: 'Übersicht' }
                     : { title: 'Account statement', nr: 'Statement no.', created: 'Issued on', holder: 'Account holder', period: 'Period', open: 'Opening balance', cr: 'Total credits', dr: 'Total debits', close: 'Closing balance', date: 'Booked', desc: 'Details', amt: 'Amount', bal: 'Balance', cnt: 'Transactions', foot: 'This statement was generated electronically and is valid without a signature. Please check it for accuracy and report any discrepancies via in-app support.', sum: 'Summary' };
-                  var doc = '<!doctype html><html lang="' + (de ? 'de' : XL('en')) + '"><head><meta charset="utf-8"><title>N26 ' + L.title + ' ' + esc(periodLabel) + '</title><style>'
-                    + '@page{size:A4;margin:16mm 14mm 18mm;@bottom-center{content:"N26 · " counter(page) " / " counter(pages);font:9px Helvetica,Arial,sans-serif;color:#94a3b8}}'
-                    + '*{box-sizing:border-box}body{margin:0;font:11px/1.45 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:#0f172a;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+                  var doc = '<!doctype html><html lang="' + (de ? 'de' : XL('en')) + '"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"><title>N26 ' + L.title + ' ' + esc(periodLabel) + '</title><style>'
+                    + '@page{size:A4;margin:16mm 14mm 18mm;@bottom-center{content:"N26 · " counter(page) " / " counter(pages);font:9px Plus Jakarta Sans,sans-serif;color:#94a3b8}}'
+                    + '*{box-sizing:border-box}body{margin:0;font:11px/1.45 Plus Jakarta Sans,sans-serif;color:#0f172a;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
                     + '.hd{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:2px solid #0f172a}.hd img{height:44px;width:auto;display:block}'
                     + '.hd .r{text-align:right}.hd h1{margin:0;font-size:20px;letter-spacing:-.01em}.hd p{margin:2px 0 0;color:#64748b;font-size:10.5px}'
                     + '.meta{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin:18px 0}.box{border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}'
-                    + '.k{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:2px}.v{font-size:12.5px;font-weight:600}.mono{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.02em}'
+                    + '.k{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:2px}.v{font-size:12.5px;font-weight:600}.mono{font-family:Plus Jakarta Sans,sans-serif;letter-spacing:.02em}'
                     + '.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:18px;overflow:hidden}.sum>div{padding:11px 14px;border-right:1px solid #e2e8f0}.sum>div:last-child{border-right:0;background:#f8fafc}'
                     + '.sum .n{font-size:14px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}'
                     + 'table{width:100%;border-collapse:collapse}thead{display:table-header-group}th{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;text-align:left;padding:8px 8px;border-bottom:1.5px solid #0f172a}'
                     + 'td{padding:8px;border-bottom:1px solid #eef2f6;vertical-align:top}tr{page-break-inside:avoid}tbody tr:nth-child(even) td{background:#fafbfc}.r{text-align:right}.nw{white-space:nowrap;font-variant-numeric:tabular-nums}'
                     + '.t{font-weight:600;font-size:11.5px}.s{color:#64748b;font-size:9.5px;margin-top:1px;word-break:break-word}.pos{color:#047857;font-weight:600}.neg{color:#0f172a;font-weight:600}.empty{text-align:center;color:#64748b;padding:28px}'
-                    + '.tot td{border-top:1.5px solid #0f172a;border-bottom:0;font-weight:700;background:#fff!important}.ft{margin-top:20px;padding-top:10px;border-top:1px solid #e2e8f0;color:#64748b;font-size:9.5px}.hash{margin-top:6px;word-break:break-all;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:8.5px;color:#94a3b8}'
-                    + '.bar{position:sticky;top:0;display:flex;gap:8px;justify-content:center;padding:10px;background:#0f172a}.bar button{font:600 13px Helvetica,Arial,sans-serif;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}@media print{.bar{display:none}}'
+                    + '.tot td{border-top:1.5px solid #0f172a;border-bottom:0;font-weight:700;background:#fff!important}.ft{margin-top:20px;padding-top:10px;border-top:1px solid #e2e8f0;color:#64748b;font-size:9.5px}.hash{margin-top:6px;word-break:break-all;font-family:Plus Jakarta Sans,sans-serif;font-size:8.5px;color:#94a3b8}'
+                    + '.bar{position:sticky;top:0;display:flex;gap:8px;justify-content:center;padding:10px;background:#0f172a}.bar button{font:600 13px Plus Jakarta Sans,sans-serif;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}@media print{.bar{display:none}}'
                     + '</style></head><body><div class="bar"><button onclick="window.print()">' + (de ? 'Als PDF speichern / Drucken' : XL('Save as PDF / Print')) + '</button></div><div style="padding:18px 22px">'
                     + '<div class="hd"><img src="./n26-logo.png" alt="N26"><div class="r"><h1>' + L.title + '</h1><p>' + L.nr + ' ' + esc(nr) + '</p><p>' + L.created + ' ' + esc(new Date().toLocaleDateString(loc, { day: '2-digit', month: 'long', year: 'numeric' })) + '</p></div></div>'
                     + '<div class="meta"><div class="box"><div class="k">' + L.holder + '</div><div class="v">' + esc(name) + '</div><div class="k" style="margin-top:10px">IBAN</div><div class="v mono">' + esc(ibanSp) + '</div></div>'
@@ -18015,7 +18163,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         if (!sessionNoticeShown) return undefined;
         const el = document.createElement('div');
         el.setAttribute('role', 'alert');
-        el.style.cssText = 'position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:100000;max-width:92vw;padding:12px 18px;border-radius:14px;background:#0f172a;color:#fff;font:600 13px/1.4 "Plus Jakarta Sans",system-ui,sans-serif;box-shadow:0 12px 32px rgba(0,0,0,.3)';
+        el.style.cssText = 'position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:100000;max-width:92vw;padding:12px 18px;border-radius:14px;background:#0f172a;color:#fff;font:600 13px/1.4 Plus Jakarta Sans,sans-serif;box-shadow:0 12px 32px rgba(0,0,0,.3)';
         const de = lang === 'de';
         el.textContent = sessionNoticeShown === 'idle'
           ? (de ? 'Aus Sicherheitsgründen wurdest du wegen Inaktivität abgemeldet.' : XL('You were signed out due to inactivity.'))
@@ -18170,7 +18318,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
   }
 
   const CSS = `
-  #n26s-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(4,47,46,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-.011em}
+  #n26s-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(4,47,46,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-family:Plus Jakarta Sans,sans-serif;letter-spacing:-.011em}
   #n26s-panel{position:relative;width:min(460px,100%);height:min(680px,92dvh);display:flex;flex-direction:column;background:#F7F6F3;color:#0f172a;border-radius:28px;box-shadow:0 30px 80px -20px rgba(4,47,46,.55);overflow:hidden;animation:n26s-in .28s cubic-bezier(.22,1,.36,1)}
   @keyframes n26s-in{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
   #n26s-head{flex:none;display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top,0px)) 14px 14px 16px;background:#042f2e;color:#fff}
@@ -18475,10 +18623,10 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
   function build() {
     bar = document.createElement('div');
     bar.id = 'n26-install-bar';
-    bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:18px;background:#042f2e;color:#fff;font:600 13px/1.35 Inter,system-ui,sans-serif;box-shadow:0 14px 36px rgba(0,0,0,.35);max-width:460px;margin:0 auto';
+    bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:18px;background:#042f2e;color:#fff;font:600 13px/1.35 Plus Jakarta Sans,sans-serif;box-shadow:0 14px 36px rgba(0,0,0,.35);max-width:460px;margin:0 auto';
     var txt = document.createElement('div'); txt.style.cssText = 'flex:1;min-width:0';
     var btn = document.createElement('button'); btn.type = 'button';
-    btn.style.cssText = 'flex:none;border:0;border-radius:999px;background:#fff;color:#042f2e;font:700 13px "Plus Jakarta Sans",system-ui,sans-serif;padding:9px 14px';
+    btn.style.cssText = 'flex:none;border:0;border-radius:999px;background:#fff;color:#042f2e;font:700 13px Plus Jakarta Sans,sans-serif;padding:9px 14px';
     var x = document.createElement('button'); x.type = 'button'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close');
     x.style.cssText = 'flex:none;border:0;background:transparent;color:#fff;font-size:16px;padding:6px';
     x.onclick = function () { try { API.kv.set('n26_install_dismissed', '1'); } catch (e) {} remove(); };
