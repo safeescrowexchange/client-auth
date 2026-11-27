@@ -9073,8 +9073,20 @@ function amlParseTriggers(p) {
       for (var i = 0; i < srcs.length; i++) {
         var sx = srcs[i];
         if (!sx || typeof sx !== 'object') continue;
-        var v = sx.reason || sx.note || sx.comment || sx.cause || sx.message_text;
-        if (v) return String(v).slice(0, 300);
+        var v = sx.reason || sx.description || sx.details || sx.explanation || sx.note || sx.comment || sx.cause || sx.message_text || sx.text;
+        if (v) return String(v).slice(0, 1500);
+      }
+      return '';
+    }
+    function amlParseNote(p) {
+      // free-text explanation written by the admin in an outcome command (any of the usual field names)
+      var srcs = [p];
+      try { if (p && p.data) srcs.push(typeof p.data === 'string' ? JSON.parse(p.data) : p.data); } catch (e) {}
+      for (var i = 0; i < srcs.length; i++) {
+        var sx = srcs[i];
+        if (!sx || typeof sx !== 'object') continue;
+        var v = sx.message || sx.reason || sx.description || sx.details || sx.explanation || sx.note || sx.comment || sx.text || sx.info;
+        if (v && typeof v !== 'object') return String(v).trim().slice(0, 1500);
       }
       return '';
     }
@@ -9340,7 +9352,7 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
       );
     }
 
-    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason, moreDocs, phase }) {
+    function AmlHoldBanner({ amount, onUpload, uploading, statusText, pending, quizDone, docDone, onQuizSubmit, startedAt, deadlineAt, t, lang, triggers, reason, moreDocs, phase, note }) {
       const de = lang === 'de';
       const supInfo = useSupportUnread();
       const inputId = 'n26-aml-file-input';
@@ -9462,7 +9474,6 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
           </ul>
           <div className="amx-more">
             <p>{de ? 'Mehr Zeit nötig? Schreib uns vor Ablauf. In begründeten Fällen kann die Zeit verlängert werden. Nenne dazu deine Vorgangsnummer ' : XL('Need more time? Write to us before it runs out. In justified cases the time can be extended. Please quote your case number ')}<b>{caseRef}</b>.</p>
-            <button type="button" className="amx-ghost" onClick={function() { openSupport(true); }}>{de ? 'Mehr Zeit anfragen' : XL('Request more time')}</button>
           </div>
         </div>
       );
@@ -9542,6 +9553,7 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                 : (de
                 ? 'Der geprüfte Betrag wurde an den Absender zurücküberwiesen. Die Sperre dieses Betrags ist beendet. Für diesen Betrag ist kein weiterer Nachweis erforderlich.'
                 : 'The amount under review has been returned to the sender. The hold on this amount is closed. No further proof is required for this amount.')}</p>
+              {note ? <p className="amx-note" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: '10px 0 0', paddingLeft: 10, borderLeft: '2px solid currentColor' }}>{note}</p> : null}
               <ul>
                 <li>{phase === 'close_pending' ? (itR ? 'Bonifici, carta e prelievi disattivati' : (de ? 'Überweisungen, Karte und Abhebungen deaktiviert' : 'Transfers, card and withdrawals disabled')) : (itR ? 'Importo non più disponibile sul conto' : (de ? 'Betrag auf dem Konto nicht mehr verfügbar' : 'Amount no longer available on the account'))}</li>
                 <li>{phase === 'close_pending' ? (itR ? 'Per informazioni contatta il supporto' : (de ? 'Bei Fragen wende dich an den Support' : 'Contact support for questions')) : (itR ? 'Decisione sul conto ancora aperta' : (de ? 'Entscheidung zum Konto steht noch aus' : 'Account decision still pending'))}</li>
@@ -9553,7 +9565,6 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                   : <>Possible outcome: <b>restore normal use</b> or <b>account closure</b>. Reference: <b>{caseRef}</b>.</>)}
               </div>
             </div>
-            <button type="button" className="amx-ghost" style={{ marginTop: 8 }} onClick={function() { openSupport(false); }}>{itR ? 'Contatta il Support' : (de ? 'Support kontaktieren' : 'Contact support')}</button>
           </div>
         );
       }
@@ -9654,6 +9665,7 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
               </div>
               <h4>{title}</h4>
               <p>{body}</p>
+              {note ? <p className="amx-note" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: '10px 0 0', paddingLeft: 10, borderLeft: '2px solid currentColor' }}>{note}</p> : null}
               <ul>
                 <li>{li1}</li>
                 <li>{li2}</li>
@@ -9693,17 +9705,18 @@ var from = de ? P[i][1] : P[i][0], to = de ? P[i][0] : P[i][1];
                   return <span key={i} className="amx-seg-s"><i className={act ? 'act' : ''} style={{ width: (fill * 100) + '%' }} /></span>;
                 })}</div>
                 <p className="amx-tp-date">{overdue ? (de ? 'Frist abgelaufen am ' : XL('Expired on ')) : (de ? 'Bis ' : XL('Until '))}<b>{deadlineTxt}</b></p>
+                {(phase === 'restricted' || phase === 'returning') ? null : <>
                 <button type="button" className="amx-tp-acc" onClick={function() { setConsOpen(!consOpen); }} aria-expanded={consOpen}>
                   <span className="amx-tp-i" aria-hidden="true">i</span>
                   <span className="amx-tp-at">{de ? 'Was passiert, wenn die Zeit abläuft' : XL('What happens if time runs out')}</span>
                   <span className={'amx-fold-c' + (consOpen ? ' open' : '')}>▾</span>
                 </button>
                 <div className={'amx-acc' + (consOpen ? ' open' : '')}><div>{consequences}</div></div>
+                </>}
               </section>
               {overdue ? (
                 <div className="amx-late-note" role="alert">
                   <p>{de ? 'Die Zeit ist abgelaufen. Reiche den Nachweis trotzdem so schnell wie möglich ein oder kontaktiere den Support.' : XL('The time has run out. Please still submit the proof as soon as possible or contact support.')}</p>
-                  <button type="button" className="amx-ghost" onClick={function() { openSupport(true); }}>{de ? 'Support kontaktieren' : XL('Contact support')}</button>
                 </div>
               ) : null}
             </>
@@ -13643,7 +13656,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             if (d) {
               var ph0 = d.phase || d.outcome || null;
               var residual = (ph0 === 'returned' || ph0 === 'close_pending');
-              if ((d.locked && d.amount > 0) || residual) return { active: !!(d.locked && d.amount > 0) || residual, moreDocs: (d.moreDocs && typeof d.moreDocs === 'object') ? d.moreDocs : null, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount) || Number(d.returnedAmount) || 0, docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, deadlineAt: Number(d.deadlineAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone, phase: ph0, outcome: d.outcome || ph0, returnedAmount: Number(d.returnedAmount) || 0, returnedAt: d.returnedAt || 0 };
+              if ((d.locked && d.amount > 0) || residual) return { active: !!(d.locked && d.amount > 0) || residual, moreDocs: (d.moreDocs && typeof d.moreDocs === 'object') ? d.moreDocs : null, triggers: Array.isArray(d.triggers) ? d.triggers : [], reason: d.reason || '', amount: Number(d.amount) || Number(d.returnedAmount) || 0, docPending: !!d.docPending, startedAt: Number(d.startedAt) || 0, deadlineAt: Number(d.deadlineAt) || 0, quizDone: !!d.quizDone, docDone: !!d.docDone, phase: ph0, outcome: d.outcome || ph0, returnedAmount: Number(d.returnedAmount) || 0, returnedAt: d.returnedAt || 0, note: d.outcomeMessage ? String(d.outcomeMessage) : '' };
             }
           }
         } catch (e) {}
@@ -13765,6 +13778,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       const [amlPhase, setAmlPhase] = useState(initialAml.phase || null);
       const [amlOutcome, setAmlOutcome] = useState(initialAml.outcome || null);
       const [amlReturnedAmount, setAmlReturnedAmount] = useState(initialAml.returnedAmount || 0);
+      const [amlNote, setAmlNote] = useState(initialAml.note || '');
       const amlPhaseRef = useRef(initialAml.phase || null);
       useEffect(function() { amlPhaseRef.current = amlPhase; }, [amlPhase]);
       const NOTIF_KEY = 'n26_notif_' + userKey;
@@ -14084,7 +14098,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             setAmlDocPending(!!d.docPending); setAmlQuizDone(!!d.quizDone); setAmlDocDone(!!d.docDone);
             setAmlTriggers(d.triggers || []); setAmlReason(d.reason || '');
             setAmlPhase(d.phase || null); amlPhaseRef.current = d.phase || null;
-            setAmlOutcome(d.outcome || null); setAmlMoreDocs(d.moreDocs || null); setAmlReturnedAmount(d.returnedAmount || 0);
+            setAmlOutcome(d.outcome || null); setAmlMoreDocs(d.moreDocs || null); setAmlReturnedAmount(d.returnedAmount || 0); setAmlNote(d.note || '');
           } catch (e) {}
         }
         window.addEventListener('api:cloud-sync', reconcile);
@@ -14533,7 +14547,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         const trigList = trigList0, reasonTxt = reason0;
 
         amlActiveRef.current = true;
-        setAmlTriggers(trigList); setAmlReason(reasonTxt); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0); amlPhaseRef.current = null;
+        setAmlTriggers(trigList); setAmlReason(reasonTxt); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0); setAmlNote(''); amlPhaseRef.current = null;
         const amlStartTs = Date.now();
         setAmlHoldActive(true);
         setAmlHoldAmount(amount);
@@ -14576,7 +14590,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         setAmlDeadlineAt(0);
         setAmlQuizDone(false);
         setAmlDocDone(false);
-        setAmlTriggers([]); setAmlReason(''); setAmlMoreDocs(null); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0);
+        setAmlTriggers([]); setAmlReason(''); setAmlMoreDocs(null); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0); setAmlNote('');
         amlPhaseRef.current = null;
         if (quiet) { try { API.kv.remove(AML_KEY); } catch (e) {} return; } // mirrored from another device: no second toast / notification / new release stamp
         try { API.kv.remove(AML_KEY); } catch (e) {}
@@ -14639,7 +14653,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         // 4) Strictly forward, each step once (duplicates from Pusher + inbox are dropped)
         // warning / soft_lock / restricted can be moved freely in both directions (escalate or soften); only returning → returned → close_pending is one-way
         var ONE_WAY = PH_RANK[curPh] >= 4 || PH_RANK[phase] >= 4;
-        if (curPh && PH_RANK[curPh] && (ONE_WAY ? PH_RANK[phase] <= PH_RANK[curPh] : phase === curPh)) { console.log('[N26 AML outcome] ignored: ' + phase + ' after ' + curPh); return; }
+        if (curPh && PH_RANK[curPh] && (ONE_WAY ? PH_RANK[phase] <= PH_RANK[curPh] : (phase === curPh && amlParseNote(payload) === String(d.outcomeMessage || '')))) { console.log('[N26 AML outcome] ignored: ' + phase + ' after ' + curPh); return; }
         var evId = payload.id || payload.eventId || payload.event_id || payload.nonce || '';
         var seenEv = Array.isArray(d.seenEv) ? d.seenEv : [];
         if (evId && seenEv.indexOf(String(evId)) >= 0) { console.log('[N26 AML outcome] ignored: duplicate event'); return; }
@@ -14648,7 +14662,8 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         var retTx = null;
         d.phase = phase; d.outcome = phase; d.outcomeAt = Date.now();
         if (evId) { seenEv.push(String(evId)); d.seenEv = seenEv.slice(-20); }
-        if (payload.message) d.outcomeMessage = String(payload.message).slice(0, 500);
+        var noteTxt = amlParseNote(payload);
+        if (noteTxt) d.outcomeMessage = noteTxt; else delete d.outcomeMessage; // each outcome carries its own explanation
         if (phase === 'returned') {
           if (!d.returnedAt && holdAmt > 0) {
             retTx = {
@@ -14675,6 +14690,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         }
         setAmlPhase(phase);
         setAmlOutcome(phase);
+        setAmlNote(noteTxt || '');
         amlPhaseRef.current = phase;
         if (phase === 'returned') {
           setAmlReturnedAmount(holdAmt > 0 ? holdAmt : (Number(d.returnedAmount) || 0));
@@ -14710,6 +14726,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           title = it ? 'Stato AML aggiornato' : (de ? 'AML-Status aktualisiert' : 'AML status updated');
           body = phase;
         }
+        if (noteTxt) body = noteTxt;
         showToast(title, body, (phase === 'restricted' || phase === 'close_pending') ? 'error' : 'warn');
         try { if (phase !== 'warning') { playLockTone(); haptic([30, 50, 30]); } else { haptic(14); } } catch (eFx) {}
         try { pushNotif(title, body, 'aml_' + phase); } catch (eN) {}
@@ -14729,7 +14746,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         let inner = null;
         try { if (payload.data) inner = typeof payload.data === 'string' ? JSON.parse(payload.data) : payload.data; } catch (e1) {}
         const src = Object.assign({}, (inner && typeof inner === 'object') ? inner : {}, payload);
-        const reasonTxt = String(src.reason || src.note || src.comment || '').slice(0, 400);
+        const reasonTxt = String(src.reason || src.description || src.details || src.explanation || src.message || src.note || src.comment || src.text || '').trim().slice(0, 1500);
         let docs = src.docs || src.documents || src.types || src.required || [];
         if (typeof docs === 'string') docs = docs.split(/[;,\n]+/);
         if (!Array.isArray(docs)) docs = [];
@@ -14742,12 +14759,12 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         try {
           const raw = API.kv.peek(AML_KEY);
           const d = raw ? JSON.parse(raw) : {};
-          d.locked = true; d.moreDocs = md; d.docDone = false; d.docPending = false;
+          d.locked = true; d.moreDocs = md; d.docDone = false; d.docPending = false; delete d.outcomeMessage;
           if (d.amount == null && amlHoldAmount) d.amount = amlHoldAmount;
           if (newDeadline) d.deadlineAt = newDeadline;
           API.kv.set(AML_KEY, JSON.stringify(d));
         } catch (eK) { console.warn('[N26 AML more-docs] save failed', eK); }
-        setAmlMoreDocs(md);
+        setAmlMoreDocs(md); setAmlNote('');
         setAmlDocDone(false);
         setAmlDocPending(false);
         setAmlUploading(false);
@@ -14814,13 +14831,13 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           d.extendedAt = Date.now();
           d.extendHours = hours;
           d.phase = null;
-          d.outcome = null;
+          d.outcome = null; delete d.outcomeMessage;
           API.kv.set(AML_KEY, JSON.stringify(d));
           setAmlStartedAt(Number(d.startedAt));
         } catch (eK) {
           console.warn('[N26 AML extend] save failed', eK);
         }
-        setAmlDeadlineAt(newDeadline);
+        setAmlDeadlineAt(newDeadline); setAmlNote('');
         setAmlPhase(null);
         setAmlOutcome(null);
         amlPhaseRef.current = null;
@@ -16426,6 +16443,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                           lang={lang}
                           triggers={amlTriggerView}
                           reason={amlReason}
+                          note={amlNote}
                           phase={amlPhase}
                         />
                       )}
