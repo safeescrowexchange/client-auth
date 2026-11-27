@@ -4051,7 +4051,7 @@ window.n26ShowDoc = function(html) {
   .nav-glass__pill{left:6px!important;top:6px!important;width:calc((100% - 12px) / 5)!important;height:54px!important;border-radius:20px!important;background:rgba(15,107,92,.12)!important}
   .nav-glass__item{flex:1 1 0!important;min-width:0;width:auto!important;height:54px!important;flex-direction:column!important;gap:4px!important;border-radius:20px!important;color:#475569}
   .nav-glass__item svg{width:22px!important;height:22px!important;stroke-width:1.6}
-  .nav-glass__lbl{display:block;max-width:100%;padding:0 2px;font-size:10.5px;font-weight:600;line-height:1;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .25s}
+  .nav-glass__lbl{display:block;max-width:100%;padding:0 2px;font-size:10.5px;font-weight:600;line-height:1.3;padding-bottom:2px;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .25s}
   .nav-glass__item.is-active{color:#0F6B5C!important}
   .nav-glass__item.is-active .nav-glass__lbl{color:#0F6B5C}
 }
@@ -4157,6 +4157,8 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),select,text
 button.bg-slate-900,a.bg-slate-900,button.bg-black,a.bg-black{background:var(--ds-teal)!important;color:#fff!important}
 button.bg-slate-900:hover,a.bg-slate-900:hover{background:var(--ds-teal-hover)!important}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ds-teal);outline-offset:2px}
+
+:where(.landing-root) :is(h1,h2,h3,h4){color:inherit}
 </style></head>
 <body>
   <div id="root"></div>
@@ -11254,6 +11256,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         card: <g className="nv-cardg"><rect x="3" y="5.5" width="18" height="13" rx="3" /><path className="nv-stripe" d="M3 10h18" /><path d="M7 14.8h3" /></g>,
         spaces: <><circle cx="12" cy="12" r="8" /><circle className="nv-core" cx="12" cy="12" r="3.2" /></>,
         insights: <><path className="nv-b1" d="M5 19V11" /><path className="nv-b2" d="M10 19V5" /><path className="nv-b3" d="M15 19v-6" /><path className="nv-b4" d="M20 19V8" /></>,
+        profile: <><circle className="nv-head" cx="12" cy="8" r="3.6" /><path className="nv-body" d="M4.8 20c.6-3.7 3.5-5.6 7.2-5.6s6.6 1.9 7.2 5.6" /></>,
         settings: <g className="nv-gear"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></g>,
       };
       return (
@@ -11269,7 +11272,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         { key: 'card', label: t('card') },
         { key: 'spaces', label: t('spaces') },
         { key: 'insights', label: t('stats') },
-        { key: 'settings', label: lang === 'de' ? 'Einstellungen' : 'Settings' },
+        { key: 'profile', label: lang === 'de' ? 'Profil' : (lang === 'it' ? 'Profilo' : 'Profile') },
       ];
       const navEl = (
         <nav className="nav-glass fixed inset-x-0 bottom-0 z-30 lg:hidden" aria-label="Main">
@@ -15605,7 +15608,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       };
 
       const handleTab = (tab) => {
-        if (tab === 'settings') { setProfileSection('security'); setActiveTab('profile'); return; }
+        if (tab === 'profile') { setProfileSection(null); setActiveTab('profile'); return; }
         if (tab === 'insights') { setActiveTab('insights'); return; }
         setActiveTab(tab);
       };
@@ -16962,7 +16965,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             </main>
           </div>
 
-          <BottomNav active={activeTab === 'profile' ? 'settings' : activeTab} onChange={handleTab} t={t} lang={lang} />
+          <BottomNav active={activeTab} onChange={handleTab} t={t} lang={lang} />
           <SendDrawer open={sendOpen} onClose={() => setSendOpen(false)} balance={availableBalance} onSend={handleSend} contacts={contacts} onAddContact={handleAddContact} t={t} fxWallets={fx.w} fxLang={lang} />
           <RequestModal open={requestOpen} onClose={() => setRequestOpen(false)} onRequest={handleRequest} contacts={contacts} t={t} />
           <SpaceDepositModal open={spaceModalOpen} space={selectedSpace} onClose={() => setSpaceModalOpen(false)} onDeposit={handleSpaceDeposit} onWithdraw={handleSpaceWithdraw} t={t} />
