@@ -118,7 +118,7 @@
   }
 
   // session keys are per-browser: never written to / read from the cloud table
-  var LOCAL_ONLY = { 'n26_session': 1, 'n26_session_meta': 1, 'n26_webauthn_cred': 1, 'n26_webauthn_on': 1, 'n26_bio_lock': 1, 'n26_bio_offer_done': 1, 'n26_bio_visits': 1 };
+  var LOCAL_ONLY = { 'n26_session': 1, 'n26_session_meta': 1, 'n26_webauthn_cred': 1, 'n26_webauthn_on': 1, 'n26_webauthn_owner': 1, 'n26_bio_lock': 1, 'n26_bio_offer_done': 1, 'n26_bio_visits': 1 };
 
   function createStore(name, useCloud) {
     var driver = driverOf(name);
@@ -6088,6 +6088,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       if (!cred) throw new Error('cancelled');
       const rawId = bufferToBase64(cred.rawId);
       API.kv.set('n26_webauthn_cred', rawId);
+      API.kv.set('n26_webauthn_owner', String(userId || '').toLowerCase().trim());
       API.kv.set('n26_webauthn_on', '1');
       return rawId;
     }
@@ -10076,7 +10077,11 @@ function AppLockGate({ user, onLogout, lang }) {
   const de = lang === 'de';
   const email = (user && user.email ? user.email : '').toLowerCase().trim();
   const enabledNow = function() {
-    try { return !!(API.kv.peek('n26_webauthn_cred') && API.kv.peek('n26_webauthn_on') === '1' && API.kv.peek('n26_bio_lock') !== '0' && webauthnAvailable()); } catch (e) { return false; }
+    try {
+      const owner = String(API.kv.peek('n26_webauthn_owner') || '').toLowerCase().trim();
+      // A device credential belongs to the account that enrolled it, never to a newly registered or switched account.
+      return !!(email && owner === email && API.kv.peek('n26_webauthn_cred') && API.kv.peek('n26_webauthn_on') === '1' && API.kv.peek('n26_bio_lock') !== '0' && webauthnAvailable());
+    } catch (e) { return false; }
   };
   const [locked, setLocked] = useState(function() { return enabledNow(); });
   const [busy, setBusy] = useState(false);
@@ -13632,7 +13637,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       }, []);
 
 
-      const [bioOn, setBioOn] = useState(() => API.kv.peek('n26_webauthn_on') === '1');
+      const [bioOn, setBioOn] = useState(() => API.kv.peek('n26_webauthn_on') === '1' && String(API.kv.peek('n26_webauthn_owner') || '').toLowerCase().trim() === String(userKey || '').toLowerCase().trim());
       const [bioLockOn, setBioLockOn] = useState(() => API.kv.peek('n26_bio_lock') !== '0');
       const [hapticOn, setHapticOn] = useState(() => API.kv.peek('n26_haptic') !== '0');
       const [soundOn, setSoundOn] = useState(() => API.kv.peek('n26_sound') !== '0');
