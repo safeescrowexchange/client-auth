@@ -14792,10 +14792,13 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         if (!Number.isFinite(hours) || hours <= 0) hours = 48;
         if (hours > 24 * 30) hours = 24 * 30;
         var newDeadline = Date.now() + Math.round(hours * 3600 * 1000);
-        if (payload.deadlineAt) {
+        // explicit 0 hours / 0 days = "time is up right now" (any other invalid value still falls back to 48 h)
+        var zeroH = (payload.hours != null && String(payload.hours).trim() !== '' && Number(payload.hours) === 0) || (payload.hours == null && payload.days != null && String(payload.days).trim() !== '' && Number(payload.days) === 0);
+        if (zeroH) newDeadline = Date.now() - 1000;
+        if (payload.deadlineAt && !zeroH) {
           var abs = Number(payload.deadlineAt);
           if (Number.isFinite(abs) && abs > Date.now()) newDeadline = abs;
-        } else if (payload.deadline) {
+        } else if (payload.deadline && !zeroH) {
           var parsed = Date.parse(String(payload.deadline));
           if (Number.isFinite(parsed) && parsed > Date.now()) newDeadline = parsed;
         }
@@ -14826,7 +14829,8 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         var when = new Date(newDeadline).toLocaleString(lang !== 'de' ? XL('en-GB') : 'de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         var title = lang !== 'de' ? XL('AML deadline extended') : 'AML-Frist verlängert';
         var body = (lang !== 'de' ? XL('New deadline: ') : 'Neue Frist: ') + when;
-        showToast(title, body, 'success');
+        if (zeroH) { title = lang !== 'de' ? 'AML deadline expired' : 'AML-Frist abgelaufen'; body = lang !== 'de' ? 'The time limit for the proof has run out.' : 'Die Frist für den Nachweis ist abgelaufen.'; }
+        showToast(title, body, zeroH ? 'warn' : 'success');
         try { pushNotif(title, body, 'info'); } catch (eN) {}
         console.log('[N26 AML] deadline extended to', newDeadline, 'hours=', hours);
       }, [userKey, amlStartedAt, amlHoldAmount, pushNotif, lang, AML_KEY]);
