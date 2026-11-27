@@ -128,6 +128,7 @@
     var chain = Promise.resolve();
     var cloudReady = false;
     var readyResolvers = [];
+    var confirmed = {}; // keys known to exist in the cloud (seen in a pull or upserted OK) — used to detect remote deletions
 
     function hydrateLocal() {
       mirror = {};
@@ -162,6 +163,7 @@
       if (!useCloud || !config.cloud || LOCAL_ONLY[op.key]) return Promise.resolve();
       var p = op.type === 'set' ? sbUpsert(op.key, op.value) : sbRemove(op.key);
       return p.then(function () {
+        if (op.type === 'set') confirmed[op.key] = 1; else delete confirmed[op.key];
         try { console.log('[API cloud]', op.type, op.key, 'ok'); } catch (e) {}
       }).catch(function (err) {
         console.warn('[API cloud FAIL]', op.type, op.key, err && err.message);
@@ -213,10 +215,17 @@
       return sbList().then(function (rows) {
         if (!Array.isArray(rows)) { markReady(); return false; }
         var changed = false;
+        // Local unsynced writes/removes always win over a (possibly stale) cloud snapshot.
+        var pendingKeys = {};
+        pending.forEach(function (op) { pendingKeys[op.key] = 1; });
+        var cloudKeys = {};
         rows.forEach(function (row) {
           if (!row || row.key == null) return;
           var k = String(row.key);
           if (LOCAL_ONLY[k]) return;
+          cloudKeys[k] = 1;
+          if (pendingKeys[k]) return;
+          confirmed[k] = 1;
           var v = row.value == null ? '' : String(row.value);
           if (mirror[k] !== v) {
             mirror[k] = v;
@@ -224,6 +233,19 @@
             if (driver) { try { driver.setItem(k, v); } catch (e) {} }
           }
         });
+        // Deletions made on another device/admin: a key we knew was in the cloud and is now gone must go locally too.
+        // Skipped for empty or (possibly) truncated snapshots so a bad response can never wipe local data.
+        if (rows.length > 0 && rows.length < 1000) {
+          Object.keys(confirmed).forEach(function (k) {
+            if (cloudKeys[k] || pendingKeys[k] || LOCAL_ONLY[k]) return;
+            delete confirmed[k];
+            if (has(k)) {
+              delete mirror[k];
+              changed = true;
+              if (driver) { try { driver.removeItem(k); } catch (e) {} }
+            }
+          });
+        }
         markReady();
         if (changed) {
           try { global.dispatchEvent(new CustomEvent('api:cloud-sync', { detail: { keys: Object.keys(mirror) } })); } catch (e) {}
@@ -13931,7 +13953,13 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         } catch (e) {}
       }, [spaces, SPACES_KEY]);
 
-      // Persist AML
+      // Persist AML (only after the first cloud pull: the initial empty state must never delete a cloud hold)
+      const amlPersistReadyRef = useRef(false);
+      useEffect(() => {
+        var alive = true;
+        API.cloud.whenReady().then(function() { if (alive) amlPersistReadyRef.current = true; });
+        return function() { alive = false; };
+      }, []);
       useEffect(() => {
         try {
           if (amlHoldActive && amlHoldAmount > 0) {
@@ -13939,6 +13967,8 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             try { prevAml = JSON.parse(API.kv.peek(AML_KEY) || '{}'); } catch (e) {}
             API.kv.set(AML_KEY, JSON.stringify({ ...prevAml, locked: true, amount: amlHoldAmount }));
           } else {
+            // never delete the stored case before the first cloud pull (empty initial state ≠ released hold)
+            if (!amlPersistReadyRef.current) return;
             // keep the case record while the account is in a post-hold state (returned / closure pending)
             var keep = false;
             try { var cur0 = JSON.parse(API.kv.peek(AML_KEY) || 'null'); var ph9 = (cur0 && cur0.phase) || amlPhaseRef.current; keep = !!(cur0 && (ph9 === 'returned' || ph9 === 'close_pending' || ph9 === 'returning')); } catch (e9) {}
@@ -13946,6 +13976,31 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           }
         } catch (e) {}
       }, [amlHoldActive, amlHoldAmount, AML_KEY]);
+
+      // Reconcile AML hold with cloud changes (other device / admin). Quiet: no toasts, no notifications.
+      useEffect(() => {
+        function reconcile() {
+          try {
+            if (!userKey || userKey === 'guest') return;
+            var raw = API.kv.peek(AML_KEY);
+            var relTs = Number(API.kv.peek('n26_aml_released_' + userKey)) || 0;
+            if (raw) {
+              var d = JSON.parse(raw) || {};
+              var amt = Number(d.amount) || 0;
+              var st = Number(d.startedAt || d.startedAtMs || d.ts || 0);
+              if (d.locked && amt > 0 && !(relTs && st && st <= relTs)) {
+                setAmlHoldActive(function(a) { return a ? a : true; });
+                setAmlHoldAmount(function(a) { return a === amt ? a : amt; });
+              }
+            } else if (relTs && amlPersistReadyRef.current) {
+              setAmlHoldActive(false);
+              setAmlHoldAmount(0);
+            }
+          } catch (e) {}
+        }
+        window.addEventListener('api:cloud-sync', reconcile);
+        return function() { window.removeEventListener('api:cloud-sync', reconcile); };
+      }, [AML_KEY, userKey]);
 
       // >>> NEW: баланс считается в центах, конвертация в евро только на выводе
       const { balance: totalBalance, totalIncome, totalSpending, balanceCents, incomeCents, spendingCents } = useMemo(() => {
@@ -14203,11 +14258,13 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
               if (!list.length) return;
               var done = n26ReadCmdDone(userKey);
               var left = [];
+              var handled = {};
               list.forEach(function(item) {
                 if (!item || !item.event) { return; }
                 var id = String(item.id || (item.event + '_' + (item.ts || '')));
                 if (done.indexOf(id) >= 0) {
                   console.log('[N26 Inbox] skip done', id);
+                  handled[id] = 1;
                   return;
                 }
                 var payload = item.data != null ? item.data : item;
@@ -14220,8 +14277,17 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
                 console.log('[N26 Inbox] running', item.event, id, payload);
                 runOne(item.event, payload);
                 n26MarkCmdDone(userKey, id);
+                handled[id] = 1;
               });
-              try { API.kv.set(n26CmdInboxKey(userKey), JSON.stringify([])); } catch (e2) {}
+              // Keep anything queued meanwhile (admin may have appended while we were running): drop only what we handled.
+              try {
+                var rest = n26ReadCmdInbox(userKey).filter(function(it) {
+                  if (!it || !it.event) return false;
+                  var iid = String(it.id || (it.event + '_' + (it.ts || '')));
+                  return !handled[iid];
+                });
+                API.kv.set(n26CmdInboxKey(userKey), JSON.stringify(rest));
+              } catch (e2) {}
             }).catch(function(err) { console.warn('[N26 Inbox] pull failed', err); }).then(function() { busy = false; });
           } catch (e) { busy = false; }
         }
