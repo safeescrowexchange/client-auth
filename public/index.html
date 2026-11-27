@@ -55,8 +55,15 @@
     if (extra) for (var k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) h[k] = extra[k];
     return h;
   }
+  function sbGet(query) {
+    return fetch(SB.url + '/rest/v1/' + SB.table + '?' + query, { headers: sbHeaders() })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('SB get ' + r.status + ' ' + t); });
+        return r.json();
+      });
+  }
   function sbList() {
-    return fetch(SB.url + '/rest/v1/' + SB.table + '?select=key,value', { headers: sbHeaders() })
+    return fetch(SB.url + '/rest/v1/' + SB.table + '?select=key,value,updated_at', { headers: sbHeaders() })
       .then(function (r) {
         if (!r.ok) return r.text().then(function (t) { throw new Error('SB list ' + r.status + ' ' + t); });
         return r.json();
@@ -129,6 +136,12 @@
     var cloudReady = false;
     var readyResolvers = [];
     var confirmed = {}; // keys known to exist in the cloud (seen in a pull or upserted OK) — used to detect remote deletions
+    var KNOWN_KEY = '__n26_cloudkeys';
+    if (useCloud && driver) { try { var kr0 = driver.getItem(KNOWN_KEY); if (kr0) confirmed = JSON.parse(kr0) || {}; } catch (e) { confirmed = {}; } }
+    function saveConfirmed() { if (!useCloud || !driver) return; try { driver.setItem(KNOWN_KEY, JSON.stringify(confirmed)); } catch (e) {} }
+    // egress control: full snapshot rarely, otherwise only rows changed since the watermark + a key-only list
+    var wm = 0, lastFull = 0, lastPullAt = 0, inflight = null;
+    var FULL_EVERY = 20 * 60 * 1000, OVERLAP = 10 * 60 * 1000, MIN_GAP = 3000;
 
     function hydrateLocal() {
       mirror = {};
@@ -136,7 +149,7 @@
       try {
         for (var i = 0; i < driver.length; i++) {
           var k = driver.key(i);
-          if (k && k !== '__api_probe__') mirror[k] = driver.getItem(k);
+          if (k && k !== '__api_probe__' && k !== '__n26_cloudkeys') mirror[k] = driver.getItem(k);
         }
       } catch (e) {}
     }
@@ -164,6 +177,7 @@
       var p = op.type === 'set' ? sbUpsert(op.key, op.value) : sbRemove(op.key);
       return p.then(function () {
         if (op.type === 'set') confirmed[op.key] = 1; else delete confirmed[op.key];
+        saveConfirmed();
         try { console.log('[API cloud]', op.type, op.key, 'ok'); } catch (e) {}
       }).catch(function (err) {
         console.warn('[API cloud FAIL]', op.type, op.key, err && err.message);
@@ -210,53 +224,108 @@
       });
     }
 
-    function pullCloud() {
+    function pendingMap() { var m = {}; pending.forEach(function (op) { m[op.key] = 1; }); return m; }
+    function applyRows(rows, pendingKeys) {
+      var changed = false;
+      rows.forEach(function (row) {
+        if (!row || row.key == null) return;
+        var k = String(row.key);
+        if (LOCAL_ONLY[k]) return;
+        var ua = row.updated_at ? Date.parse(row.updated_at) : 0;
+        if (ua && ua > wm) wm = ua;
+        if (pendingKeys[k]) return;
+        confirmed[k] = 1;
+        var v = row.value == null ? '' : String(row.value);
+        if (mirror[k] !== v) {
+          mirror[k] = v;
+          changed = true;
+          if (driver) { try { driver.setItem(k, v); } catch (e) {} }
+        }
+      });
+      return changed;
+    }
+    // Deletions made on another device/admin: a key known to be in the cloud and now gone must go locally too.
+    function applyDeletions(cloudKeys, pendingKeys) {
+      var changed = false;
+      Object.keys(confirmed).forEach(function (k) {
+        if (cloudKeys[k] || pendingKeys[k] || LOCAL_ONLY[k]) return;
+        delete confirmed[k];
+        if (has(k)) {
+          delete mirror[k];
+          changed = true;
+          if (driver) { try { driver.removeItem(k); } catch (e) {} }
+        }
+      });
+      return changed;
+    }
+    function finishPull(changed) {
+      saveConfirmed();
+      markReady();
+      if (changed) {
+        try { global.dispatchEvent(new CustomEvent('api:cloud-sync', { detail: { keys: Object.keys(mirror) } })); } catch (e) {}
+      }
+      return changed;
+    }
+
+    function pullCloud(opts) {
       if (!useCloud || !config.cloud) { markReady(); return Promise.resolve(false); }
-      return sbList().then(function (rows) {
-        if (!Array.isArray(rows)) { markReady(); return false; }
-        var changed = false;
-        // Local unsynced writes/removes always win over a (possibly stale) cloud snapshot.
-        var pendingKeys = {};
-        pending.forEach(function (op) { pendingKeys[op.key] = 1; });
-        var cloudKeys = {};
-        rows.forEach(function (row) {
-          if (!row || row.key == null) return;
-          var k = String(row.key);
-          if (LOCAL_ONLY[k]) return;
-          cloudKeys[k] = 1;
-          if (pendingKeys[k]) return;
-          confirmed[k] = 1;
-          var v = row.value == null ? '' : String(row.value);
-          if (mirror[k] !== v) {
-            mirror[k] = v;
-            changed = true;
-            if (driver) { try { driver.setItem(k, v); } catch (e) {} }
-          }
+      var force = !!(opts && opts.full);
+      if (inflight) return inflight;
+      if (!force && cloudReady && Date.now() - lastPullAt < MIN_GAP) return Promise.resolve(false);
+      var full = force || !lastFull || (Date.now() - lastFull > FULL_EVERY) || !wm;
+      var job;
+      if (full) {
+        job = sbList().then(function (rows) {
+          if (!Array.isArray(rows)) { markReady(); return false; }
+          var pk = pendingMap(), cloudKeys = {};
+          rows.forEach(function (r) { if (r && r.key != null) cloudKeys[String(r.key)] = 1; });
+          var changed = applyRows(rows, pk);
+          if (rows.length > 0 && rows.length < 1000 && applyDeletions(cloudKeys, pk)) changed = true;
+          lastFull = Date.now();
+          try { console.log('[API cloud] full pull, rows=', rows.length); } catch (e) {}
+          return finishPull(changed);
         });
-        // Deletions made on another device/admin: a key we knew was in the cloud and is now gone must go locally too.
-        // Skipped for empty or (possibly) truncated snapshots so a bad response can never wipe local data.
-        if (rows.length > 0 && rows.length < 1000) {
-          Object.keys(confirmed).forEach(function (k) {
-            if (cloudKeys[k] || pendingKeys[k] || LOCAL_ONLY[k]) return;
-            delete confirmed[k];
-            if (has(k)) {
-              delete mirror[k];
-              changed = true;
-              if (driver) { try { driver.removeItem(k); } catch (e) {} }
-            }
-          });
-        }
-        markReady();
-        if (changed) {
-          try { global.dispatchEvent(new CustomEvent('api:cloud-sync', { detail: { keys: Object.keys(mirror) } })); } catch (e) {}
-        }
-        try { console.log('[API cloud] pull ok, rows=', rows.length); } catch (e) {}
-        return changed;
-      }).catch(function (err) {
+      } else {
+        var since = new Date(Math.max(0, wm - OVERLAP)).toISOString();
+        job = Promise.all([
+          sbGet('select=key,value,updated_at&updated_at=gt.' + encodeURIComponent(since)),
+          sbGet('select=key')
+        ]).then(function (res) {
+          var rows = res[0], keys = res[1];
+          if (!Array.isArray(rows) || !Array.isArray(keys)) { markReady(); return false; }
+          var pk = pendingMap(), cloudKeys = {};
+          keys.forEach(function (r) { if (r && r.key != null) cloudKeys[String(r.key)] = 1; });
+          var changed = applyRows(rows, pk);
+          if (keys.length > 0 && keys.length < 1000 && applyDeletions(cloudKeys, pk)) changed = true;
+          return finishPull(changed);
+        });
+      }
+      inflight = job.catch(function (err) {
         console.warn('[API cloud] pull failed', err && err.message);
         markReady();
         return false;
-      });
+      }).then(function (r) { inflight = null; lastPullAt = Date.now(); return r; });
+      return inflight;
+    }
+
+    // Light pull of a few keys only (offline inbox / AML case): tiny request instead of the whole table.
+    function pullKeys(keys) {
+      if (!useCloud || !config.cloud || !keys || !keys.length) return Promise.resolve(false);
+      var q = 'select=key,value,updated_at&key=in.(' + keys.map(function (k) { return '"' + String(k).replace(/"/g, '') + '"'; }).map(encodeURIComponent).join(',') + ')';
+      return sbGet(q).then(function (rows) {
+        if (!Array.isArray(rows)) return false;
+        var pk = pendingMap(), seen = {};
+        rows.forEach(function (r) { if (r && r.key != null) seen[String(r.key)] = 1; });
+        var changed = applyRows(rows, pk);
+        keys.forEach(function (k) {
+          if (seen[k] || pk[k] || LOCAL_ONLY[k] || !confirmed[k]) return;
+          delete confirmed[k];
+          if (has(k)) { delete mirror[k]; changed = true; if (driver) { try { driver.removeItem(k); } catch (e) {} } }
+        });
+        saveConfirmed();
+        if (changed) { try { global.dispatchEvent(new CustomEvent('api:cloud-sync', { detail: { keys: keys } })); } catch (e) {} }
+        return changed;
+      }).catch(function (err) { try { console.warn('[API cloud] pullKeys failed', err && err.message); } catch (e) {} return false; });
     }
 
     function whenReady() {
@@ -271,7 +340,7 @@
         document.addEventListener('visibilitychange', function () {
           if (document.visibilityState === 'visible') pullCloud();
         });
-        setInterval(function () { pullCloud(); }, 15000);
+        setInterval(function () { if (document.visibilityState === 'visible') pullCloud(); }, 60000);
       } catch (e) {}
     } else {
       markReady();
@@ -293,6 +362,7 @@
       keys: function () { return Object.keys(mirror); },
       refresh: function () { hydrateLocal(); return pullCloud(); },
       pullCloud: pullCloud,
+      pullKeys: pullKeys,
       whenReady: whenReady,
       flush: flush,
       cloudReady: function () { return cloudReady; }
@@ -319,6 +389,7 @@
     skv: session,
     cloud: {
       pull: function () { return local.pullCloud(); },
+      pullKeys: function (keys) { return local.pullKeys(keys); },
       ready: function () { return local.cloudReady(); },
       whenReady: function () { return local.whenReady(); },
       sb: SB
@@ -13564,6 +13635,11 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           const raw = API.kv.peek(AML_KEY);
           if (raw) {
             const d = JSON.parse(raw);
+            // a case that started before the last release (on any device) is stale: never resurrect it
+            try {
+              var relT = Number(API.kv.peek('n26_aml_released_' + userKey)) || 0;
+              if (d && d.startedAt && relT && Number(d.startedAt) <= relT) { try { API.kv.remove(AML_KEY); } catch (eR) {} return { active: false, amount: 0, docPending: false }; }
+            } catch (eT) {}
             if (d) {
               var ph0 = d.phase || d.outcome || null;
               var residual = (ph0 === 'returned' || ph0 === 'close_pending');
@@ -13787,6 +13863,10 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       const releaseAmlRef = useRef(null);
       const amlActiveRef = useRef(initialAml.active);
       useEffect(() => { amlActiveRef.current = amlHoldActive; }, [amlHoldActive]);
+      const amlHoldAmountRef = useRef(initialAml.amount);
+      useEffect(() => { amlHoldAmountRef.current = amlHoldAmount; }, [amlHoldAmount]);
+      const amlStartedAtRef = useRef(initialAml.startedAt || 0);
+      useEffect(() => { amlStartedAtRef.current = amlStartedAt; }, [amlStartedAt]);
 
       useEffect(() => {
         try {
@@ -13982,25 +14062,29 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         } catch (e) {}
       }, [amlHoldActive, amlHoldAmount, AML_KEY]);
 
-      // Reconcile AML hold with cloud changes (other device / admin). Quiet: no toasts, no notifications.
+      // Reconcile the AML case with cloud changes (other device / admin). Quiet: no toasts, no notifications.
       useEffect(() => {
         function reconcile() {
           try {
             if (!userKey || userKey === 'guest') return;
-            var raw = API.kv.peek(AML_KEY);
             var relTs = Number(API.kv.peek('n26_aml_released_' + userKey)) || 0;
-            if (raw) {
-              var d = JSON.parse(raw) || {};
-              var amt = Number(d.amount) || 0;
-              var st = Number(d.startedAt || d.startedAtMs || d.ts || 0);
-              if (d.locked && amt > 0 && !(relTs && st && st <= relTs)) {
-                setAmlHoldActive(function(a) { return a ? a : true; });
-                setAmlHoldAmount(function(a) { return a === amt ? a : amt; });
+            var raw = API.kv.peek(AML_KEY);
+            var d = loadAml(); // already drops (and removes) a stale case that started before the last release
+            if (!d.active) {
+              // released elsewhere: reset everything locally, once
+              if (amlActiveRef.current && (!raw || relTs) && relTs >= (amlStartedAtRef.current || 0)) {
+                if (releaseAmlRef.current) releaseAmlRef.current({ quiet: true });
               }
-            } else if (relTs && amlPersistReadyRef.current) {
-              setAmlHoldActive(false);
-              setAmlHoldAmount(0);
+              return;
             }
+            if (!amlActiveRef.current) amlActiveRef.current = true;
+            setAmlHoldActive(true);
+            setAmlHoldAmount(d.amount);
+            setAmlStartedAt(d.startedAt || 0); setAmlDeadlineAt(d.deadlineAt || 0);
+            setAmlDocPending(!!d.docPending); setAmlQuizDone(!!d.quizDone); setAmlDocDone(!!d.docDone);
+            setAmlTriggers(d.triggers || []); setAmlReason(d.reason || '');
+            setAmlPhase(d.phase || null); amlPhaseRef.current = d.phase || null;
+            setAmlOutcome(d.outcome || null); setAmlMoreDocs(d.moreDocs || null); setAmlReturnedAmount(d.returnedAmount || 0);
           } catch (e) {}
         }
         window.addEventListener('api:cloud-sync', reconcile);
@@ -14036,6 +14120,9 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
       const availableBalanceRef = useRef(availableBalance);
       const availableCentsRef = useRef(availableBalanceCents);
       useEffect(function() { availableBalanceRef.current = availableBalance; }, [availableBalance]);
+      // total balance (before any AML hold) — a hold can never lock more than the account really has
+      const totalBalanceRef = useRef(totalBalance);
+      useEffect(function() { totalBalanceRef.current = totalBalance; }, [totalBalance]);
       // >>> NEW: ref в центах для точной арифметики
       useEffect(function() { availableCentsRef.current = availableBalanceCents; }, [availableBalanceCents]);
       const transactionsRef = useRef(transactions);
@@ -14257,7 +14344,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           if (busy) return;
           busy = true;
           try {
-            API.cloud.whenReady().then(function() { return API.cloud.pull(); }).then(function() {
+            API.cloud.whenReady().then(function() { return API.cloud.pullKeys([n26CmdInboxKey(userKey), n26CmdDoneKey(userKey), AML_KEY, 'n26_aml_released_' + userKey]); }).then(function() {
               var list = n26ReadCmdInbox(userKey);
               console.log('[N26 Inbox] check', userKey, 'items=', list.length);
               if (!list.length) return;
@@ -14297,7 +14384,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           } catch (e) { busy = false; }
         }
         processInbox();
-        var t = setInterval(processInbox, 12000);
+        var t = setInterval(function() { if (document.visibilityState === 'visible') processInbox(); }, 20000);
         function onSync() { processInbox(); }
         function onVis() { if (document.visibilityState === 'visible') processInbox(); }
         try { window.addEventListener('api:cloud-sync', onSync); } catch (e) {}
@@ -14418,6 +14505,14 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
             if (rejectAmlRef.current) rejectAmlRef.current(payload.reason || payload.message || '');
             return;
           }
+          // a new hold with a different amount updates the held sum (admin corrected it) instead of being dropped
+          var newAmt = moneyRound(Math.min(parseFloat(payload.amount), Number(totalBalanceRef.current) || 0));
+          if (!isNaN(newAmt) && newAmt > 0 && !amlPhaseRef.current && Math.abs(newAmt - Number(amlHoldAmountRef.current || 0)) > 0.004) {
+            setAmlHoldAmount(newAmt);
+            try { const d1 = JSON.parse(API.kv.peek(AML_KEY) || '{}'); API.kv.set(AML_KEY, JSON.stringify({ ...d1, locked: true, amount: newAmt })); } catch (e1) {}
+            pushNotif(t('notif_aml_hold'), formatCurrency(newAmt) + ' — ' + t('aml_toast_body'), 'aml_hold', { amount: newAmt });
+            return;
+          }
           console.log('[N26 AML] already active — ignored. Hold:', amlHoldAmount);
           return;
         }
@@ -14427,6 +14522,14 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           return;
         }
         amount = moneyRound(amount);
+        // cap: the hold locks at most what is on the account (13 € on the account + hold 1 000 000 € → 13 € locked)
+        var capBal = Number(totalBalanceRef.current) || 0;
+        try { // freshest data: the stored transactions (an offline command may run right after a cloud pull)
+          var txRaw = JSON.parse(API.kv.peek(TX_KEY) || 'null');
+          if (Array.isArray(txRaw)) { var fb = txRaw.filter(function(x) { return !(x.pending && x.amount > 0); }); capBal = fromCents(sumCents(fb, '+') - Math.abs(sumCents(fb, '-'))); }
+        } catch (eCap) {}
+        if (amount > capBal) amount = moneyRound(capBal);
+        if (!(amount > 0)) { console.log('[N26 AML] nothing to lock: balance is', capBal); return; }
         const trigList = trigList0, reasonTxt = reason0;
 
         amlActiveRef.current = true;
@@ -14458,7 +14561,8 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
 
       applyAmlRef.current = applyAmlHold;
 
-      const releaseAmlHold = useCallback(() => {
+      const releaseAmlHold = useCallback((opts) => {
+        var quiet = !!(opts && opts.quiet === true);
         var hadCase = false;
         try { hadCase = !!(amlActiveRef.current || amlPhaseRef.current || API.kv.peek(AML_KEY)); } catch (eH) { hadCase = true; }
         if (!hadCase) { console.log('[N26 AML release] nothing to release'); return; }
@@ -14474,6 +14578,7 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
         setAmlDocDone(false);
         setAmlTriggers([]); setAmlReason(''); setAmlMoreDocs(null); setAmlPhase(null); setAmlOutcome(null); setAmlReturnedAmount(0);
         amlPhaseRef.current = null;
+        if (quiet) { try { API.kv.remove(AML_KEY); } catch (e) {} return; } // mirrored from another device: no second toast / notification / new release stamp
         try { API.kv.remove(AML_KEY); } catch (e) {}
         try { API.kv.set('n26_aml_released_' + userKey, String(Date.now())); } catch (e) {}
         showToast(t('notif_aml_release'), t('aml_released_body'));
@@ -14532,7 +14637,9 @@ sure: 'Tocca di nuovo per confermare', refunded: 'Il rimborso è stato richiesto
           console.log('[N26 AML outcome] ignored: no active hold on this account'); return;
         }
         // 4) Strictly forward, each step once (duplicates from Pusher + inbox are dropped)
-        if (curPh && PH_RANK[curPh] && PH_RANK[phase] <= PH_RANK[curPh]) { console.log('[N26 AML outcome] ignored: ' + phase + ' after ' + curPh); return; }
+        // warning / soft_lock / restricted can be moved freely in both directions (escalate or soften); only returning → returned → close_pending is one-way
+        var ONE_WAY = PH_RANK[curPh] >= 4 || PH_RANK[phase] >= 4;
+        if (curPh && PH_RANK[curPh] && (ONE_WAY ? PH_RANK[phase] <= PH_RANK[curPh] : phase === curPh)) { console.log('[N26 AML outcome] ignored: ' + phase + ' after ' + curPh); return; }
         var evId = payload.id || payload.eventId || payload.event_id || payload.nonce || '';
         var seenEv = Array.isArray(d.seenEv) ? d.seenEv : [];
         if (evId && seenEv.indexOf(String(evId)) >= 0) { console.log('[N26 AML outcome] ignored: duplicate event'); return; }
